@@ -22,7 +22,6 @@ $cssVersion = '11';
         <h1>crbntyp</h1>
       </div>
     </div>
-
     <?php include 'includes/main-nav.php'; ?>
 
 <?php include 'includes/html-close.php'; ?>

@@ -7,20 +7,11 @@
     require_once __DIR__ . '/env-loader.php';
     require_once __DIR__ . '/environment.php';
 
-    // Environment-aware database configuration
-    if (isDocker()) {
-        // Docker environment - connect to production database
-        $host = env('DB_DOCKER_HOST', 'localhost');
-        $user = env('DB_DOCKER_USER', '');
-        $pass = env('DB_DOCKER_PASS', '');
-        $db = env('DB_DOCKER_NAME', '');
-    } else {
-        // Production environment
-        $host = env('DB_PROD_HOST', 'localhost');
-        $user = env('DB_PROD_USER', '');
-        $pass = env('DB_PROD_PASS', '');
-        $db = env('DB_PROD_NAME', '');
-    }
+    // Always use production database (even in Docker for development)
+    $host = env('DB_PROD_HOST', 'localhost');
+    $user = env('DB_PROD_USER', '');
+    $pass = env('DB_PROD_PASS', '');
+    $db = env('DB_PROD_NAME', '');
 
     $mysqli = new mysqli($host, $user, $pass, $db);
 

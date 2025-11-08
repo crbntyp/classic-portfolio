@@ -85,7 +85,7 @@ $seo = [
     'og_image' => $ogImage ?? ($pathPrefix ?? '') . 'img/og-default.jpg',
     'og_image_width' => $ogImageWidth ?? '1200',
     'og_image_height' => $ogImageHeight ?? '630',
-    'canonical' => $canonicalURL ?? 'https://carbontype.com' . $_SERVER['REQUEST_URI'],
+    'canonical' => $canonicalURL ?? 'https://carbontype.co' . $_SERVER['REQUEST_URI'],
     'author' => 'Jonny Pyper',
     'twitter_card' => 'summary_large_image',
     'twitter_handle' => '@carbontype' // Update with actual Twitter handle
@@ -165,8 +165,8 @@ if (strlen($description) > 160) {
 $pageTitle = 'Jonny Pyper | UI Designer & Engineering Manager';
 $pageDescription = 'Award-winning UI designer and Software Engineering Manager at R7. Explore my portfolio of creative projects, web design, and digital experiences.';
 $pageKeywords = 'UI designer, engineering manager, portfolio, web design, creative director, R7, Jonny Pyper, Carbontype';
-$canonicalURL = 'https://carbontype.com/';
-$ogImage = 'https://carbontype.com/img/og-home.jpg';
+$canonicalURL = 'https://carbontype.co/';
+$ogImage = 'https://carbontype.co/img/og-home.jpg';
 ```
 
 **Portfolio Page (`src/portfolio/index.php`):**
@@ -179,9 +179,9 @@ $projectCount = $result->num_rows;
 $pageTitle = 'Portfolio Projects | Carbontype';
 $pageDescription = "Browse {$projectCount} creative projects including UI design, web development, branding, and digital experiences.";
 $pageKeywords = 'portfolio, projects, UI design, web design, case studies, creative work';
-$canonicalURL = 'https://carbontype.com/portfolio/';
+$canonicalURL = 'https://carbontype.co/portfolio/';
 $ogType = 'website';
-$ogImage = 'https://carbontype.com/img/og-portfolio.jpg';
+$ogImage = 'https://carbontype.co/img/og-portfolio.jpg';
 ```
 
 **Project Page (`src/portfolio/project.php`)** - CRITICAL: Fix SQL injection:
@@ -214,9 +214,9 @@ $projectTeaser = $row["projectTeaser"];
 $pageTitle = $projectHeading;
 $pageDescription = strip_tags(substr($projectDescription, 0, 155)) . "...";
 $pageKeywords = $projectHeading . ', portfolio project, case study, UI design, web design, Carbontype';
-$canonicalURL = "https://carbontype.com/portfolio/project.php?id={$projectIDurl}";
+$canonicalURL = "https://carbontype.co/portfolio/project.php?id={$projectIDurl}";
 $ogType = 'article';
-$ogImage = "https://carbontype.com/img/uploads/{$projectTeaser}";
+$ogImage = "https://carbontype.co/img/uploads/{$projectTeaser}";
 ```
 
 ---
@@ -236,8 +236,8 @@ $schemaOrg = [
     '@type' => 'Person',
     'name' => 'Jonny Pyper',
     'alternateName' => 'Carbontype',
-    'url' => 'https://carbontype.com',
-    'image' => 'https://carbontype.com/logo.png',
+    'url' => 'https://carbontype.co',
+    'image' => 'https://carbontype.co/logo.png',
     'jobTitle' => 'Software Engineering Manager',
     'worksFor' => [
         '@type' => 'Organization',
@@ -271,10 +271,10 @@ if (isset($projectHeading) && isset($projectDescription)) {
         'author' => [
             '@type' => 'Person',
             'name' => 'Jonny Pyper',
-            'url' => 'https://carbontype.com'
+            'url' => 'https://carbontype.co'
         ],
-        'image' => isset($ogImage) ? $ogImage : 'https://carbontype.com/logo.png',
-        'url' => isset($canonicalURL) ? $canonicalURL : 'https://carbontype.com'
+        'image' => isset($ogImage) ? $ogImage : 'https://carbontype.co/logo.png',
+        'url' => isset($canonicalURL) ? $canonicalURL : 'https://carbontype.co'
     ];
 }
 ?>
@@ -307,7 +307,7 @@ Disallow: /reset-password.php
 Disallow: /logout.php
 
 # Sitemap
-Sitemap: https://carbontype.com/sitemap.xml
+Sitemap: https://carbontype.co/sitemap.xml
 
 # Crawl delay (optional)
 Crawl-delay: 1
@@ -332,7 +332,7 @@ require_once 'includes/init.php';
 
 header('Content-Type: application/xml; charset=utf-8');
 
-$baseURL = 'https://carbontype.com'; // UPDATE THIS
+$baseURL = 'https://carbontype.co'; // UPDATE THIS
 
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 ?>
@@ -830,7 +830,7 @@ Add to each project:
 
 **Before going live, ensure:**
 
-- [ ] Update all instances of `https://carbontype.com` to your actual domain
+- [ ] Update all instances of `https://carbontype.co` to your actual domain
 - [ ] Update `$baseURL` in sitemap.php
 - [ ] Update canonical URLs in seo-meta.php
 - [ ] Update OG image URLs to use full domain
@@ -902,7 +902,7 @@ If you run into issues during implementation:
 ## Notes
 
 - All file paths assume standard project structure
-- Update domain `carbontype.com` to your actual domain
+- Update domain `carbontype.co` to your actual domain
 - Replace social media handles with your actual profiles
 - Test everything in development before deploying to production
 - Keep this file updated as you implement changes
