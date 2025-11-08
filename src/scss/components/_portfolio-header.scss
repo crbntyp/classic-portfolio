@@ -1,0 +1,92 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * Portfolio Header Component
+ * Centered logo and text inside the carousel
+ */
+
+.portfolio-header {
+    position: relative;
+    z-index: 100;
+    pointer-events: none;
+    padding: 20px;
+    width: 100%;
+
+    @media (max-width: 768px) {
+        position: static;
+        padding: 20px 0;
+    }
+
+    &__content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &__logo {
+        max-width: 60px;
+        height: auto;
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+
+        @media (max-width: 767px) {
+            max-width: 50px;
+        }
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+        color: $color-white;
+        opacity: 0.6;
+        letter-spacing: 1.5px;
+
+        @media (max-width: 767px) {
+            font-size: 14px;
+        }
+    }
+}
+
+// Color Palette Display
+.color-palette {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto; // Re-enable pointer events for the palette
+    position: relative;
+    z-index: 10;
+
+    &__circle {
+        width: 10px;
+        height: 10px;
+        min-width: 10px;
+        min-height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.8s ease-in-out;
+        //border: 2px solid rgba(255, 255, 255, 0.9);
+        //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        opacity: 1;
+        display: inline-block;
+        flex-shrink: 0;
+        box-sizing: border-box;
+
+        @media (max-width: 767px) {
+            width: 10px;
+            height: 10px;
+            min-width: 10px;
+            min-height: 10px;
+        }
+    }
+}

@@ -1,0 +1,244 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * Home Page Component
+ * Styles for the landing page layout
+ */
+
+// Particle canvas background
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 30000;
+    pointer-events: none;
+}
+
+// Center container for logo and text
+.table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.home-body{
+    overflow: hidden;
+}
+
+.cell {
+    text-align: center;
+    position: relative;
+
+    // Animated blob background - largest, lightest layer
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0.01) 100%);
+        border-radius: 50% 50% 60% 40% / 60% 40% 60% 40%;
+        z-index: -3;
+        animation: blobMoveAggressive 12s ease-in-out infinite;
+        filter: blur(0px);
+    }
+
+    // Animated blob background - medium layer
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.02) 100%);
+        border-radius: 60% 40% 50% 60% / 50% 60% 40% 50%;
+        z-index: -2;
+        animation: blobMoveAggressive 12s ease-in-out infinite reverse;
+        filter: blur(0px);
+    }
+
+    .logo {
+        max-width: 100px;
+        height: auto;
+        position: relative;
+        z-index: 1;
+
+        // Animated blob background - smallest, darkest layer
+        &::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.05) 100%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            z-index: -1;
+            animation: blobMove 20s ease-in-out infinite;
+            filter: blur(0px);
+        }
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+    }
+}
+
+// Blob animation - combines pulsing, morphing, and rotation
+@keyframes blobMove {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+    25% {
+        transform: translate(-50%, -50%) scale(1.1) rotate(90deg);
+        border-radius: 50% 60% 50% 40% / 60% 40% 50% 60%;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(0.9) rotate(180deg);
+        border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%;
+    }
+    75% {
+        transform: translate(-50%, -50%) scale(1.05) rotate(270deg);
+        border-radius: 40% 50% 40% 60% / 50% 60% 50% 40%;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(360deg);
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+}
+
+// Aggressive blob animation - faster with more dramatic morphing
+@keyframes blobMoveAggressive {
+    0% {
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+    25% {
+        transform: translate(-50%, -50%) scale(1.3) rotate(90deg);
+        border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(0.8) rotate(180deg);
+        border-radius: 50% 50% 20% 80% / 20% 80% 50% 50%;
+    }
+    75% {
+        transform: translate(-50%, -50%) scale(1.2) rotate(270deg);
+        border-radius: 80% 20% 50% 50% / 50% 50% 80% 20%;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1) rotate(360deg);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+}
+
+// Login icon - fixed top right
+.login-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: $color-white;
+    font-size: 30px;
+    opacity: 0.3;
+    transition: opacity $transition-fast;
+    text-decoration: none;
+    z-index: 10000;
+
+    &:hover {
+        opacity: 0.6;
+    }
+
+    i {
+        display: block;
+    }
+}
+
+// User info - displayed when logged in
+.user-info {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    .username-display {
+        color: $color-white;
+        font-size: 14px;
+        font-weight: 400;
+        opacity: 0.6;
+        letter-spacing: 1px;
+    }
+
+    .login-icon {
+        position: relative;
+        top: 0;
+        right: 0;
+    }
+}
+
+
+// Mobile adjustments
+@media (max-width: $breakpoint-mobile) {
+    .table {
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+
+    .cell {
+        width: 100%;
+        max-width: 100%;
+
+        // Scale down background blobs for mobile
+        &::after {
+            width: 90vw;
+            height: 90vw;
+            max-width: 400px;
+            max-height: 400px;
+        }
+
+        &::before {
+            width: 70vw;
+            height: 70vw;
+            max-width: 300px;
+            max-height: 300px;
+        }
+
+        .logo::before {
+            width: 60vw;
+            height: 60vw;
+            max-width: 250px;
+            max-height: 250px;
+        }
+    }
+
+    .login-icon {
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
+    }
+}
+
+// Hide username on smaller screens
+@media (max-width: 550px) {
+    .username-display {
+        display: none;
+    }
+}

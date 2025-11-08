@@ -1,0 +1,20 @@
+@use '../abstracts/variables' as *;
+
+/* Responsive Utilities */
+.screen {
+    display: inline-block;
+}
+
+.handheld {
+    display: none;
+}
+
+@media only screen and (max-width: $breakpoint-mobile) {
+    .screen {
+        display: none;
+    }
+
+    .handheld {
+        display: inline-block;
+    }
+}

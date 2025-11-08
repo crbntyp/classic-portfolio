@@ -1,0 +1,77 @@
+@use '../abstracts/variables' as *;
+
+/* Navigation */
+.main {
+    position: fixed;
+    top: $spacing-sm;
+    left: $spacing-sm;
+    right: $spacing-sm;
+    color: $color-white;
+    font-size: $font-size-base;
+    z-index: $z-index-nav;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    a {
+        color: $color-white;
+        text-decoration: none;
+        font-size: $font-size-large;
+        opacity: 0.6;
+        transition: opacity $transition-fast;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    span {
+        opacity: 0.5;
+    }
+}
+
+/* Next/Prev Navigation */
+.next-prev {
+    position: fixed;
+    bottom: $spacing-lg;
+    z-index: $z-index-carousel;
+
+    a {
+        color: $color-white-60;
+        text-decoration: none;
+        font-size: $font-size-base;
+        transition: all $transition-fast;
+
+        &:hover {
+            color: $color-white;
+        }
+    }
+}
+
+.prev-item {
+    left: $spacing-lg;
+}
+
+.next-item {
+    right: $spacing-lg;
+}
+
+@media (max-width: $breakpoint-mobile) {
+    .main {
+        top: $spacing-xs;
+        left: $spacing-xs;
+        right: $spacing-xs;
+    }
+
+    .next-prev {
+        bottom: $spacing-sm;
+    }
+
+    .prev-item {
+        left: $spacing-sm;
+    }
+
+    .next-item {
+        right: $spacing-sm;
+    }
+}

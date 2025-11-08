@@ -1,0 +1,57 @@
+@use '../abstracts/variables' as *;
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-semibold;
+}
+
+.h1, h1 {
+    font-size: $font-size-h1;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.h2, h2 {
+    font-size: $font-size-h2;
+    margin-top: 21.6667px;
+    margin-bottom: 21.6667px;
+}
+
+.h3, h3 {
+    font-size: $font-size-h3;
+    margin-top: 18.3333px;
+    margin-bottom: 18.3333px;
+}
+
+.h4, h4 {
+    font-size: $font-size-h4;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.h5, h5 {
+    font-size: $font-size-h5;
+    margin-top: 11.6667px;
+    margin-bottom: 11.6667px;
+}
+
+.h6, h6, p {
+    font-size: $font-size-h6;
+    margin-top: 9.6667px;
+    margin-bottom: 9.6667px;
+}
+
+// Utility Classes
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.color-white {
+    color: $color-white !important;
+}
+
+// Margins
+.mb-3 {
+    margin-bottom: $spacing-md !important;
+}

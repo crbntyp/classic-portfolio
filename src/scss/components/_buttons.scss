@@ -1,0 +1,36 @@
+@use '../abstracts/variables' as *;
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px $spacing-md;
+    font-size: $font-size-base;
+    text-decoration: none;
+    border: 2px solid;
+    border-radius: 4px;
+    transition: all $transition-fast;
+    margin-right: $spacing-xs;
+    cursor: pointer;
+}
+
+.btn-white {
+    background: $color-white;
+    color: $color-darkest;
+    border-color: $color-white;
+
+    &:hover {
+        background: transparent;
+        color: $color-white;
+    }
+}
+
+.btn-ghost-white {
+    background: transparent;
+    color: $color-white;
+    border-color: $color-white;
+
+    &:hover {
+        background: $color-white;
+        color: $color-darkest;
+    }
+}

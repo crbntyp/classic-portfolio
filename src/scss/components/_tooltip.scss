@@ -1,0 +1,219 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * Tooltip Component
+ * Usage: Add data-tooltip="text" to any element
+ * Optional: Add data-tooltip-position="top|bottom|left|right" (default: top)
+ * Optional: Add data-tooltip-theme="neon" for themed tooltips
+ */
+
+[data-tooltip] {
+    position: relative;
+    cursor: pointer;
+
+    &::before {
+        content: attr(data-tooltip);
+        position: absolute;
+        padding: 6px 10px;
+        background: rgba(0, 0, 0, 0.85);
+        color: $color-white;
+        font-size: 12px;
+        font-weight: $font-weight-regular;
+        white-space: nowrap;
+        border-radius: 4px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity $transition-fast, transform $transition-fast;
+        z-index: 1000;
+    }
+
+    // Neon theme
+    &[data-tooltip-theme="neon"]::before {
+        background: linear-gradient(45deg, #00ffff, #ff006f);
+        color: $color-white;
+        font-weight: $font-weight-semibold;
+        box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+    }
+
+    // Hide caret for neon theme (gradient doesn't work well with border triangles)
+    &[data-tooltip-theme="neon"]::after {
+        display: none;
+    }
+
+    // Arrow/Caret
+    &::after {
+        content: '';
+        position: absolute;
+        border: 6px solid transparent;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity $transition-fast, transform $transition-fast;
+        z-index: 999;
+    }
+
+    // Default position: top
+    &:not([data-tooltip-position])::before,
+    &[data-tooltip-position="top"]::before {
+        bottom: 100%;
+        left: 50%;
+        transform: translate(-50%, -5px);
+        margin-bottom: 6px;
+    }
+
+    &:not([data-tooltip-position])::after,
+    &[data-tooltip-position="top"]::after {
+        bottom: 100%;
+        left: 50%;
+        transform: translate(-50%, -5px);
+        margin-bottom: -6px;
+        border-top-color: rgba(0, 0, 0, 0.85);
+    }
+
+
+    // Bottom position
+    &[data-tooltip-position="bottom"]::before {
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, 5px);
+        margin-top: 6px;
+    }
+
+    &[data-tooltip-position="bottom"]::after {
+        top: 100%;
+        left: 50%;
+        transform: translate(-50%, 5px);
+        margin-top: -6px;
+        border-bottom-color: rgba(0, 0, 0, 0.85);
+        border-top-color: transparent;
+    }
+
+
+    // Left position
+    &[data-tooltip-position="left"]::before {
+        right: 100%;
+        top: 50%;
+        transform: translate(-5px, -50%);
+        margin-right: 6px;
+    }
+
+    &[data-tooltip-position="left"]::after {
+        right: 100%;
+        top: 50%;
+        transform: translate(-5px, -50%);
+        margin-right: -6px;
+        border-left-color: rgba(0, 0, 0, 0.85);
+        border-top-color: transparent;
+    }
+
+
+    // Right position
+    &[data-tooltip-position="right"]::before {
+        left: 100%;
+        top: 50%;
+        transform: translate(5px, -50%);
+        margin-left: 6px;
+    }
+
+    &[data-tooltip-position="right"]::after {
+        left: 100%;
+        top: 50%;
+        transform: translate(5px, -50%);
+        margin-left: -6px;
+        border-right-color: rgba(0, 0, 0, 0.85);
+        border-top-color: transparent;
+    }
+
+
+    // Hover state - fade in and move upward
+    &:hover::before,
+    &:hover::after {
+        opacity: 1;
+    }
+
+    &:hover:not([data-tooltip-position])::before,
+    &:hover[data-tooltip-position="top"]::before {
+        transform: translate(-50%, 0);
+    }
+
+    &:hover:not([data-tooltip-position])::after,
+    &:hover[data-tooltip-position="top"]::after {
+        transform: translate(-50%, 0);
+    }
+
+    &:hover[data-tooltip-position="bottom"]::before {
+        transform: translate(-50%, 0);
+    }
+
+    &:hover[data-tooltip-position="bottom"]::after {
+        transform: translate(-50%, 0);
+    }
+
+    &:hover[data-tooltip-position="left"]::before {
+        transform: translate(0, -50%);
+    }
+
+    &:hover[data-tooltip-position="left"]::after {
+        transform: translate(0, -50%);
+    }
+
+    &:hover[data-tooltip-position="right"]::before {
+        transform: translate(0, -50%);
+    }
+
+    &:hover[data-tooltip-position="right"]::after {
+        transform: translate(0, -50%);
+    }
+}
+
+// Mobile behavior for blobs - persist tooltips
+@media (max-width: 1024px) {
+    .main-nav__item[data-tooltip] {
+        &::before,
+        &::after {
+            opacity: 1 !important;
+        }
+
+        // Keep them in their hover position
+        &:not([data-tooltip-position])::before,
+        &[data-tooltip-position="top"]::before {
+            transform: translate(-50%, 0) !important;
+        }
+
+        &:not([data-tooltip-position])::after,
+        &[data-tooltip-position="top"]::after {
+            transform: translate(-50%, 0) !important;
+        }
+
+        &[data-tooltip-position="bottom"]::before {
+            transform: translate(-50%, 0) !important;
+        }
+
+        &[data-tooltip-position="bottom"]::after {
+            transform: translate(-50%, 0) !important;
+        }
+
+        &[data-tooltip-position="left"]::before {
+            transform: translate(0, -50%) !important;
+        }
+
+        &[data-tooltip-position="left"]::after {
+            transform: translate(0, -50%) !important;
+        }
+
+        &[data-tooltip-position="right"]::before {
+            transform: translate(0, -50%) !important;
+        }
+
+        &[data-tooltip-position="right"]::after {
+            transform: translate(0, -50%) !important;
+        }
+    }
+
+    // Hide tooltips on main nav items
+    .main-nav-container > ul > li > a[data-tooltip] {
+        &::before,
+        &::after {
+            display: none !important;
+        }
+    }
+}

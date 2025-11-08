@@ -1,0 +1,270 @@
+/**
+ * SCSS Mixins
+ * Reusable patterns and utilities
+ */
+
+@use 'variables' as *;
+
+/**
+ * Glassmorphism Card Effects
+ * Creates modern glass-like UI elements with backdrop blur
+ */
+@mixin glass-card($bg-opacity: 0.05, $border-opacity: 0.1, $blur: $blur-md, $radius: $border-radius-md) {
+    background: rgba(255, 255, 255, $bg-opacity);
+    border: 1px solid rgba(255, 255, 255, $border-opacity);
+    border-radius: $radius;
+    backdrop-filter: $blur;
+}
+
+@mixin glass-card-dark($bg-opacity: 0.3, $border-opacity: 0.1, $blur: $blur-sm, $radius: $border-radius-lg) {
+    background: rgba(0, 0, 0, $bg-opacity);
+    border: 1px solid rgba(255, 255, 255, $border-opacity);
+    border-radius: $radius;
+    backdrop-filter: $blur;
+}
+
+/**
+ * Hover Transform Effects
+ * Smooth hover interactions for interactive elements
+ */
+@mixin hover-lift($distance: -2px, $transition: $transition-fast) {
+    transition: all $transition;
+
+    &:hover {
+        transform: translateY($distance);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin hover-scale($scale: 1.2, $transition: $transition-fast) {
+    transition: all $transition;
+
+    &:hover {
+        transform: scale($scale);
+    }
+
+    &:active {
+        transform: scale(1);
+    }
+}
+
+/**
+ * Custom Scrollbar
+ * Styled scrollbars for containers
+ */
+@mixin custom-scrollbar(
+    $width: 6px,
+    $track-bg: $color-bg-white-05,
+    $thumb-bg: $color-bg-white-20,
+    $thumb-hover-bg: rgba(255, 255, 255, 0.3),
+    $radius: 3px
+) {
+    &::-webkit-scrollbar {
+        width: $width;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $track-bg;
+        border-radius: $radius;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: $thumb-bg;
+        border-radius: $radius;
+
+        &:hover {
+            background: $thumb-hover-bg;
+        }
+    }
+}
+
+/**
+ * Text Truncation
+ * Single-line text overflow with ellipsis
+ */
+@mixin text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/**
+ * Multi-line Text Truncation
+ * Truncate text after N lines
+ */
+@mixin text-truncate-lines($lines: 2) {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/**
+ * Focus Ring
+ * Consistent focus states for accessibility
+ */
+@mixin focus-ring($color: $color-primary, $opacity: 0.3, $offset: 2px) {
+    outline: none;
+    border-color: $color;
+    box-shadow: 0 0 0 $offset rgba($color, $opacity);
+}
+
+/**
+ * Flex Center
+ * Quick flexbox centering
+ */
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-center-vertical {
+    display: flex;
+    align-items: center;
+}
+
+@mixin flex-center-horizontal {
+    display: flex;
+    justify-content: center;
+}
+
+/**
+ * Absolute Center
+ * Position element in center of relative parent
+ */
+@mixin absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/**
+ * Action Button Base
+ * Reusable pattern for icon action buttons
+ */
+@mixin action-button-base($size: 32px) {
+    background: $color-bg-white-10;
+    border: 1px solid $color-border-white-20;
+    color: $color-text-white-70;
+    width: $size;
+    height: $size;
+    border-radius: $border-radius-xs;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    i {
+        font-size: 16px;
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+/**
+ * Action Button Variants
+ * Color variants for different action types
+ */
+@mixin action-button-variant($color, $bg-opacity: 0.3, $border-opacity: 0.5) {
+    &:hover {
+        background: rgba($color, $bg-opacity);
+        border-color: rgba($color, $border-opacity);
+        color: $color;
+    }
+}
+
+/**
+ * Spinner Animation
+ * Loading spinner for async operations
+ */
+@mixin spinner($size: 40px, $border-width: 3px, $color: $color-primary, $track-color: $color-primary-30) {
+    width: $size;
+    height: $size;
+    border: $border-width solid $track-color;
+    border-top-color: $color;
+    border-radius: $border-radius-circle;
+    animation: spin 0.8s linear infinite;
+}
+
+/**
+ * Card Shadow
+ * Subtle elevation for cards and containers
+ */
+@mixin card-shadow($opacity: 0.1) {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, $opacity);
+}
+
+@mixin card-shadow-hover($opacity: 0.2) {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, $opacity);
+}
+
+/**
+ * Overlay
+ * Full-screen overlay backgrounds
+ */
+@mixin overlay($bg-color: $color-bg-black-85, $z-index: 1000) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: $bg-color;
+    z-index: $z-index;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/**
+ * Form Input Base
+ * Standardized form input styling
+ */
+@mixin form-input-base {
+    width: 100%;
+    padding: 10px 12px;
+    background: $color-bg-black-30;
+    border: 1px solid $color-border-white-10;
+    border-radius: $border-radius-md;
+    color: $color-white;
+    font-size: $font-size-base;
+    font-family: $font-family-primary;
+    transition: all $transition-fast;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+        border-color: $color-primary;
+        background: $color-bg-black-40;
+    }
+
+    &::placeholder {
+        color: $color-white-30;
+    }
+}
+
+/**
+ * Badge
+ * Small status/category badges
+ */
+@mixin badge($bg-color: $color-primary-20, $border-color: $color-primary-40, $text-color: $color-primary) {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    background: $bg-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-xs;
+    color: $text-color;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}

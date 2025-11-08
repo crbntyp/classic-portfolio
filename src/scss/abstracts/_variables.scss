@@ -1,0 +1,140 @@
+// Base Colors
+$color-dark: #343434;
+$color-darker: #1a1a1a;
+$color-darkest: #0b0b0b;
+$color-white: #fff;
+$color-black: #000;
+
+// Brand Colors
+$color-primary: #00ffff;                    // Cyan - primary accent
+$color-primary-10: rgba(0, 255, 255, 0.1);
+$color-primary-15: rgba(0, 255, 255, 0.15);
+$color-primary-20: rgba(0, 255, 255, 0.2);
+$color-primary-25: rgba(0, 255, 255, 0.25);
+$color-primary-30: rgba(0, 255, 255, 0.3);
+$color-primary-40: rgba(0, 255, 255, 0.4);
+$color-primary-50: rgba(0, 255, 255, 0.5);
+
+$color-secondary: #ff006f;                  // Magenta/Pink - secondary accent
+$color-secondary-20: rgba(255, 0, 111, 0.2);
+
+// Semantic Colors
+$color-success: #4CAF50;                    // Green
+$color-success-10: rgba(76, 175, 80, 0.1);
+$color-success-30: rgba(76, 175, 80, 0.3);
+$color-success-bright: #0f0;                // Bright green
+
+$color-error: #f44336;                      // Red
+$color-error-light: #ff6b6b;
+$color-error-10: rgba(244, 67, 54, 0.1);
+$color-error-30: rgba(244, 67, 54, 0.3);
+$color-error-red-10: rgba(255, 0, 0, 0.1);
+$color-error-red-30: rgba(255, 0, 0, 0.3);
+
+// Background Colors - Dark
+$color-bg-dark: #090f15;                    // Main dark background
+$color-bg-black-10: rgba(0, 0, 0, 0.1);
+$color-bg-black-30: rgba(0, 0, 0, 0.3);
+$color-bg-black-40: rgba(0, 0, 0, 0.4);
+$color-bg-black-50: rgba(0, 0, 0, 0.5);
+$color-bg-black-85: rgba(0, 0, 0, 0.85);
+$color-bg-black-90: rgba(0, 0, 0, 0.9);
+$color-bg-black-98: rgba(20, 20, 20, 0.98);
+
+// Background Colors - Light/White
+$color-bg-white-03: rgba(255, 255, 255, 0.03);
+$color-bg-white-05: rgba(255, 255, 255, 0.05);
+$color-bg-white-06: rgba(255, 255, 255, 0.06);
+$color-bg-white-10: rgba(255, 255, 255, 0.1);
+$color-bg-white-15: rgba(255, 255, 255, 0.15);
+$color-bg-white-20: rgba(255, 255, 255, 0.2);
+
+// Border Colors
+$color-border-white-10: rgba(255, 255, 255, 0.1);
+$color-border-white-20: rgba(255, 255, 255, 0.2);
+$color-border-white-30: rgba(255, 255, 255, 0.3);
+
+// Text Colors (Legacy - maintained for compatibility)
+$color-white-60: rgba(255, 255, 255, 0.6);
+$color-white-50: rgba(255, 255, 255, 0.5);
+$color-white-30: rgba(255, 255, 255, 0.3);
+$color-black-30: rgba(0, 0, 0, 0.3);
+
+// Text Colors (Expanded)
+$color-text-white-50: rgba(255, 255, 255, 0.5);
+$color-text-white-60: rgba(255, 255, 255, 0.6);
+$color-text-white-70: rgba(255, 255, 255, 0.7);
+$color-text-white-80: rgba(255, 255, 255, 0.8);
+$color-text-white-90: rgba(255, 255, 255, 0.9);
+
+// Typography
+$font-family-primary: Muli, Arial, sans-serif;
+$font-weight-light: 200;
+$font-weight-regular: 300;
+$font-weight-normal: 400;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Font Sizes
+$font-size-xs: 10px;     // Uppercase labels, tiny text
+$font-size-2xs: 11px;    // Small metadata
+$font-size-small: 12px;
+$font-size-sm: 13px;     // Buttons, form labels
+$font-size-base: 14px;
+$font-size-md: 16px;     // Body text
+$font-size-lg: 18px;     // Larger text, modal titles
+$font-size-large: 24px;
+$font-size-h1: 65px;
+$font-size-h2: 55px;
+$font-size-h3: 45px;
+$font-size-h4: 35px;
+$font-size-h5: 25px;
+$font-size-h6: 19px;
+
+// Spacing
+$spacing-xxs: 5px;
+$spacing-3xs: 8px;
+$spacing-xs: 10px;
+$spacing-2xs: 12px;
+$spacing-md-sm: 15px;  // Between sm (20px) and xs (10px)
+$spacing-sm: 20px;
+$spacing-md: 30px;
+$spacing-lg: 40px;
+$spacing-xl: 60px;
+$spacing-xxl: 80px;
+
+// Border Radius
+$border-radius-xs: 4px;      // Small elements (badges, small inputs)
+$border-radius-sm: 5px;      // Modal base
+$border-radius-md: 6px;      // Standard inputs, buttons, cards
+$border-radius-lg: 8px;      // Medium cards, larger containers
+$border-radius-xl: 10px;     // Large sections
+$border-radius-pill: 30px;   // Pill-shaped elements
+$border-radius-round: 50px;  // Navigation bars
+$border-radius-circle: 50%;  // Perfect circles
+
+// Breakpoints
+$breakpoint-mobile: 767px;
+
+// Transitions
+$transition-fast: 0.3s ease;
+$transition-medium: 0.5s ease-in-out;
+$transition-slow: 1.5s ease-in-out;
+
+// Opacity Scale
+$opacity-30: 0.3;
+$opacity-40: 0.4;
+$opacity-50: 0.5;
+$opacity-60: 0.6;
+$opacity-70: 0.7;
+$opacity-80: 0.8;
+$opacity-90: 0.9;
+
+// Effects
+$blur-sm: blur(5px);
+$blur-md: blur(10px);
+$blur-lg: blur(15px);
+
+// Z-index
+$z-index-carousel: 100;
+$z-index-nav: 1000;

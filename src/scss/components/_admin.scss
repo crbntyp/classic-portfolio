@@ -1,0 +1,713 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+/**
+ * Admin Dashboard Component
+ * Admin area styling with consistent BEM naming
+ */
+
+// Background Rotator (JS-driven)
+.bg-rotator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 2s ease-in-out;
+    transform: scale(1.1);
+}
+
+.admin-container {
+    min-height: 100vh;
+    padding: 10px;
+    max-width: 1400px;
+    position: relative;
+    z-index: 10;
+    margin: 0 auto;
+
+}
+
+.admin-brand {
+    text-align: center;
+    padding: 20px 0;
+
+    &__logo {
+        max-width: 60px;
+        height: auto;
+        opacity: 0.8;
+        margin-bottom: 5px;
+    }
+
+    &__title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: $font-weight-semibold;
+        color: $color-white;
+        opacity: 0.6;
+        letter-spacing: 1.5px;
+    }
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+
+    h1 {
+        color: $color-white;
+        font-size: 32px;
+        margin: 0;
+    }
+}
+
+.admin-user-welcome {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+    @media (max-width: 370px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-card {
+    @include glass-card($bg-opacity: 0.05, $border-opacity: 0, $blur: $blur-sm, $radius: $border-radius-xl);
+    padding: $spacing-sm;
+    text-align: center;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    position: relative;
+    @media (max-width: 768px) {
+        
+    }
+
+    h3 {
+        color: $color-text-white-70;
+        font-size: $font-size-xs;
+        font-weight: $font-weight-normal;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin: 0;
+    }
+
+    .stat-number {
+        color: $color-white;
+        font-size: px;
+        font-weight: $font-weight-semibold;
+        margin: 0 0 5px 0;
+    }
+}
+
+// 2-Column Dashboard Layout
+.admin-dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-column {
+    &--projects {
+        @media (max-width: 1024px) {
+            order: 1;
+        }
+    }
+
+    &--users {
+        @media (max-width: 1024px) {
+            order: 2;
+        }
+    }
+}
+
+.admin-section {
+    @include glass-card($bg-opacity: 0.03, $border-opacity: 0, $blur: $blur-md, $radius: $border-radius-xl);
+    padding: $spacing-sm;
+    height: 100%;
+    position: relative;
+
+    &__title {
+        color: $color-white;
+        font-size: 14px;
+        font-weight: $font-weight-semibold;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin: 0 0 20px 0;
+        opacity: 0.8;
+    }
+
+    &__desc {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin: 15px 0 0 0;
+        line-height: 1.5;
+    }
+}
+
+// Tabs
+.admin-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    align-items: center;
+    @media (max-width:550px) {
+       flex-direction: column;
+    }
+}
+
+.admin-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+    position: relative;
+    margin-bottom: -2px;
+    text-align: left;
+    @media (max-width:550px) {
+       justify-content: center;
+    }
+
+    
+    //text-transform: uppercase;
+    i {
+        font-size: 26px;
+    }
+
+    &:hover {
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.03);
+    }
+
+    &.active {
+        color: #fff;
+        background: transparent;
+        border-bottom-color: #fff;
+    }
+}
+
+.admin-add-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3xs;
+    background: $color-secondary;
+    border: 1px solid $color-secondary;
+    color: $color-white;
+    padding: $spacing-3xs 16px;
+    font-size: $font-size-sm;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: $border-radius-md;
+    margin-left: auto;
+    position: relative;
+    margin-top: -$spacing-sm;
+    @include hover-lift();
+
+    i {
+        font-size: $font-size-lg;
+    }
+
+    &:hover {
+        background: $color-secondary-20;
+        border-color: $color-secondary;
+    }
+
+    @media (max-width:550px) {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+}
+
+.admin-tab-content {
+    display: none;
+    padding-top: 20px;
+
+    &.active {
+        display: block;
+    }
+}
+
+// Add Project Layout (Two Column)
+.add-project-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.add-project-form {
+    // Form styles handled by .login-form below
+}
+
+.add-project-preview {
+    display: flex;
+    flex-direction: column;
+    padding-top: 22px;
+}
+
+.image-preview-large {
+    background: $color-bg-black-30;
+    border: 1px solid $color-border-white-10;
+    border-radius: $border-radius-lg;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+
+    img {
+        width: 100%;
+        height: auto;
+        max-height: 100%;
+        object-fit: contain;
+        display: block;
+        align-self: flex-start;
+    }
+
+    .image-preview-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.2);
+        margin: auto;
+
+        i {
+            font-size: 64px;
+        }
+
+        span {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: $font-weight-semibold;
+        }
+    }
+
+    // When image is present, remove placeholder styles
+    &:has(> img) {
+        background: transparent;
+        border: none;
+
+        .image-preview-placeholder {
+            display: none;
+        }
+    }
+}
+
+
+// Admin Form (inline in column)
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        label {
+            color: $color-text-white-70;
+            font-size: $font-size-small;
+            font-weight: $font-weight-semibold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select {
+            @include form-input-base;
+        }
+
+        select {
+            cursor: pointer;
+            color: $color-primary;
+
+            option {
+                background: $color-darker;
+                color: $color-white;
+            }
+        }
+    }
+
+    .btn-submit {
+        background: $color-primary-15;
+        border: 1px solid $color-primary-30;
+        color: $color-primary;
+        padding: $spacing-2xs;
+        border-radius: $border-radius-md;
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        margin-top: $spacing-xxs;
+        @include hover-lift($distance: -1px);
+
+        &:hover {
+            background: $color-primary-25;
+            border-color: $color-primary-50;
+        }
+    }
+
+    .error-message {
+        background: $color-error-red-10;
+        border: 1px solid $color-error-red-30;
+        color: $color-error-light;
+        padding: $spacing-xs;
+        border-radius: $border-radius-md;
+        font-size: $font-size-small;
+        text-align: center;
+    }
+}
+
+// File input styling
+.file-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .file-input {
+        display: none;
+    }
+
+    .file-input-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        cursor: pointer;
+        transition: all $transition-fast;
+
+        i {
+            font-size: 16px;
+        }
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+    }
+
+    .file-name {
+        flex: 1;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.image-preview {
+    margin-top: 10px;
+    max-width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+
+    img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+}
+
+// Upload overlay
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 10px;
+
+    &.active {
+        display: flex;
+    }
+}
+
+.upload-spinner {
+    @include spinner();
+}
+
+.upload-success {
+    display: none;
+    font-size: 60px;
+    color: $color-success-bright;
+
+    &.active {
+        display: block;
+    }
+}
+
+.upload-text {
+    margin-top: 15px;
+    color: $color-white;
+    font-size: 14px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// Projects Grid
+.projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: $spacing-md-sm;
+    overflow-y: auto;
+    @include custom-scrollbar();
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 550px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.project-item {
+    background: $color-bg-black-30;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    cursor: pointer;
+    @include hover-lift();
+
+    &:hover {
+        border-color: $color-border-white-30;
+    }
+
+    &__image {
+        position: relative;
+        width: 100%;
+        padding: 15px 10px 5px 10px;
+        background: rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+
+        img {
+            width:100%;
+            object-fit: cover;
+        }
+    }
+
+    &__placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+            font-size: 48px;
+            color: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    &__badge {
+        position: absolute;
+        top: $spacing-3xs;
+        right: $spacing-3xs;
+        @include badge($bg-color: $color-primary-20, $border-color: $color-primary-40, $text-color: $color-primary);
+    }
+
+    &__info {
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    &__details {
+        flex: 1;
+        min-width: 0; // Allow text truncation
+    }
+
+    &__title {
+        color: $color-white;
+        font-size: $font-size-sm;
+        font-weight: $font-weight-semibold;
+        margin: 0 0 $spacing-xxs 0;
+        @include text-truncate;
+    }
+
+    &__id {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: $font-size-2xs;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    &__action {
+        @include action-button-base();
+    }
+
+    &__edit {
+        @extend .project-item__action;
+        @include action-button-variant(#00ffff);
+    }
+
+    &__delete {
+        @extend .project-item__action;
+        @include action-button-variant(#ff4444);
+    }
+
+    // Blob entry specific styles
+    &--blob {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__info--blob {
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        gap: 12px;
+        text-align: center;
+
+        .project-item__details {
+            flex: 1;
+            order: 2;
+        }
+
+        .project-item__actions {
+            order: 3;
+            margin: auto;
+        }
+
+        .project-item__badge-inline {
+            order: 1;
+            flex-basis: 100%;
+        }
+    }
+
+    &__badge-inline {
+        display: inline-block;
+        @include badge($bg-color: $color-primary-20, $border-color: $color-primary-40, $text-color: $color-primary);
+        margin-bottom: 0;
+        width: fit-content;
+    }
+}
+
+// Users List
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: $spacing-xxs;
+    @include custom-scrollbar();
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2xs;
+    padding: $spacing-2xs;
+    background: $color-bg-black-30;
+    border: 1px solid $color-border-white-10;
+    border-radius: $border-radius-lg;
+    transition: all $transition-fast;
+    cursor: pointer;
+
+    &:hover {
+        border-color: $color-border-white-30;
+        background: $color-bg-black-40;
+    }
+
+    &__icon {
+        flex-shrink: 0;
+
+        i {
+            font-size: 36px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+    }
+
+    &__info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__name {
+        color: $color-white;
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+        margin: 0 0 4px 0;
+        @include text-truncate;
+    }
+
+    &__email {
+        color: $color-text-white-50;
+        font-size: $font-size-small;
+        display: block;
+        @include text-truncate;
+    }
+}
