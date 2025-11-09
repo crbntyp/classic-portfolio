@@ -5,41 +5,21 @@
 ## Screenshots
 
 <div align="center">
-
-<table border="0">
-  <tr>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.39.50.png" alt="Home page" width="100%" />
-    </td>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.39.55.png" alt="Navigation" width="100%" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.09.png" alt="Portfolio carousel" width="100%" />
-    </td>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.22.png" alt="Project showcase" width="100%" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.29.png" alt="Project details" width="100%" />
-    </td>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.35.png" alt="Login" width="100%" />
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.41.00.png" alt="Admin dashboard" width="100%" />
-    </td>
-    <td width="50%">
-    </td>
-  </tr>
-</table>
-
+  <div>
+    <img src="screenshots/Screenshot 2025-11-09 at 09.39.50.png" alt="Home page" width="49%" />
+    <img src="screenshots/Screenshot 2025-11-09 at 09.39.55.png" alt="Navigation" width="49%" />
+  </div>
+  <div>
+    <img src="screenshots/Screenshot 2025-11-09 at 09.40.09.png" alt="Portfolio carousel" width="49%" />
+    <img src="screenshots/Screenshot 2025-11-09 at 09.40.22.png" alt="Project showcase" width="49%" />
+  </div>
+  <div>
+    <img src="screenshots/Screenshot 2025-11-09 at 09.40.29.png" alt="Project details" width="49%" />
+    <img src="screenshots/Screenshot 2025-11-09 at 09.40.35.png" alt="Login" width="49%" />
+  </div>
+  <div>
+    <img src="screenshots/Screenshot 2025-11-09 at 09.41.00.png" alt="Admin dashboard" width="49%" />
+  </div>
 </div>
 
 **📋 [View Changelog](./CHANGELOG.md)** - See recent refactoring improvements and security fixes
