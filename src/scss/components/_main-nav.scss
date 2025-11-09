@@ -36,6 +36,18 @@
     }
 }
 
+@keyframes blobFlash {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    49%, 51% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(3.5);
+    }
+}
+
 .main-nav {
     position: relative;
 
@@ -70,7 +82,8 @@
             left: 50%;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, white, $color-secondary);
+            background: radial-gradient(circle, #090f15, rgba(white, 0.3));
+            border: 1px solid rgba(white, 0.5);
             border-radius: 50%;
             z-index: -1;
             pointer-events: none;
@@ -90,7 +103,7 @@
         }
 
         .main-nav__popup.active &:nth-child(1) .blob-bg {
-            animation: menuBlobMorph1 8s ease-in-out 0.5s infinite;
+            animation: menuBlobMorph1 8s ease-in-out 0.5s infinite, blobFlash 6s ease-in-out infinite;
         }
 
         .main-nav__popup.active &:nth-child(2) {
@@ -98,7 +111,7 @@
         }
 
         .main-nav__popup.active &:nth-child(2) .blob-bg {
-            animation: menuBlobMorph2 9s ease-in-out 0.6s infinite;
+            animation: menuBlobMorph2 9s ease-in-out 0.6s infinite, blobFlash 7s ease-in-out 1.8s infinite;
         }
 
         .main-nav__popup.active &:nth-child(3) {
@@ -106,7 +119,7 @@
         }
 
         .main-nav__popup.active &:nth-child(3) .blob-bg {
-            animation: menuBlobMorph3 10s ease-in-out 0.7s infinite;
+            animation: menuBlobMorph3 10s ease-in-out 0.7s infinite, blobFlash 8s ease-in-out 3.2s infinite;
         }
 
         .main-nav__popup.active &:nth-child(4) {
@@ -114,7 +127,7 @@
         }
 
         .main-nav__popup.active &:nth-child(4) .blob-bg {
-            animation: menuBlobMorph1 9s ease-in-out 0.8s infinite;
+            animation: menuBlobMorph1 9s ease-in-out 0.8s infinite, blobFlash 9s ease-in-out 4.5s infinite;
         }
 
         .main-nav__popup.active &:nth-child(5) {
@@ -122,7 +135,23 @@
         }
 
         .main-nav__popup.active &:nth-child(5) .blob-bg {
-            animation: menuBlobMorph2 8s ease-in-out 0.9s infinite;
+            animation: menuBlobMorph2 8s ease-in-out 0.9s infinite, blobFlash 10s ease-in-out 6.3s infinite;
+        }
+
+        .main-nav__popup.active &:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
+        .main-nav__popup.active &:nth-child(6) .blob-bg {
+            animation: menuBlobMorph3 8s ease-in-out 1.1s infinite, blobFlash 11s ease-in-out 7.5s infinite;
+        }
+
+        .main-nav__popup.active &:nth-child(7) {
+            animation-delay: 0.6s;
+        }
+
+        .main-nav__popup.active &:nth-child(7) .blob-bg {
+            animation: menuBlobMorph1 9s ease-in-out 1.3s infinite, blobFlash 12s ease-in-out 8.9s infinite;
         }
 
         // Exiting animation with staggered delays
@@ -151,12 +180,21 @@
             animation-delay: 0.4s;
         }
 
+        .main-nav__popup.exiting &:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
+        .main-nav__popup.exiting &:nth-child(7) {
+            animation-delay: 0.6s;
+        }
+
         i {
             display: block;
             font-size: 22px;
             position: relative;
             z-index: 1;
             animation: slowRotate 5s linear infinite;
+            opacity: 0;
         }
     }
 
