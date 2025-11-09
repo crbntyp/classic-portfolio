@@ -1,5 +1,11 @@
 # Carbontype Portfolio
 
+<div align="center">
+  <video src="rec.mov" width="500" controls>
+    <source src="rec.mov" type="video/quicktime">
+  </video>
+</div>
+
 > A modern, interactive portfolio website built with PHP, MySQL, and vanilla JavaScript, featuring dynamic project management, user authentication, and a unique particle-based UI.
 
 **📋 [View Changelog](./CHANGELOG.md)** - See recent refactoring improvements and security fixes
