@@ -258,13 +258,13 @@
 @mixin badge($bg-color: $color-primary-20, $border-color: $color-primary-40, $text-color: $color-primary) {
     display: inline-flex;
     align-items: center;
-    padding: 4px 8px;
+    padding: 4px 8px 5px 8px;
     background: $bg-color;
     border: 1px solid $border-color;
-    border-radius: $border-radius-xs;
+    border-radius: 20px;
     color: $text-color;
     font-size: $font-size-xs;
     font-weight: $font-weight-semibold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    //text-transform: uppercase;
+    //letter-spacing: 0.5px;
 }

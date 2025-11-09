@@ -25,7 +25,6 @@ $usersResult = $mysqli->query($usersQuery);
 $pageTitle = 'Admin Dashboard - Carbontype';
 $bodyClass = 'admin-body';
 $pathPrefix = '../';
-$skipTypekit = true;
 ?>
 <?php include '../includes/html-head.php'; ?>
 

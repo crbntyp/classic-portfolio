@@ -19,6 +19,13 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
+    padding: $spacing-sm 0;
+    overflow-y: auto;
+
+    @media (max-width: $breakpoint-mobile) {
+        align-items: flex-start;
+        padding: $spacing-sm;
+    }
 
     &.active {
         opacity: 1;
@@ -51,6 +58,13 @@
         &--wide {
             max-width: 1200px;
             width: 95%;
+            max-height: calc(100vh - #{$spacing-md * 2});
+            overflow-y: auto;
+
+            @media (max-width: $breakpoint-mobile) {
+                max-height: calc(100vh - #{$spacing-sm * 2});
+                width: 95%;
+            }
         }
 
         &--about {
@@ -58,6 +72,14 @@
             width: 90%;
             background: none;
             text-align: center;
+            max-height: calc(100vh - #{$spacing-md * 2});
+            overflow-y: auto;
+
+            @media (max-width: $breakpoint-mobile) {
+                max-height: calc(100vh - #{$spacing-sm * 2});
+                width: 95%;
+                padding: $spacing-md $spacing-sm;
+            }
         }
 
         .modal.active & {
@@ -81,7 +103,7 @@
     }
 
     &__close {
-        position: absolute;
+        position: fixed;
         top: 15px;
         right: 15px;
         background: none;
@@ -89,10 +111,11 @@
         color: $color-white;
         font-size: 18px;
         cursor: pointer;
-        opacity: 0.5;
+        opacity: 0.7;
         transition: opacity $transition-fast;
         padding: 5px;
         line-height: 1;
+        z-index: 20001;
 
         &:hover {
             opacity: 1;
@@ -224,15 +247,17 @@
 .login-form {
     .form-group {
         margin-bottom: 20px;
-
+        select, button, input{
+            font-family: $font-family-primary !important;
+        }
         label {
             display: block;
             color: $color-text-white-70;
-            font-size: $font-size-xs;
+            font-size: $font-size-sm;
             font-weight: $font-weight-regular;
             margin-bottom: $spacing-3xs;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
         }
 
         input,
@@ -347,11 +372,12 @@
         border: none;
         border-radius: $border-radius-md;
         font-size: $font-size-base;
-        font-weight: $font-weight-semibold;
+        font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         cursor: pointer;
         margin-top: $spacing-xs;
+        font-family: $font-family-primary;
         @include hover-lift();
 
         &:hover {
@@ -449,12 +475,27 @@
     color: $color-text-white-90;
     font-size: $font-size-sm;
     line-height: 1.6;
+    text-align: left;
+    letter-spacing: 0;
+    font-weight: 400;
 
     p {
         margin: 0 0 $spacing-xs 0;
 
         &:last-of-type {
             margin-bottom: $spacing-sm;
+        }
+        span{
+            font-size: $font-size-h3;
+            display: block;
+            line-height: 50px;
+            margin-bottom: 20px;
+
+            @media (max-width: $breakpoint-mobile) {
+                font-size: $font-size-h5;
+                line-height: 1.4;
+                margin-bottom: $spacing-xs;
+            }
         }
     }
 

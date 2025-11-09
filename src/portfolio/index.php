@@ -78,9 +78,10 @@ $pathPrefix = '../';
         <!-- Project Description Modal -->
         <div id="projectModal" class="project-modal">
             <div class="project-modal__overlay"></div>
+            <button class="project-modal__close" aria-label="Close modal">
+                <i class="las la-times"></i>
+            </button>
             <div class="project-modal__content">
-                <button class="project-modal__close" aria-label="Close modal">&times;</button>
-                <img src="../logo.png" alt="Carbontype Logo" class="project-modal__logo" />
                 <h2 class="project-modal__title"></h2>
                 <div class="project-modal__description"></div>
             </div>

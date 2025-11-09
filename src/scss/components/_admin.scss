@@ -188,8 +188,7 @@
     border: none;
     color: white;
     padding: 8px 14px;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: $font-size-sm;
     letter-spacing: 1.5px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -197,6 +196,8 @@
     position: relative;
     margin-bottom: -2px;
     text-align: left;
+    font-family: $font-family-primary;
+    text-transform: uppercase;
     @media (max-width:550px) {
        justify-content: center;
     }
@@ -226,16 +227,17 @@
     background: $color-secondary;
     border: 1px solid $color-secondary;
     color: $color-white;
-    padding: $spacing-3xs 16px;
+    padding: $spacing-3xs 14px;
     font-size: $font-size-sm;
-    font-weight: 500;
-    letter-spacing: 1px;
     cursor: pointer;
     border-radius: $border-radius-md;
     margin-left: auto;
     position: relative;
     margin-top: -$spacing-sm;
+    font-family: $font-family-primary;
+    letter-spacing: 1.5px;
     @include hover-lift();
+    text-transform: uppercase;
 
     i {
         font-size: $font-size-lg;
@@ -586,7 +588,7 @@
 
     &__title {
         color: $color-white;
-        font-size: $font-size-sm;
+        font-size: 16px;
         font-weight: $font-weight-semibold;
         margin: 0 0 $spacing-xxs 0;
         @include text-truncate;
@@ -645,6 +647,7 @@
         .project-item__badge-inline {
             order: 1;
             flex-basis: 100%;
+            font-size: 12px;
         }
     }
 

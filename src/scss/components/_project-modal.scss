@@ -11,10 +11,17 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 29999;
+    z-index: 20000;
     display: none;
     opacity: 0;
     transition: opacity $transition-medium;
+    padding: $spacing-sm 0;
+    overflow-y: auto;
+
+    @media (max-width: $breakpoint-mobile) {
+        align-items: flex-start;
+        padding: $spacing-sm;
+    }
 
     &.active {
         display: flex;
@@ -29,43 +36,52 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(black, 0.75);
-        backdrop-filter: blur(10px);
+        background: $color-bg-black-50;
+        backdrop-filter: $blur-lg;
+        -webkit-backdrop-filter: $blur-md;
+        cursor: pointer;
     }
 
     &__content {
         position: relative;
         z-index: 1;
-        max-width: 800px;
+        max-width: 900px;
         width: 90%;
-        padding: 40px;
+        padding: 20px;
         text-align: center;
         color: $color-white;
         animation: modalSlideIn 0.3s ease-out;
+        max-height: calc(100vh - #{$spacing-md * 2});
+        overflow-y: auto;
 
-        @media (max-width: 768px) {
-            padding: 30px 20px;
+        @media (max-width: $breakpoint-mobile) {
+            max-height: calc(100vh - #{$spacing-sm * 2});
+            width: 95%;
+            padding: $spacing-md $spacing-sm;
         }
     }
 
     &__close {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: transparent;
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        background: none;
         border: none;
         color: $color-white;
-        font-size: 40px;
-        line-height: 1;
+        font-size: 18px;
         cursor: pointer;
-        opacity: 0.6;
+        opacity: 0.7;
         transition: opacity $transition-fast;
-        padding: 0;
-        width: 40px;
-        height: 40px;
+        padding: 5px;
+        line-height: 1;
+        z-index: 20001;
 
         &:hover {
             opacity: 1;
+        }
+
+        i {
+            display: block;
         }
     }
 
@@ -77,25 +93,28 @@
     }
 
     &__title {
-        font-size: 32px;
-        font-weight: 600;
-        margin-bottom: 30px;
-        color: $color-white;
+        font-size: 45px;
+        display: block;
+        line-height: 50px;
+        margin-bottom: 20px;
+        font-weight: 300;
 
-        @media (max-width: 768px) {
-            font-size: 24px;
-            margin-bottom: 20px;
+        @media (max-width: $breakpoint-mobile) {
+            font-size: $font-size-h5;
+            margin-bottom: $spacing-sm;
+            line-height: 1.4;
         }
     }
 
     &__description {
-        font-size: 18px;
-        line-height: 1.8;
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 19px;
+        line-height: 1.5;
+        color: $color-text-white-90;
         white-space: pre-wrap;
+        letter-spacing: 0;
 
-        @media (max-width: 768px) {
-            font-size: 16px;
+        @media (max-width: $breakpoint-mobile) {
+            font-size: $font-size-sm;
             line-height: 1.6;
         }
     }
