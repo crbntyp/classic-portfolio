@@ -6,41 +6,36 @@
 
 <div align="center">
 
-<table>
+<table border="0">
   <tr>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.39.50.png" alt="Home page with particle background" />
-      <p align="center"><em>Home page with particle background</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.39.50.png" alt="Home page" width="100%" />
     </td>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.39.55.png" alt="Blob navigation menu" />
-      <p align="center"><em>Dynamic blob navigation</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.39.55.png" alt="Navigation" width="100%" />
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.09.png" alt="Portfolio carousel" />
-      <p align="center"><em>Interactive portfolio carousel</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.40.09.png" alt="Portfolio carousel" width="100%" />
     </td>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.22.png" alt="Project showcase" />
-      <p align="center"><em>Project showcase view</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.40.22.png" alt="Project showcase" width="100%" />
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.29.png" alt="Project details modal" />
-      <p align="center"><em>Project details modal</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.40.29.png" alt="Project details" width="100%" />
     </td>
     <td width="50%">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.40.35.png" alt="Login modal" />
-      <p align="center"><em>User authentication</em></p>
+      <img src="screenshots/Screenshot 2025-11-09 at 09.40.35.png" alt="Login" width="100%" />
     </td>
   </tr>
   <tr>
-    <td colspan="2">
-      <img src="screenshots/Screenshot 2025-11-09 at 09.41.00.png" alt="Admin dashboard" />
-      <p align="center"><em>Admin dashboard for project management</em></p>
+    <td width="50%">
+      <img src="screenshots/Screenshot 2025-11-09 at 09.41.00.png" alt="Admin dashboard" width="100%" />
+    </td>
+    <td width="50%">
     </td>
   </tr>
 </table>
