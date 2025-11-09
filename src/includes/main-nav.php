@@ -13,7 +13,7 @@ if (!isset($blobResult)) {
       </a>
     </li>
     <li>
-      <a href="#" data-tooltip="About" data-tooltip-position="auto"
+      <a href="#" id="aboutUsTrigger" data-tooltip="About" data-tooltip-position="auto"
         ><i class="las la-flask"></i>
       </a>
     </li>

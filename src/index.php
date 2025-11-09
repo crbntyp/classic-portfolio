@@ -15,6 +15,7 @@ $cssVersion = '11';
     <?php include 'includes/user-nav.php'; ?>
     <?php include 'includes/login-modal.php'; ?>
     <?php include 'includes/forgot-password-modal.php'; ?>
+    <?php include 'includes/about-us-modal.php'; ?>
 
     <div class="table">
       <div class="cell">

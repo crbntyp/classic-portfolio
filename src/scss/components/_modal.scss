@@ -53,6 +53,13 @@
             width: 95%;
         }
 
+        &--about {
+            max-width: 900px;
+            width: 90%;
+            background: none;
+            text-align: center;
+        }
+
         .modal.active & {
             transform: scale(1);
         }
@@ -435,4 +442,53 @@
 
 .ql-toolbar.ql-snow + .ql-container.ql-snow{
     height: 120px;
+}
+
+// About Us Modal styles
+.about-us-content {
+    color: $color-text-white-90;
+    font-size: $font-size-sm;
+    line-height: 1.6;
+
+    p {
+        margin: 0 0 $spacing-xs 0;
+
+        &:last-of-type {
+            margin-bottom: $spacing-sm;
+        }
+    }
+
+    .about-us-links {
+        display: flex;
+        gap: $spacing-xs;
+        justify-content: center;
+        margin-top: $spacing-sm;
+
+        .about-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: $spacing-2xs $spacing-xs;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: $border-radius-md;
+            color: $color-white;
+            font-size: $font-size-xs;
+            font-weight: $font-weight-semibold;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all $transition-fast;
+
+            i {
+                font-size: 18px;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.4);
+                transform: translateY(-2px);
+            }
+        }
+    }
 }

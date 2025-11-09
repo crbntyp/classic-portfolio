@@ -50,6 +50,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // About Us Modal
+  const aboutUsModal = new ModalManager('aboutUsModal');
+  const aboutUsTrigger = document.getElementById('aboutUsTrigger');
+  if (aboutUsTrigger && aboutUsModal.modal) {
+    aboutUsTrigger.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      // Get the modal overlay
+      const overlay = aboutUsModal.modal.querySelector('.modal__overlay');
+
+      // Check if we're on the portfolio page and if carousel exists
+      if (window.portfolioCarousel && window.portfolioCarousel.slidePalettes) {
+        // Get current slide index
+        const currentIndex = window.portfolioCarousel.currentIndex;
+        const palette = window.portfolioCarousel.slidePalettes.get(currentIndex);
+
+        if (palette && palette.length > 0) {
+          // Find the darkest color in the palette
+          const darkestColor = palette.reduce((darkest, color) => {
+            const brightness = (color.r + color.g + color.b) / 3;
+            const darkestBrightness = (darkest.r + darkest.g + darkest.b) / 3;
+            return brightness < darkestBrightness ? color : darkest;
+          });
+
+          // Apply the darkest color with blur
+          overlay.style.backgroundColor = `rgba(${darkestColor.r}, ${darkestColor.g}, ${darkestColor.b}, 0.95)`;
+        } else {
+          // Fallback to black if no palette
+          overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+        }
+      } else {
+        // Homepage or no carousel - use black
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
+      }
+
+      aboutUsModal.open();
+    });
+  }
+
   // ============================================================================
   // FORMS SETUP
   // ============================================================================
