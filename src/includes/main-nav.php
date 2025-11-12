@@ -9,7 +9,7 @@ if (!isset($blobResult)) {
   <ul>
     <li>
       <a href="/portfolio/" data-tooltip="Portfolio (mixed)" data-tooltip-position="auto"
-        ><i class="las la-record-vinyl"></i>
+        >
       </a>
     </li>
     <li>
@@ -47,3 +47,38 @@ if (!isset($blobResult)) {
     </li>
   </ul>
 </div>
+
+<script>
+  // Create audio context for blip sounds
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playBlip() {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // Set blip frequency and type
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+
+    // Set volume envelope
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    // Play the blip
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  }
+
+  // Add hover listeners to blob items
+  document.addEventListener('DOMContentLoaded', function() {
+    const blobItems = document.querySelectorAll('.main-nav__item');
+
+    blobItems.forEach(item => {
+      item.addEventListener('mouseenter', playBlip);
+    });
+  });
+</script>
