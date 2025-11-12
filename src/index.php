@@ -25,7 +25,7 @@ $cssVersion = '11';
     </div>
     <?php include 'includes/main-nav.php'; ?>
 
-    <audio id="crbntyp-audio" loop>
+    <audio id="crbntyp-audio" loop autoplay>
       <source src="crbntyp-tune.mp3" type="audio/mpeg">
     </audio>
 
