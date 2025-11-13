@@ -1,5 +1,5 @@
 <?php
-require_once 'includes/init.php';
+require_once 'portfolio/includes/init.php';
 
 // Query for blob entries (dynamic menu items)
 $blobQuery = "SELECT projectID, projectHeading, url FROM projects WHERE blobEntry = 1 ORDER BY projectID ASC";
@@ -10,23 +10,23 @@ $pageTitle = 'Jonny Pyper | Carbontype | Software Engineering Manager @R7 | Awar
 $bodyClass = 'home-body';
 $cssVersion = '11';
 ?>
-<?php include 'includes/html-head.php'; ?>
+<?php include 'portfolio/includes/html-head.php'; ?>
 
-    <?php include 'includes/user-nav.php'; ?>
-    <?php include 'includes/login-modal.php'; ?>
-    <?php include 'includes/forgot-password-modal.php'; ?>
-    <?php include 'includes/about-us-modal.php'; ?>
+    <?php include 'portfolio/includes/user-nav.php'; ?>
+    <?php include 'portfolio/includes/login-modal.php'; ?>
+    <?php include 'portfolio/includes/forgot-password-modal.php'; ?>
+    <?php include 'portfolio/includes/about-us-modal.php'; ?>
 
     <div class="table">
       <div class="cell">
-        <img src="logo.png" class="logo" />
+        <img src="portfolio/logo.png" class="logo" />
         <h1>crbntyp</h1>
       </div>
     </div>
-    <?php include 'includes/main-nav.php'; ?>
+    <?php include 'portfolio/includes/main-nav.php'; ?>
 
     <audio id="crbntyp-audio" loop autoplay>
-      <source src="crbntyp-tune.mp3" type="audio/mpeg">
+      <source src="portfolio/crbntyp-tune.mp3" type="audio/mpeg">
     </audio>
 
     <div class="audio-controls">
@@ -119,4 +119,4 @@ $cssVersion = '11';
       });
     </script>
 
-<?php include 'includes/html-close.php'; ?>
+<?php include 'portfolio/includes/html-close.php'; ?>
