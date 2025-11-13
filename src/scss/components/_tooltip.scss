@@ -124,87 +124,130 @@
     }
 
 
-    // Hover state - fade in and move upward
+    // Show state (controlled by JS via tooltip-active class) - fade in and move upward
+    &.tooltip-active::before,
+    &.tooltip-active::after,
+    &[data-tooltip-visible="true"]::before,
+    &[data-tooltip-visible="true"]::after,
     &:hover::before,
     &:hover::after {
         opacity: 1;
     }
 
+    &.tooltip-active:not([data-tooltip-position])::before,
+    &.tooltip-active[data-tooltip-position="top"]::before,
+    &[data-tooltip-visible="true"]:not([data-tooltip-position])::before,
+    &[data-tooltip-visible="true"][data-tooltip-position="top"]::before,
     &:hover:not([data-tooltip-position])::before,
     &:hover[data-tooltip-position="top"]::before {
         transform: translate(-50%, 0);
     }
 
+    &.tooltip-active:not([data-tooltip-position])::after,
+    &.tooltip-active[data-tooltip-position="top"]::after,
+    &[data-tooltip-visible="true"]:not([data-tooltip-position])::after,
+    &[data-tooltip-visible="true"][data-tooltip-position="top"]::after,
     &:hover:not([data-tooltip-position])::after,
     &:hover[data-tooltip-position="top"]::after {
         transform: translate(-50%, 0);
     }
 
+    &.tooltip-active[data-tooltip-position="bottom"]::before,
+    &[data-tooltip-visible="true"][data-tooltip-position="bottom"]::before,
     &:hover[data-tooltip-position="bottom"]::before {
         transform: translate(-50%, 0);
     }
 
+    &.tooltip-active[data-tooltip-position="bottom"]::after,
+    &[data-tooltip-visible="true"][data-tooltip-position="bottom"]::after,
     &:hover[data-tooltip-position="bottom"]::after {
         transform: translate(-50%, 0);
     }
 
+    &.tooltip-active[data-tooltip-position="left"]::before,
+    &[data-tooltip-visible="true"][data-tooltip-position="left"]::before,
     &:hover[data-tooltip-position="left"]::before {
         transform: translate(0, -50%);
     }
 
+    &.tooltip-active[data-tooltip-position="left"]::after,
+    &[data-tooltip-visible="true"][data-tooltip-position="left"]::after,
     &:hover[data-tooltip-position="left"]::after {
         transform: translate(0, -50%);
     }
 
+    &.tooltip-active[data-tooltip-position="right"]::before,
+    &[data-tooltip-visible="true"][data-tooltip-position="right"]::before,
     &:hover[data-tooltip-position="right"]::before {
         transform: translate(0, -50%);
     }
 
+    &.tooltip-active[data-tooltip-position="right"]::after,
+    &[data-tooltip-visible="true"][data-tooltip-position="right"]::after,
     &:hover[data-tooltip-position="right"]::after {
         transform: translate(0, -50%);
     }
 }
 
-// Mobile behavior for blobs - persist tooltips
+// Mobile behavior for blobs - show tooltips only when tapped
 @media (max-width: 1024px) {
     .main-nav__item[data-tooltip] {
+        // Hide by default
         &::before,
         &::after {
+            opacity: 0 !important;
+        }
+
+        // Show when active (after first tap)
+        &.tooltip-active::before,
+        &.tooltip-active::after,
+        &[data-tooltip-visible="true"]::before,
+        &[data-tooltip-visible="true"]::after {
             opacity: 1 !important;
         }
 
-        // Keep them in their hover position
-        &:not([data-tooltip-position])::before,
-        &[data-tooltip-position="top"]::before {
+        // Keep them in their hover position when shown
+        &.tooltip-active:not([data-tooltip-position])::before,
+        &.tooltip-active[data-tooltip-position="top"]::before,
+        &[data-tooltip-visible="true"]:not([data-tooltip-position])::before,
+        &[data-tooltip-visible="true"][data-tooltip-position="top"]::before {
             transform: translate(-50%, 0) !important;
         }
 
-        &:not([data-tooltip-position])::after,
-        &[data-tooltip-position="top"]::after {
+        &.tooltip-active:not([data-tooltip-position])::after,
+        &.tooltip-active[data-tooltip-position="top"]::after,
+        &[data-tooltip-visible="true"]:not([data-tooltip-position])::after,
+        &[data-tooltip-visible="true"][data-tooltip-position="top"]::after {
             transform: translate(-50%, 0) !important;
         }
 
-        &[data-tooltip-position="bottom"]::before {
+        &.tooltip-active[data-tooltip-position="bottom"]::before,
+        &[data-tooltip-visible="true"][data-tooltip-position="bottom"]::before {
             transform: translate(-50%, 0) !important;
         }
 
-        &[data-tooltip-position="bottom"]::after {
+        &.tooltip-active[data-tooltip-position="bottom"]::after,
+        &[data-tooltip-visible="true"][data-tooltip-position="bottom"]::after {
             transform: translate(-50%, 0) !important;
         }
 
-        &[data-tooltip-position="left"]::before {
+        &.tooltip-active[data-tooltip-position="left"]::before,
+        &[data-tooltip-visible="true"][data-tooltip-position="left"]::before {
             transform: translate(0, -50%) !important;
         }
 
-        &[data-tooltip-position="left"]::after {
+        &.tooltip-active[data-tooltip-position="left"]::after,
+        &[data-tooltip-visible="true"][data-tooltip-position="left"]::after {
             transform: translate(0, -50%) !important;
         }
 
-        &[data-tooltip-position="right"]::before {
+        &.tooltip-active[data-tooltip-position="right"]::before,
+        &[data-tooltip-visible="true"][data-tooltip-position="right"]::before {
             transform: translate(0, -50%) !important;
         }
 
-        &[data-tooltip-position="right"]::after {
+        &.tooltip-active[data-tooltip-position="right"]::after,
+        &[data-tooltip-visible="true"][data-tooltip-position="right"]::after {
             transform: translate(0, -50%) !important;
         }
     }
