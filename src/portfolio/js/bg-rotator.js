@@ -8,9 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!bgContainer) return;
 
     const images = [
-        '/portfolio/img/bg1.jpg',
-        '/portfolio/img/bg2.jpg',
-        '/portfolio/img/bg3.jpg',
         '/portfolio/img/bg4.jpg',
         '/portfolio/img/bg5.jpg'
     ];
