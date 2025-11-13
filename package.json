@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "Portfolio website with SCSS build system",
   "scripts": {
-    "sass": "sass src/portfolio/scss/main.scss dist/css/main.css",
-    "sass:watch": "sass --watch src/portfolio/scss:dist/css --poll --style expanded --no-source-map",
+    "sass": "sass src/portfolio/scss/main.scss dist/portfolio/css/main.css",
+    "sass:watch": "sass --watch src/portfolio/scss:dist/portfolio/css --poll --style expanded --no-source-map",
     "copy": "node build.js",
     "copy:watch": "node build.js --watch",
     "reload": "browser-sync start --config bs-config.js",
     "dev": "concurrently -k -n \"SASS,COPY,SYNC\" -c \"cyan,magenta,green\" \"npm run sass:watch\" \"npm run copy:watch\" \"npm run reload\"",
     "dev:simple": "concurrently -k -n \"SASS,COPY\" -c \"cyan,magenta\" \"npm run sass:watch\" \"npm run copy:watch\"",
     "build": "npm run sass:build && npm run copy",
-    "sass:build": "sass src/portfolio/scss/main.scss dist/css/main.css --style compressed"
+    "sass:build": "sass src/portfolio/scss/main.scss dist/portfolio/css/main.css --style compressed"
   },
   "keywords": [
     "portfolio",

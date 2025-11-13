@@ -133,8 +133,16 @@ function copyDirectory(src, dest) {
         const destPath = path.join(dest, entry.name);
 
         if (entry.isDirectory()) {
+            // Skip directories that are in SKIP_DIRS
+            if (SKIP_DIRS.includes(entry.name)) {
+                continue;
+            }
             copyDirectory(srcPath, destPath);
         } else {
+            // Skip files that should be skipped
+            if (shouldSkipFile(entry.name)) {
+                continue;
+            }
             fs.copyFileSync(srcPath, destPath);
         }
     }
