@@ -48,7 +48,6 @@ jobs:
           lftp ${FTP_HOST} <<EOF
           set ftp:ssl-allow no
           set ftp:passive-mode on
-          cd portfolio_v1
           lcd ./dist
           mirror --reverse --verbose --exclude .git/ --exclude node_modules/
           bye
