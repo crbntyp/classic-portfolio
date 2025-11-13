@@ -9,6 +9,7 @@ $blobResult = $mysqli->query($blobQuery);
 $pageTitle = 'Jonny Pyper | Carbontype | Software Engineering Manager @R7 | Award Winning UI Designer | Crayon Enthusiast';
 $bodyClass = 'home-body';
 $cssVersion = '11';
+$pathPrefix = 'portfolio/';
 ?>
 <?php include 'portfolio/includes/html-head.php'; ?>
 
