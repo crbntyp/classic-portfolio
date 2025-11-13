@@ -93,7 +93,7 @@ function getFilesToCopy() {
  * Returns priority files first, then any other .js files found
  */
 function getAllJSFiles() {
-    const jsDir = path.join(SRC_DIR, 'js');
+    const jsDir = path.join(SRC_DIR, 'portfolio', 'js');
 
     if (!fs.existsSync(jsDir)) {
         return JS_FILES_PRIORITY;
@@ -161,8 +161,8 @@ function copyFile(filename) {
 function bundleJS() {
     console.log('\n📦 Bundling JavaScript...');
 
-    const jsDir = path.join(SRC_DIR, 'js');
-    const distJsDir = path.join(DIST_DIR, 'js');
+    const jsDir = path.join(SRC_DIR, 'portfolio', 'js');
+    const distJsDir = path.join(DIST_DIR, 'portfolio', 'js');
 
     // Create dist/js directory if it doesn't exist
     if (!fs.existsSync(distJsDir)) {
@@ -204,7 +204,7 @@ function bundleJS() {
     // Write bundle
     const bundlePath = path.join(distJsDir, 'bundle.js');
     fs.writeFileSync(bundlePath, bundleContent);
-    console.log(`\n✓ Created: dist/js/bundle.js (${jsFiles.length} files)`);
+    console.log(`\n✓ Created: dist/portfolio/js/bundle.js (${jsFiles.length} files)`);
 }
 
 /**
@@ -263,7 +263,7 @@ function watch() {
             console.log(`\n📝 Change detected: ${filename}`);
 
             // Check if it's a JS file
-            if (filename.startsWith('js/') && filename.endsWith('.js')) {
+            if (filename.startsWith('portfolio/js/') && filename.endsWith('.js')) {
                 console.log('🔄 Re-bundling JavaScript...');
                 bundleJS();
                 return;

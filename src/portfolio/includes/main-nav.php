@@ -8,7 +8,7 @@ if (!isset($blobResult)) {
 <div class="main-nav-container">
   <ul>
     <li>
-      <a href="/portfolio.php" data-tooltip="Portfolio (mixed)" data-tooltip-position="auto"
+      <a href="/portfolio/portfolio.php" data-tooltip="Portfolio (mixed)" data-tooltip-position="auto"
         >
       </a>
     </li>
