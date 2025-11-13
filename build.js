@@ -246,9 +246,16 @@ function build() {
         copyFile(file);
     });
 
-    // NOTE: .env file is intentionally NOT copied to dist
-    // It should remain in the project root and be read from there
-    // The env-loader.php will look for .env in the parent directory
+    // Copy .env file to dist for production deployment
+    console.log('\n📝 Copying .env file...');
+    const envPath = path.join('.', '.env');
+    const envDestPath = path.join(DIST_DIR, '.env');
+    if (fs.existsSync(envPath)) {
+        fs.copyFileSync(envPath, envDestPath);
+        console.log('✓ Copied: .env');
+    } else {
+        console.log('⚠ .env file not found (not required for build)');
+    }
 
     // Bundle JavaScript
     bundleJS();

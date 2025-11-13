@@ -48,7 +48,8 @@ jobs:
           lftp ${FTP_HOST} <<EOF
           set ftp:ssl-allow no
           set ftp:passive-mode on
+          set ftp:list-options -a
           lcd ./dist
-          mirror --reverse --verbose --exclude .git/ --exclude node_modules/
+          mirror --reverse --verbose --exclude .git/ --exclude node_modules/ --exclude .DS_Store --no-perms --no-umask
           bye
           EOF
