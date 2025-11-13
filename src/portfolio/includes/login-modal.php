@@ -5,7 +5,7 @@
     <button class="modal__close" id="modalClose">
       <i class="las la-times"></i>
     </button>
-    <img src="/logo.png" alt="Carbontype Logo" class="modal__logo" />
+    <img src="/portfolio/logo.png" alt="Carbontype Logo" class="modal__logo" />
     <h2>carbontype</h2>
     <form class="login-form" id="loginForm">
       <div id="loginError" class="error-message" style="display: none;"></div>

@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) {
     const loginFormHandler = new FormHandler('loginForm', {
-      endpoint: '/login.php',
+      endpoint: '/portfolio/login.php',
       errorElementId: 'loginError',
       loadingText: 'Signing in...',
       onSuccess: (data) => {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const forgotPasswordForm = document.getElementById('forgotPasswordForm');
   if (forgotPasswordForm) {
     const forgotPasswordFormHandler = new FormHandler('forgotPasswordForm', {
-      endpoint: '/forgot-password.php',
+      endpoint: '/portfolio/forgot-password.php',
       errorElementId: 'forgotPasswordError',
       successElementId: 'forgotPasswordSuccess',
       loadingText: 'Sending...',
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const addLinkForm = document.getElementById('addLinkForm');
   if (addLinkForm) {
     const addLinkFormHandler = new FormHandler('addLinkForm', {
-      endpoint: '/admin/add-link.php',
+      endpoint: '/portfolio/admin/add-link.php',
       errorElementId: 'addLinkError',
       loadingType: 'overlay',
       loadingText: 'Uploading...',

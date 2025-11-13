@@ -165,7 +165,7 @@ $bodyClass = 'reset-password-body';
                 // Send request
                 const formData = new FormData(form);
 
-                fetch('/reset-password-handler.php', {
+                fetch('/portfolio/reset-password-handler.php', {
                     method: 'POST',
                     body: formData
                 })
