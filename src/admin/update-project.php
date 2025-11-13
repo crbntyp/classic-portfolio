@@ -44,7 +44,7 @@ $uploader = new FileUploadHandler();
 
 if ($uploader->hasUpload($_FILES['projectImage'] ?? null)) {
     try {
-        $newImage = $uploader->uploadImage($_FILES['projectImage'], '../portfolio/uploads');
+        $newImage = $uploader->uploadImage($_FILES['projectImage'], '../uploads');
     } catch (Exception $e) {
         ApiResponse::error($e->getMessage());
     }

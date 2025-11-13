@@ -1,5 +1,5 @@
 <?php
-require_once '../../includes/init.php';
+require_once 'includes/init.php';
 
 $projectIDurl = $_GET["id"];
 
@@ -30,11 +30,11 @@ while ($row = $prevResult->fetch_assoc()) {
 // Set page variables
 $pageTitle = $projectHeading;
 $bodyClass = 'project-body';
-$pathPrefix = '../../';
+$pathPrefix = '';
 ?>
-<?php include '../../includes/html-head.php'; ?>
+<?php include 'includes/html-head.php'; ?>
 
-    <?php include_once '../../includes/analytics.php'; ?>
+    <?php include_once 'includes/analytics.php'; ?>
     <nav class="main absolute">
         Carbontype <span>/ Design &amp; Development</span>
         <a href="./"><i class="fa fa-angle-left"></i></a>
@@ -76,10 +76,10 @@ $pathPrefix = '../../';
                 </div>
 
             </header>
-            <aside class="visual" style="background-image:url('../../img/uploads/<?php echo $projectTeaser; ?>')">
+            <aside class="visual" style="background-image:url('uploads/<?php echo $projectTeaser; ?>')">
 
             </aside>
         </section>
     </section>
 
-<?php include '../../includes/html-close.php'; ?>
+<?php include 'includes/html-close.php'; ?>

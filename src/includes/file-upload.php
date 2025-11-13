@@ -5,7 +5,7 @@
  *
  * Usage:
  * $handler = new FileUploadHandler();
- * $filename = $handler->uploadImage($_FILES['projectImage'], 'portfolio/uploads');
+ * $filename = $handler->uploadImage($_FILES['projectImage'], 'uploads');
  */
 
 class FileUploadHandler {
@@ -38,7 +38,7 @@ class FileUploadHandler {
      * @return string The uploaded filename (not full path)
      * @throws Exception if upload fails
      */
-    public function uploadImage($file, $uploadDir = 'portfolio/uploads', $prefix = 'project-') {
+    public function uploadImage($file, $uploadDir = 'uploads', $prefix = 'project-') {
         // Validate file was uploaded
         if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
             throw new Exception($this->getUploadErrorMessage($file['error'] ?? UPLOAD_ERR_NO_FILE));
@@ -86,7 +86,7 @@ class FileUploadHandler {
      * @param string $uploadDir The directory containing the file
      * @return bool True if deleted successfully, false otherwise
      */
-    public function deleteImage($filename, $uploadDir = 'portfolio/uploads') {
+    public function deleteImage($filename, $uploadDir = 'uploads') {
         if (empty($filename)) {
             return false;
         }

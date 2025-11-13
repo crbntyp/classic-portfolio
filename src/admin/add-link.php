@@ -45,7 +45,7 @@ if ($category === 'classic-portfolio') {
     $uploader = new FileUploadHandler();
 
     try {
-        $filename = $uploader->uploadImage($_FILES['projectImage'] ?? null, '../portfolio/uploads');
+        $filename = $uploader->uploadImage($_FILES['projectImage'] ?? null, '../uploads');
     } catch (Exception $e) {
         ApiResponse::error($e->getMessage());
     }

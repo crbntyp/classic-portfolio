@@ -77,7 +77,7 @@ $pathPrefix = '../';
                                     <?php if ($project['blobEntry'] != 1): ?>
                                         <div class="project-item__image">
                                             <?php if ($project['projectTeaser']): ?>
-                                                <img src="../portfolio/uploads/<?php echo htmlspecialchars($project['projectTeaser']); ?>"
+                                                <img src="../uploads/<?php echo htmlspecialchars($project['projectTeaser']); ?>"
                                                      alt="<?php echo htmlspecialchars($project['projectHeading']); ?>">
                                             <?php else: ?>
                                                 <div class="project-item__placeholder">

@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/init.php';
+require_once 'includes/init.php';
 
 $sql = "SELECT * FROM projects WHERE blobEntry = 0 ORDER BY projectID ASC";
 $result = $mysqli->query($sql);
@@ -7,23 +7,23 @@ $result = $mysqli->query($sql);
 // Set page variables
 $pageTitle = 'Carbontype Portfolio';
 $bodyClass = 'portfolio-body';
-$pathPrefix = '../';
+$pathPrefix = '';
 ?>
-<?php include '../includes/html-head.php'; ?>
+<?php include 'includes/html-head.php'; ?>
 
-        <?php include_once '../includes/analytics.php'; ?>
+        <?php include_once 'includes/analytics.php'; ?>
 
-        <?php include '../includes/user-nav.php'; ?>
-        <?php include '../includes/main-nav.php'; ?>
-        <?php include '../includes/login-modal.php'; ?>
-        <?php include '../includes/forgot-password-modal.php'; ?>
-        <?php include '../includes/about-us-modal.php'; ?>
+        <?php include 'includes/user-nav.php'; ?>
+        <?php include 'includes/main-nav.php'; ?>
+        <?php include 'includes/login-modal.php'; ?>
+        <?php include 'includes/forgot-password-modal.php'; ?>
+        <?php include 'includes/about-us-modal.php'; ?>
 
         <div class="portfolio-container">
             <div class="portfolio-content">
                 <div class="portfolio-header">
                     <div class="portfolio-header__content">
-                        <img src="../logo.png" class="portfolio-header__logo" alt="Carbontype Logo" />
+                        <img src="logo.png" class="portfolio-header__logo" alt="Carbontype Logo" />
                         <h1 class="portfolio-header__title">crbntyp</h1>
                     </div>
                 </div>
@@ -87,4 +87,4 @@ $pathPrefix = '../';
             </div>
         </div>
 
-<?php include '../includes/html-close.php'; ?>
+<?php include 'includes/html-close.php'; ?>

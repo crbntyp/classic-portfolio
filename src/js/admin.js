@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           // Show current image if exists
           if (project.projectTeaser && project.blobEntry != 1) {
-            editImagePreview.innerHTML = `<img src="../portfolio/uploads/${project.projectTeaser}" alt="${project.projectHeading}">`;
+            editImagePreview.innerHTML = `<img src="../uploads/${project.projectTeaser}" alt="${project.projectHeading}">`;
           } else {
             editImagePreview.innerHTML = `
               <div class="image-preview-placeholder">
