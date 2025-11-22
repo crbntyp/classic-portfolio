@@ -1,7 +1,7 @@
-# PHP Handler for EasyApache
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php73 .php
-</IfModule>
+# PHP Handler
+AddHandler application/x-httpd-ea-php73 .php
+AddHandler application/x-httpd-alt-php73___lsphp .php
+AddType application/x-httpd-php .php
 
 DirectoryIndex index.php index.html
 
