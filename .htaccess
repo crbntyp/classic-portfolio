@@ -1,0 +1,32 @@
+# PHP Handler for EasyApache
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php80 .php
+</IfModule>
+
+DirectoryIndex index.php index.html
+
+## BEGIN Compability settings for mt
+<IfModule mod_env.c>
+  SetEnv DATABASE_SERVER localhost
+  RewriteEngine on
+  RewriteRule ^ - [E=SITE_ROOT:%{DOCUMENT_ROOT}]
+  RewriteRule ^ - [E=SITE_CGIROOT:%{DOCUMENT_ROOT}/cgi-bin]
+  RewriteRule ^ - [E=SITE_HTMLROOT:%{DOCUMENT_ROOT}]
+</IfModule>
+## END Compability settings for mt
+
+# Protect .env file from direct access
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect other sensitive files
+<FilesMatch "\.(sql|log|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Enable PHP error logging (but don't display errors)
+php_flag display_errors Off
+php_flag log_errors On
