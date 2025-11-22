@@ -3,10 +3,9 @@
   <div class="modal__overlay"></div>
   <div class="modal__content">
     <button class="modal__close" id="forgotPasswordModalClose">
-      <i class="las la-times"></i>
+      <i class="lni lni-close"></i>
     </button>
-    <img src="/logo.png" alt="Carbontype Logo" class="modal__logo" />
-    <h2>reset password</h2>
+    <h2 class="modal__logo-text">crbntyp</h2>
     <form class="login-form" id="forgotPasswordForm">
       <div id="forgotPasswordError" class="error-message" style="display: none;"></div>
       <div id="forgotPasswordSuccess" class="success-message" style="display: none;"></div>

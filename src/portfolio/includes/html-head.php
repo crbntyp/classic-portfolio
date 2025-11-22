@@ -8,7 +8,7 @@
     <?php if (!isset($skipTypekit) || !$skipTypekit): ?>
     <link rel="stylesheet" href="https://use.typekit.net/abs2nmm.css" />
     <?php endif; ?>
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.lineicons.com/5.0/lineicons.css">
     <!-- Quill Editor -->
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="<?php echo ($pathPrefix ?? '') . 'css/main.css' . (isset($cssVersion) ? "?v={$cssVersion}" : ''); ?>" />

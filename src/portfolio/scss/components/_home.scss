@@ -21,6 +21,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     min-height: 100vh;
     width: 100%;
     color: white;
@@ -32,72 +33,195 @@
     overflow: hidden;
 }
 
-.cell {
-    text-align: center;
+// Blob-styled text - looks like the nav blobs
+.blob-text {
+    font-family: $font-family-primary;
+    font-size: 200px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 0.02em;
+    position: relative;
+    display: inline-block;
+    clip-path: inset(0 0 44% 0); // Show only top half
+    color: white;
+
+    @media (max-width: 1024px) {
+        font-size: 140px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 80px;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 60px;
+    }
+}
+
+.tagline {
+    font-family: $font-family-primary;
+    font-size: 38px;
+    right: 5px;
+    font-weight: 800;
+    color: #2a2d30;
+    margin: 0;
+    top: -100px;
+    text-align: right;
+    letter-spacing: 0.02em;
     position: relative;
 
-    // Animated blob background - largest, lightest layer
-    &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.04) 50%, rgba(0, 0, 0, 0.01) 100%);
-        border-radius: 50% 50% 60% 40% / 60% 40% 60% 40%;
-        z-index: -3;
-        animation: blobMoveAggressive 12s ease-in-out infinite;
-        filter: blur(0px);
+    @media (max-width: 1024px) {
+        font-size: 28px;
+        top: -70px;
     }
 
-    // Animated blob background - medium layer
-    &::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.08) 50%, rgba(0, 0, 0, 0.02) 100%);
-        border-radius: 60% 40% 50% 60% / 50% 60% 40% 50%;
-        z-index: -2;
-        animation: blobMoveAggressive 12s ease-in-out infinite reverse;
-        filter: blur(0px);
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 16px;
+        top: -40px;
+        right: 0;
     }
 
-    .logo {
-        max-width: 100px;
-        height: auto;
-        position: relative;
-        z-index: 1;
+    @media (max-width: 480px) {
+        font-size: 14px;
+        top: -30px;
+    }
 
-        // Animated blob background - smallest, darkest layer
-        &::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.05) 100%);
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            z-index: -1;
-            animation: blobMove 20s ease-in-out infinite;
-            filter: blur(0px);
+    .tagline-text {
+        display: inline;
+    }
+
+    .tagline-cursor {
+        display: inline;
+        animation: cursorBlink 0.8s infinite;
+        margin-left: 2px;
+    }
+
+    .tagline-dots {
+        display: inline;
+
+        &.animating .dot {
+            animation: dotPulse 0.6s infinite;
+
+            &:nth-child(1) {
+                animation-delay: 0s;
+            }
+            &:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+            &:nth-child(3) {
+                animation-delay: 0.4s;
+            }
         }
     }
 
-    h1 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 300;
-        position: relative;
-        z-index: 1;
+    .cyan-dot {
+        color: cyan;
     }
+
+    .tagline-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+            color: cyan;
+        }
+    }
+}
+
+@keyframes cursorBlink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+@keyframes dotPulse {
+    0%, 100% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes blobTextPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.7;
+        filter: blur(0px);
+    }
+    25% {
+        transform: scale(1.02);
+        opacity: 0.6;
+        filter: blur(0.5px);
+    }
+    50% {
+        transform: scale(0.98);
+        opacity: 0.75;
+        filter: blur(0px);
+    }
+    75% {
+        transform: scale(1.01);
+        opacity: 0.65;
+        filter: blur(0.3px);
+    }
+}
+
+.cell {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.logo-container {
+    display: inline-block;
+    text-align: right;
+}
+
+.home-intro {
+    display: flex;
+    gap: 20px;
+}
+
+// Cinders container
+#cinders-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.cinder {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    cursor: pointer;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: inline-flex;
+
+    &:hover .cinder-spark {
+        transform: scale(1.8);
+        opacity: 0.8;
+    }
+}
+
+.cinder-spark {
+    display: block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 // Blob animation - combines pulsing, morphing, and rotation
@@ -148,13 +272,14 @@
     }
 }
 
-// Login icon - fixed top right
-.login-icon {
+// User link - fixed bottom left
+.user-link {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 20px;
+    left: 20px;
     color: $color-white;
-    font-size: 30px;
+    font-size: 12px;
+    text-transform: uppercase;
     opacity: 0.3;
     transition: opacity $transition-fast;
     text-decoration: none;
@@ -163,34 +288,29 @@
     &:hover {
         opacity: 0.6;
     }
-
-    i {
-        display: block;
-    }
 }
 
-// User info - displayed when logged in
+// User info - navigation container
 .user-info {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 20px;
+    left: 20px;
     z-index: 10000;
     display: flex;
-    align-items: center;
-    gap: 5px;
+    flex-direction: column;
+    align-items: flex-start;
 
-    .username-display {
-        color: $color-white;
-        font-size: 14px;
-        font-weight: 400;
-        opacity: 0.6;
-        letter-spacing: 1px;
-    }
-
-    .login-icon {
+    .user-link {
         position: relative;
-        top: 0;
-        right: 0;
+        display: inline-flex;
+        gap: 4px;
+        align-items: center;
+        padding: 2px 5px;
+        &:hover{
+            background: cyan;
+            color: black;
+            
+        }
     }
 }
 
@@ -228,10 +348,14 @@
         }
     }
 
-    .login-icon {
-        top: 15px;
-        right: 15px;
-        font-size: 24px;
+    .user-link {
+        left: 15px;
+        bottom: 15px;
+    }
+
+    .user-info {
+        left: 15px;
+        bottom: 15px;
     }
 }
 

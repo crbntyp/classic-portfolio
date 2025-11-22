@@ -20,22 +20,44 @@ $pathPrefix = 'portfolio/';
 
     <div class="table">
       <div class="cell">
-        <img src="portfolio/logo.png" class="logo" />
-        <h1>crbntyp</h1>
+        <div class="logo-container">
+          <h1 class="blob-text">crbntyp</h1>
+          <p class="tagline"><span class="tagline-text"></span><span class="tagline-dots"></span><span class="tagline-cursor">|</span></p>
+        </div>
       </div>
-    </div>
-    <?php include 'portfolio/includes/main-nav.php'; ?>
 
+      
+
+    </div>
+
+    <!-- Cinders container -->
+    <div id="cinders-container">
+      <?php if ($blobResult && $blobResult->num_rows > 0): ?>
+        <?php $colors = ['white', 'cyan']; $i = 0; ?>
+        <?php while ($blob = $blobResult->fetch_assoc()): ?>
+          <a href="<?php echo htmlspecialchars($blob['url'] ?: 'portfolio/project.php?id=' . $blob['projectID']); ?>"
+             class="cinder"
+             data-color="<?php echo $colors[$i % 2]; ?>"
+             data-tooltip="<?php echo htmlspecialchars($blob['projectHeading']); ?>"
+             data-tooltip-position="top">
+            <span class="cinder-spark"></span>
+          </a>
+          <?php $i++; ?>
+        <?php endwhile; ?>
+      <?php endif; ?>
+    </div>
+
+    <!-- Audio disabled
     <audio id="crbntyp-audio" loop autoplay>
       <source src="portfolio/crbntyp-tune.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="audio-controls">
+    <div class="audio-controls" style="display: none;">
       <button id="playBtn" class="audio-btn" data-tooltip="Play" data-tooltip-position="auto">
-        <i class="las la-play"></i>
+        <i class="lni lni-play"></i>
       </button>
       <button id="pauseBtn" class="audio-btn" style="display: none;" data-tooltip="Pause" data-tooltip-position="auto">
-        <i class="las la-pause"></i>
+        <i class="lni lni-pause"></i>
       </button>
     </div>
 
@@ -119,5 +141,6 @@ $pathPrefix = 'portfolio/';
         }
       });
     </script>
+    Audio disabled -->
 
 <?php include 'portfolio/includes/html-close.php'; ?>

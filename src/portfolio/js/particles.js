@@ -11,7 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let particles = [];
   const particleCount = 50;
-  const colors = ['rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.25)'];
+  const colors = [
+    // Cyan
+    'rgba(0, 255, 255, 0.3)', 'rgba(0, 255, 255, 0.2)', 'rgba(0, 200, 255, 0.25)',
+    // Fire - orange
+    'rgba(255, 107, 0, 0.3)', 'rgba(255, 140, 0, 0.25)', 'rgba(255, 165, 0, 0.2)',
+    // Fire - red
+    'rgba(255, 69, 0, 0.25)', 'rgba(255, 50, 50, 0.3)',
+    // Fire - yellow
+    'rgba(255, 200, 0, 0.2)', 'rgba(255, 220, 50, 0.25)',
+    // Hot pink
+    'rgba(255, 105, 180, 0.3)', 'rgba(255, 20, 147, 0.25)', 'rgba(255, 80, 150, 0.2)'
+  ];
 
   // Set canvas size
   function resizeCanvas() {

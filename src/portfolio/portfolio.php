@@ -79,7 +79,7 @@ $pathPrefix = '';
         <div id="projectModal" class="project-modal">
             <div class="project-modal__overlay"></div>
             <button class="project-modal__close" aria-label="Close modal">
-                <i class="las la-times"></i>
+                <i class="lni lni-close"></i>
             </button>
             <div class="project-modal__content">
                 <h2 class="project-modal__title"></h2>

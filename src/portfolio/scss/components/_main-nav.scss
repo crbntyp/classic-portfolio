@@ -404,9 +404,7 @@
         display: flex;
         gap: 10px;
         justify-content: center;
-        background: rgba(black, 0.3);
         padding: 5px 10px;
-        border-radius: 50px;
 
         li {
             a {
@@ -414,16 +412,50 @@
                 font-size: 30px;
                 transition: color $transition-fast;
                 text-decoration: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
 
                 &:hover {
-                    color: rgba($color-white, 0.3);
-                }
-
-                i {
-                    display: block;
+                    .nav-blob {
+                        transform: scale(1.2);
+                        opacity: 0.8;
+                    }
                 }
             }
         }
+    }
+}
+
+// Nav blob element - morphing blob for navigation (matches blob-bg style)
+.nav-blob {
+    display: block;
+    width: 28px;
+    height: 28px;
+    background: radial-gradient(circle, #090f15, rgba(255, 255, 255, 0.3));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    animation: menuBlobMorph1 8s ease-in-out infinite;
+
+    // Size variations with different animations
+    &--sm {
+        width: 22px;
+        height: 22px;
+        animation: menuBlobMorph2 10s ease-in-out infinite;
+    }
+
+    &--md {
+        width: 30px;
+        height: 30px;
+        animation: menuBlobMorph3 7s ease-in-out infinite;
+    }
+
+    &--lg {
+        width: 38px;
+        height: 38px;
+        animation: menuBlobMorph1 6s ease-in-out infinite;
     }
 }
 

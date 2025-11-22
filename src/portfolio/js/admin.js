@@ -286,10 +286,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Setup add project trigger
-  const addProjectTrigger = document.getElementById('addProjectTrigger');
-  if (addProjectTrigger && addProjectModal.modal) {
-    addProjectTrigger.addEventListener('click', function() {
+  // Setup add project trigger (sidebar button)
+  const openAddProjectModal = document.getElementById('openAddProjectModal');
+  if (openAddProjectModal && addProjectModal.modal) {
+    openAddProjectModal.addEventListener('click', function() {
       addProjectModal.open();
     });
   }

@@ -3,20 +3,19 @@
   <div class="modal__overlay"></div>
   <div class="modal__content">
     <button class="modal__close" id="addLinkModalClose">
-      <i class="las la-times"></i>
+      <i class="lni lni-close"></i>
     </button>
 
     <!-- Upload overlay for loading and success states -->
     <div class="upload-overlay" id="uploadOverlay">
       <div class="upload-spinner" id="uploadSpinner"></div>
       <div class="upload-success" id="uploadSuccess">
-        <i class="las la-check"></i>
+        <i class="lni lni-checkmark"></i>
       </div>
       <div class="upload-text" id="uploadText">Uploading...</div>
     </div>
 
-    <img src="logo.png" alt="Carbontype Logo" class="modal__logo" />
-    <h2>Add Project</h2>
+    <h2 class="modal__logo-text">crbntyp</h2>
     <form class="login-form" id="addLinkForm" enctype="multipart/form-data">
       <div id="addLinkError" class="error-message" style="display: none;"></div>
 
@@ -37,7 +36,7 @@
         <div class="file-input-wrapper">
           <input type="file" id="projectImage" name="projectImage" accept="image/*" class="file-input">
           <label for="projectImage" class="file-input-label">
-            <i class="las la-cloud-upload-alt"></i>
+            <i class="lni lni-cloud-upload"></i>
             <span class="file-input-text">Upload</span>
           </label>
           <span class="file-name" id="fileName">No file chosen</span>

@@ -1,5 +1,66 @@
 @use '../abstracts/variables' as *;
 
+/* Font Face Declarations - Britanica Family */
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-light.woff2') format('woff2'),
+         url('../../fonts/britanica-light.woff') format('woff'),
+         url('../../fonts/britanica-light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-regular.woff2') format('woff2'),
+         url('../../fonts/britanica-regular.woff') format('woff'),
+         url('../../fonts/britanica-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-bold.woff2') format('woff2'),
+         url('../../fonts/britanica-bold.woff') format('woff'),
+         url('../../fonts/britanica-bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-extra-bold.woff2') format('woff2'),
+         url('../../fonts/britanica-extra-bold.woff') format('woff'),
+         url('../../fonts/britanica-extra-bold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-black.woff2') format('woff2'),
+         url('../../fonts/britanica-black.woff') format('woff'),
+         url('../../fonts/britanica-black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Britanica';
+    src: url('../../fonts/britanica-heavy.woff2') format('woff2'),
+         url('../../fonts/britanica-heavy.woff') format('woff'),
+         url('../../fonts/britanica-heavy.ttf') format('truetype');
+    font-weight: 950;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
     font-family: $font-family-primary;

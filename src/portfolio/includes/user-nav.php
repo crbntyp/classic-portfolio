@@ -6,26 +6,23 @@ if (!isset($pathPrefix)) {
     $pathPrefix = $isSubdir ? '../' : '';
 }
 ?>
-<?php if (isset($_SESSION['user_id'])): ?>
-  <!-- Logged in: Show username, admin link, and logout icon -->
-  <div class="user-info">
-    <span class="username-display"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
+<div class="user-info">
+  <!-- Social links -->
+  <a href="https://github.com/crbntyp" class="user-link" target="_blank">GitHub <i class="lni lni-arrow-angular-top-right"></i></a>
+  <a href="https://behance.net/jonny_pyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
+  <a href="#" class="user-link" id="aboutUsTrigger">Profile</a>
+
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <!-- Logged in: Show admin links -->
     <?php if (basename(dirname($_SERVER['PHP_SELF'])) === 'admin'): ?>
-      <a href="<?php echo $pathPrefix; ?>" class="login-icon" data-tooltip="Home" data-tooltip-position="bottom">
-        <i class="las la-otter"></i>
-      </a>
+      <a href="#" class="user-link" id="openAddProjectModal">Add</a>
+      <a href="../../" class="user-link">Home</a>
     <?php else: ?>
-      <a href="<?php echo $pathPrefix; ?>admin/" class="login-icon" data-tooltip="Dashboard" data-tooltip-position="bottom">
-        <i class="las la-user-lock"></i>
-      </a>
+      <a href="<?php echo $pathPrefix; ?>admin/" class="user-link">Dashboard </a>
     <?php endif; ?>
-    <a href="<?php echo $pathPrefix; ?>logout.php" class="login-icon" data-tooltip="Logout" data-tooltip-position="bottom">
-      <i class="las la-sign-out-alt"></i>
-    </a>
-  </div>
-<?php else: ?>
-  <!-- Logged out: Show login icon -->
-  <a href="#" class="login-icon" id="loginTrigger">
-    <i class="las la-sign-in-alt"></i>
-  </a>
-<?php endif; ?>
+    <a href="<?php echo $pathPrefix; ?>logout.php" class="user-link">Logout</a>
+  <?php else: ?>
+    <!-- Logged out: Show login link -->
+    <a href="#" class="user-link" id="loginTrigger">Login</a>
+  <?php endif; ?>
+</div>

@@ -6,7 +6,15 @@
  * Admin area styling with consistent BEM naming
  */
 
-// Background Rotator (JS-driven)
+// Admin body - solid black background
+.ql-formats{
+    margin-right: 0 !important;
+}
+.admin-body {
+    background: $color-black;
+}
+
+// Background Rotator (Pexels images)
 .bg-rotator {
     position: fixed;
     top: 0;
@@ -15,6 +23,18 @@
     height: 100%;
     overflow: hidden;
     z-index: 1;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+        z-index: 2;
+        pointer-events: none;
+    }
 }
 
 .bg-layer {
@@ -26,9 +46,14 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    opacity: 0;
     transition: opacity 2s ease-in-out;
-    transform: scale(1.1);
-    filter: blur(10px);
+    transform: scale(1.05);
+    filter: blur(8px);
+
+    &.active {
+        opacity: 1;
+    }
 }
 
 .admin-container {
@@ -52,6 +77,28 @@
         margin-bottom: 5px;
     }
 
+    &__logo-text {
+        font-family: $font-family-primary;
+        font-size: 120px;
+        font-weight: 800;
+        color: $color-white;
+        margin: 0;
+        line-height: 1;
+        clip-path: inset(0 0 44% 0);
+    }
+
+    &__subtitle {
+        color: $color-white;
+        font-size: 16px;
+        font-weight: 300;
+        margin: 0;
+        opacity: 0.8;
+        position: relative;
+        //text-transform: uppercase;
+        top: -40px;
+        letter-spacing: 1.5px;
+    }
+
     &__title {
         margin: 0;
         font-size: 14px;
@@ -59,6 +106,36 @@
         color: $color-white;
         opacity: 0.6;
         letter-spacing: 1.5px;
+    }
+}
+
+// New 2-column admin layout
+.admin-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.admin-main {
+    @include glass-card($bg-opacity: 0.03, $border-opacity: 0, $blur: $blur-md, $radius: $border-radius-xl);
+    padding: $spacing-sm;
+}
+
+.admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+        order: -1; // Put sidebar first on mobile
     }
 }
 
@@ -87,6 +164,14 @@
     margin-bottom: 10px;
     @media (max-width: 370px) {
         grid-template-columns: 1fr;
+    }
+
+    &--sidebar {
+        grid-template-columns: 1fr 1fr 1fr;
+
+        @media (max-width: 1200px) {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
     }
 }
 
@@ -152,10 +237,9 @@
 
     &__title {
         color: $color-white;
-        font-size: 14px;
-        font-weight: $font-weight-semibold;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
+        font-size: 20px;
+        font-weight: 700;
+        //text-transform: uppercase;
         margin: 0 0 20px 0;
         opacity: 0.8;
     }
@@ -223,36 +307,31 @@
 .admin-add-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: $spacing-3xs;
-    background: $color-secondary;
-    border: 1px solid $color-secondary;
-    color: $color-white;
-    padding: $spacing-3xs 14px;
-    font-size: $font-size-sm;
+    background: $color-white;
+    border: none;
+    color: $color-darkest;
+    padding: $spacing-2xs $spacing-xs;
+    font-size: $font-size-xs;
+    font-weight: 800;
     cursor: pointer;
     border-radius: $border-radius-md;
-    margin-left: auto;
-    position: relative;
-    margin-top: -$spacing-sm;
     font-family: $font-family-primary;
     letter-spacing: 1.5px;
     @include hover-lift();
     text-transform: uppercase;
 
     i {
-        font-size: $font-size-lg;
+        font-size: $font-size-base;
     }
 
     &:hover {
-        background: $color-secondary-20;
-        border-color: $color-secondary;
+        background: rgba(255, 255, 255, 0.9);
     }
 
-    @media (max-width:550px) {
-        width: 100%;
-        justify-content: center;
-        margin-left: 0;
-        margin-top: 10px;
+    &--nav {
+        padding: $spacing-3xs $spacing-2xs;
     }
 }
 
@@ -481,20 +560,6 @@
     }
 }
 
-.upload-spinner {
-    @include spinner();
-}
-
-.upload-success {
-    display: none;
-    font-size: 60px;
-    color: $color-success-bright;
-
-    &.active {
-        display: block;
-    }
-}
-
 .upload-text {
     margin-top: 15px;
     color: $color-white;
@@ -510,7 +575,7 @@
 // Projects Grid
 .projects-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: $spacing-md-sm;
     overflow-y: auto;
     @include custom-scrollbar();
@@ -576,7 +641,7 @@
     &__info {
         padding: 12px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-between;
         gap: 12px;
     }
@@ -589,9 +654,8 @@
     &__title {
         color: $color-white;
         font-size: 16px;
-        font-weight: $font-weight-semibold;
+        font-weight: 300;
         margin: 0 0 $spacing-xxs 0;
-        @include text-truncate;
     }
 
     &__id {
@@ -601,6 +665,7 @@
 
     &__actions {
         display: flex;
+        flex-direction: column;
         gap: 8px;
         flex-shrink: 0;
     }
@@ -642,12 +707,13 @@
         .project-item__actions {
             order: 3;
             margin: auto;
+            flex-direction: row;
         }
 
         .project-item__badge-inline {
             order: 1;
             flex-basis: 100%;
-            font-size: 12px;
+            font-size: 10px;
         }
     }
 
