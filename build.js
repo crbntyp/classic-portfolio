@@ -257,15 +257,6 @@ function build() {
         console.log('⚠ .env file not found (not required for build)');
     }
 
-    // Copy .htaccess file for Apache configuration
-    const htaccessPath = path.join('.', '.htaccess');
-    const htaccessDestPath = path.join(DIST_DIR, '.htaccess');
-    if (fs.existsSync(htaccessPath)) {
-        fs.copyFileSync(htaccessPath, htaccessDestPath);
-        console.log('✓ Copied: .htaccess');
-    } else {
-        console.log('⚠ .htaccess file not found');
-    }
 
     // Bundle JavaScript
     bundleJS();
