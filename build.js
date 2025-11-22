@@ -247,7 +247,7 @@ function build() {
     });
 
     // Copy .env file to dist for production deployment
-    console.log('\n📝 Copying .env file...');
+    console.log('\n📝 Copying config files...');
     const envPath = path.join('.', '.env');
     const envDestPath = path.join(DIST_DIR, '.env');
     if (fs.existsSync(envPath)) {
@@ -255,6 +255,16 @@ function build() {
         console.log('✓ Copied: .env');
     } else {
         console.log('⚠ .env file not found (not required for build)');
+    }
+
+    // Copy .htaccess file for Apache configuration
+    const htaccessPath = path.join('.', '.htaccess');
+    const htaccessDestPath = path.join(DIST_DIR, '.htaccess');
+    if (fs.existsSync(htaccessPath)) {
+        fs.copyFileSync(htaccessPath, htaccessDestPath);
+        console.log('✓ Copied: .htaccess');
+    } else {
+        console.log('⚠ .htaccess file not found');
     }
 
     // Bundle JavaScript
