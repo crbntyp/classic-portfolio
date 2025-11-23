@@ -311,10 +311,11 @@
             background-color: #1b1b1b;
         }
 
-        &:hover{
+        &:hover,
+        &:active,
+        &.is-active {
             background: cyan;
             color: #1b1b1b;
-
         }
     }
 }
