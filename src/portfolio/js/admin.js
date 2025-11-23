@@ -338,4 +338,47 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // ============================================================================
+  // DRAG & DROP REORDERING
+  // ============================================================================
+
+  const projectsGrid = document.querySelector('.projects-grid');
+
+  if (projectsGrid && typeof Sortable !== 'undefined') {
+    const sortable = Sortable.create(projectsGrid, {
+      animation: 150,
+      ghostClass: 'project-item--ghost',
+      chosenClass: 'project-item--chosen',
+      dragClass: 'project-item--drag',
+      handle: '.project-item',
+      filter: '.project-item__edit, .project-item__delete',
+      preventOnFilter: false,
+      onEnd: async function(evt) {
+        // Get new order of project IDs
+        const items = projectsGrid.querySelectorAll('.project-item');
+        const order = Array.from(items).map(item => item.dataset.projectId);
+
+        // Save to database
+        try {
+          const response = await fetch('update-order.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ order }),
+            credentials: 'same-origin'
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            console.error('Failed to save order:', data.message);
+          }
+        } catch (error) {
+          console.error('Error saving order:', error);
+        }
+      }
+    });
+  }
 });

@@ -2,20 +2,29 @@
 require_once 'auth-check.php';
 require_once '../includes/init.php';
 
-// Get stats
-$projectsCount = $mysqli->query("SELECT COUNT(*) as count FROM projects")->fetch_assoc()['count'];
-$blobCount = $mysqli->query("SELECT COUNT(*) as count FROM projects WHERE blobEntry = 1")->fetch_assoc()['count'];
-$classicCount = $projectsCount - $blobCount;
-
-// Fetch all projects (non-blob first, then blob, ordered by ID within each type)
-$projectsQuery = "SELECT projectID, projectHeading, projectTeaser, blobEntry FROM projects ORDER BY blobEntry ASC, projectID ASC";
-$projectsResult = $mysqli->query($projectsQuery);
-
 // Check if email column exists, if not add it
 $columnsCheck = $mysqli->query("SHOW COLUMNS FROM users LIKE 'email'");
 if ($columnsCheck->num_rows == 0) {
     $mysqli->query("ALTER TABLE users ADD COLUMN email VARCHAR(255) NULL DEFAULT NULL AFTER username");
 }
+
+// Check if sort_order column exists, if not add it and initialize values
+$sortOrderCheck = $mysqli->query("SHOW COLUMNS FROM projects LIKE 'sort_order'");
+if ($sortOrderCheck->num_rows == 0) {
+    $mysqli->query("ALTER TABLE projects ADD COLUMN sort_order INT NOT NULL DEFAULT 0");
+    // Initialize sort_order based on current projectID order
+    $mysqli->query("SET @row_number = 0");
+    $mysqli->query("UPDATE projects SET sort_order = (@row_number := @row_number + 1) ORDER BY projectID ASC");
+}
+
+// Get stats
+$projectsCount = $mysqli->query("SELECT COUNT(*) as count FROM projects")->fetch_assoc()['count'];
+$blobCount = $mysqli->query("SELECT COUNT(*) as count FROM projects WHERE blobEntry = 1")->fetch_assoc()['count'];
+$classicCount = $projectsCount - $blobCount;
+
+// Fetch all projects ordered by sort_order (user-defined drag order)
+$projectsQuery = "SELECT projectID, projectHeading, projectTeaser, blobEntry FROM projects ORDER BY sort_order ASC";
+$projectsResult = $mysqli->query($projectsQuery);
 
 // Fetch all users
 $usersQuery = "SELECT userID, username, email FROM users ORDER BY username ASC";

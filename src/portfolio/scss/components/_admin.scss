@@ -563,7 +563,7 @@
     background: $color-bg-black-30;
     border-radius: $border-radius-lg;
     overflow: hidden;
-    cursor: pointer;
+    cursor: grab;
     @include hover-lift();
 
     &:hover {
@@ -690,6 +690,23 @@
         @include badge($bg-color: $color-primary-20, $border-color: $color-primary-40, $text-color: $color-primary);
         margin-bottom: 0;
         width: fit-content;
+    }
+
+    // Drag states
+    &--ghost {
+        opacity: 0.4;
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px dashed rgba(0, 255, 255, 0.4);
+    }
+
+    &--chosen {
+        cursor: grabbing;
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    &--drag {
+        opacity: 1;
     }
 }
 
