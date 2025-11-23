@@ -1,7 +1,7 @@
 <!-- Login Modal -->
 <div class="modal" id="loginModal">
   <div class="modal__overlay"></div>
-  <div class="modal__content">
+  <div class="modal__content modal__content--narrow">
     <button class="modal__close" id="modalClose">
       <i class="lni lni-close"></i>
     </button>

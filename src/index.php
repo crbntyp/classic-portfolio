@@ -15,7 +15,6 @@ $pathPrefix = 'portfolio/';
 
     <?php include 'portfolio/includes/user-nav.php'; ?>
     <?php include 'portfolio/includes/login-modal.php'; ?>
-    <?php include 'portfolio/includes/forgot-password-modal.php'; ?>
     <?php include 'portfolio/includes/about-us-modal.php'; ?>
 
     <div class="table">

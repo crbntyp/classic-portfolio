@@ -9,7 +9,7 @@ if (!isset($pathPrefix)) {
 <div class="user-info">
   <!-- Social links -->
   <a href="https://github.com/crbntyp" class="user-link" target="_blank">GitHub <i class="lni lni-arrow-angular-top-right"></i></a>
-  <a href="https://behance.net/jonny_pyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
+  <a href="https://www.behance.net/jonnypyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
   <a href="#" class="user-link" id="aboutUsTrigger">Profile</a>
 
   <?php if (isset($_SESSION['user_id'])): ?>

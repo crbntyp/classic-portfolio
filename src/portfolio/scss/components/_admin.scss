@@ -198,7 +198,7 @@
 
     .stat-number {
         color: $color-white;
-        font-size: px;
+        font-size: $font-size-large;
         font-weight: $font-weight-semibold;
         margin: 0 0 5px 0;
     }
@@ -537,38 +537,6 @@
         width: 100%;
         height: auto;
         display: block;
-    }
-}
-
-// Upload overlay
-.upload-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    border-radius: 10px;
-
-    &.active {
-        display: flex;
-    }
-}
-
-.upload-text {
-    margin-top: 15px;
-    color: $color-white;
-    font-size: 14px;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
     }
 }
 

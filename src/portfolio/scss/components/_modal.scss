@@ -81,6 +81,10 @@
         border: 1px solid rgba(255, 255, 255, 0.05);
         @include custom-scrollbar();
 
+        &--narrow {
+            max-width: 315px;
+        }
+
         &--wide {
             max-width: 1200px;
             width: 95%;
@@ -375,69 +379,6 @@
             }
         }
 
-    }
-
-    // File input styling
-    .file-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 5px;
-
-        .file-input {
-            display: none; // Hide the actual file input
-        }
-
-        .file-input-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            color: $color-white;
-            font-size: 12px;
-            font-weight: $font-weight-semibold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all $transition-fast;
-            white-space: nowrap;
-
-            i {
-                font-size: 16px;
-            }
-
-            &:hover {
-                background: rgba(255, 255, 255, 0.15);
-                border-color: rgba(255, 255, 255, 0.3);
-                transform: translateY(-1px);
-            }
-
-            &:active {
-                transform: translateY(0);
-            }
-        }
-
-        .file-name {
-            flex: 1;
-            font-size: $font-size-2xs;
-            color: $color-text-white-50;
-            @include text-truncate;
-        }
-    }
-
-    .image-preview {
-        margin-top: 10px;
-        text-align: center;
-
-        img {
-            width: 100%;
-            max-height: 150px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
     }
 
     .btn-login {
