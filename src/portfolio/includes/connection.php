@@ -8,12 +8,21 @@
     require_once __DIR__ . '/environment.php';
 
     // Always use production database (even in Docker for development)
-    $host = env('DB_PROD_HOST', 'localhost');
+    $hostConfig = env('DB_PROD_HOST', 'localhost');
     $user = env('DB_PROD_USER', '');
     $pass = env('DB_PROD_PASS', '');
     $db = env('DB_PROD_NAME', '');
 
-    $mysqli = new mysqli($host, $user, $pass, $db);
+    // Parse host:port format
+    $port = 3306;
+    if (strpos($hostConfig, ':') !== false) {
+        list($host, $port) = explode(':', $hostConfig);
+        $port = (int)$port;
+    } else {
+        $host = $hostConfig;
+    }
+
+    $mysqli = new mysqli($host, $user, $pass, $db, $port);
 
     // Check connection
     if ($mysqli->connect_error) {

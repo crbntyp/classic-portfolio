@@ -23,3 +23,6 @@ Thumbs.db
 # Environment variables
 .env
 .htaccess
+
+# Claude Code memory
+CLAUDE.md
