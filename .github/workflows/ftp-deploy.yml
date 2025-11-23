@@ -49,4 +49,4 @@ jobs:
             --exclude 'node_modules/' \
             --exclude '.DS_Store' \
             ./dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/domains/crbntyp.com/html/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/crbntyp/
