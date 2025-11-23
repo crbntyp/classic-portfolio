@@ -93,4 +93,59 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 500);
     });
   };
+
+  // Double-tap behavior for touch devices
+  // First tap shows tooltip, second tap navigates
+  let lastTappedCinder = null;
+  let tapTimeout = null;
+
+  function isTouchDevice() {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  }
+
+  if (isTouchDevice()) {
+    cinders.forEach(cinder => {
+      cinder.addEventListener('click', function(e) {
+        // If this is the same cinder tapped before, allow navigation
+        if (lastTappedCinder === cinder) {
+          // Clear state and let the click through (navigation happens)
+          lastTappedCinder = null;
+          clearTimeout(tapTimeout);
+          return; // Allow default behavior
+        }
+
+        // First tap - prevent navigation, show tooltip
+        e.preventDefault();
+
+        // Remove active state from previous cinder
+        if (lastTappedCinder) {
+          lastTappedCinder.classList.remove('tooltip-active');
+        }
+
+        // Set this as the active cinder
+        lastTappedCinder = cinder;
+        cinder.classList.add('tooltip-active');
+
+        // Reset after 3 seconds of inactivity
+        clearTimeout(tapTimeout);
+        tapTimeout = setTimeout(() => {
+          if (lastTappedCinder) {
+            lastTappedCinder.classList.remove('tooltip-active');
+          }
+          lastTappedCinder = null;
+        }, 3000);
+      });
+    });
+
+    // Clear state when tapping elsewhere
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.cinder')) {
+        if (lastTappedCinder) {
+          lastTappedCinder.classList.remove('tooltip-active');
+        }
+        lastTappedCinder = null;
+        clearTimeout(tapTimeout);
+      }
+    });
+  }
 });

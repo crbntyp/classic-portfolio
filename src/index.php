@@ -36,6 +36,7 @@ $pathPrefix = 'portfolio/';
         <?php while ($cinder = $cindersResult->fetch_assoc()): ?>
           <a href="<?php echo htmlspecialchars($cinder['url'] ?: 'portfolio/project.php?id=' . $cinder['projectID']); ?>"
              class="cinder"
+             target="_blank"
              data-color="<?php echo $colors[$i % 2]; ?>"
              data-tooltip="<?php echo htmlspecialchars($cinder['projectHeading']); ?>"
              data-tooltip-position="top">
