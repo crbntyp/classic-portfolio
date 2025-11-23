@@ -22,7 +22,10 @@
           <h3 class="about-column__title">Projects I've worked on</h3>
           <div class="about-column__content">
             <ul class="about-work-list">
-              <li><span class="project-year project-year--present">PRESENT</span>Agent, Antivirus, VR &amp; Automation</li>
+              <li><span class="project-year project-year--present">2023 - PRESENT</span>Agent, Antivirus, VR &amp; Automation</li>
+              <li><span class="project-year">2022</span> R7 Design System MUI</li>
+              <li><span class="project-year">2020</span> R7 Design System React</li>
+              <li><span class="project-year">2018</span> R7 Design System</li>
               <li><span class="project-year">2018</span> BBC Archive internal and external</li>
               <li><span class="project-year">2017</span> Easons</li>
               <li><span class="project-year">2017</span> Henderson Foodservice</li>
