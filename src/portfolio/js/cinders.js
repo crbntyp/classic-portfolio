@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
     oscillator.type = 'triangle';
 
     // Very quiet, instant fade
-    gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0.015, audioContext.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.02);
 
     oscillator.start(audioContext.currentTime);
