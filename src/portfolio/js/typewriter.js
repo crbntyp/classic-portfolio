@@ -107,10 +107,48 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Loading indicator element
+  const loadingIndicator = document.getElementById('loadingIndicator');
+
+  // Show loading indicator
+  function showLoading() {
+    if (loadingIndicator) {
+      loadingIndicator.classList.add('visible');
+    }
+  }
+
+  // Hide loading indicator
+  function hideLoading() {
+    if (loadingIndicator) {
+      loadingIndicator.classList.remove('visible');
+    }
+  }
+
+  // Show final state immediately (skip animation)
+  function showFinalState() {
+    const finalPhrase = phrases.find(p => p.final);
+    if (finalPhrase) {
+      const link = document.createElement('a');
+      link.href = 'mailto:' + finalPhrase.text;
+      link.className = 'tagline-link';
+      link.textContent = finalPhrase.text;
+      textEl.innerHTML = '';
+      textEl.appendChild(link);
+      cursorEl.style.display = 'none';
+      hideLoading();
+      if (typeof window.explodeCinders === 'function') {
+        window.explodeCinders();
+      }
+    }
+  }
+
   // Main sequence
   async function runSequence() {
     cycleStartTime = Date.now();
     currentPhrase = 0;
+
+    // Show loading indicator at start
+    showLoading();
 
     while (currentPhrase < phrases.length) {
       const phrase = phrases[currentPhrase];
@@ -123,11 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (phrase.final) {
-        // Final phrase - hide cursor and explode cinders
+        // Final phrase - hide cursor, loading and explode cinders
         cursorEl.style.display = 'none';
+        hideLoading();
         if (typeof window.explodeCinders === 'function') {
           window.explodeCinders();
         }
+        // Mark animation as played for this session
+        sessionStorage.setItem('taglineAnimationPlayed', 'true');
       } else if (phrase.dots) {
         // Show animated dots
         await new Promise(r => setTimeout(r, PAUSE_AFTER_TYPING));
@@ -139,22 +180,15 @@ document.addEventListener('DOMContentLoaded', function() {
       currentPhrase++;
     }
 
-    // Wait for remainder of 1 minute cycle
-    const elapsed = Date.now() - cycleStartTime;
-    const remaining = Math.max(0, CYCLE_DURATION - elapsed);
-
-    await new Promise(r => setTimeout(r, remaining));
-
-    // Reset and restart
-    textEl.textContent = '';
-    dotsEl.innerHTML = '';
-    cursorEl.style.display = 'inline';
-    if (typeof window.resetCinders === 'function') {
-      window.resetCinders();
-    }
-    runSequence();
+    // Animation complete - don't loop anymore
   }
 
-  // Start the sequence
-  runSequence();
+  // Check if animation already played this session
+  if (sessionStorage.getItem('taglineAnimationPlayed')) {
+    // Skip to final state
+    showFinalState();
+  } else {
+    // Run the full animation
+    runSequence();
+  }
 });

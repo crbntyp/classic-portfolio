@@ -22,7 +22,7 @@ $projectID = intval($_GET['id']);
 
 try {
     // Fetch project data - using bind_result for compatibility
-    $stmt = $mysqli->prepare("SELECT projectID, projectHeading, projectDescription, projectTeaser, url, url_two, projectCTA, blobEntry FROM projects WHERE projectID = ?");
+    $stmt = $mysqli->prepare("SELECT projectID, projectHeading, projectDescription, projectTeaser, url, url_two, projectCTA, category FROM projects WHERE projectID = ?");
 
     if (!$stmt) {
         $mysqli->close();
@@ -33,7 +33,7 @@ try {
     $stmt->execute();
 
     // Use bind_result instead of get_result for server compatibility
-    $stmt->bind_result($id, $heading, $description, $teaser, $url, $url_two, $cta, $blobEntry);
+    $stmt->bind_result($id, $heading, $description, $teaser, $url, $url_two, $cta, $category);
 
     if ($stmt->fetch()) {
         $project = [
@@ -44,7 +44,7 @@ try {
             'url' => $url,
             'url_two' => $url_two,
             'projectCTA' => $cta,
-            'blobEntry' => $blobEntry
+            'category' => $category ?? 'classic-portfolio'
         ];
 
         $stmt->close();

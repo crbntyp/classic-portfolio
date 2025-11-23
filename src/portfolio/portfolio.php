@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/init.php';
 
-$sql = "SELECT * FROM projects WHERE blobEntry = 0 ORDER BY projectID ASC";
+$sql = "SELECT * FROM projects WHERE category = 'classic-portfolio' ORDER BY sort_order ASC";
 $result = $mysqli->query($sql);
 
 // Set page variables

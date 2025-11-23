@@ -26,3 +26,9 @@ if (!isset($pathPrefix)) {
     <a href="#" class="user-link" id="loginTrigger">Login</a>
   <?php endif; ?>
 </div>
+
+<!-- Loading indicator (shown during tagline animation) -->
+<div class="loading-indicator" id="loadingIndicator">
+  <i class="lni lni-spinner-3"></i>
+  <span>loading projects</span>
+</div>

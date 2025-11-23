@@ -21,10 +21,10 @@ $category = $_POST['category'];
 
 $projectID = intval($projectID);
 
-// Determine blobEntry based on category
-$blobEntry = 0;
-if (in_array($category, ['recent-artwork', 'artwork-portfolio', 'vibes'])) {
-    $blobEntry = 1;
+// Validate category
+$validCategories = ['classic-portfolio', 'recent-artwork', 'artwork-portfolio', 'vibes'];
+if (!in_array($category, $validCategories)) {
+    ApiResponse::error('Invalid category');
 }
 
 // Handle empty values
@@ -68,12 +68,12 @@ if ($uploader->hasUpload($_FILES['projectImage'] ?? null)) {
 // Update project
 if ($newImage) {
     // Update with new image
-    $stmt = $mysqli->prepare("UPDATE projects SET projectHeading = ?, projectDescription = ?, projectTeaser = ?, url = ?, url_two = ?, projectCTA = ?, blobEntry = ? WHERE projectID = ?");
-    $stmt->bind_param("sssssiii", $projectName, $projectDescription, $newImage, $projectUrl, $projectUrlTwo, $projectCTA, $blobEntry, $projectID);
+    $stmt = $mysqli->prepare("UPDATE projects SET projectHeading = ?, projectDescription = ?, projectTeaser = ?, url = ?, url_two = ?, projectCTA = ?, category = ? WHERE projectID = ?");
+    $stmt->bind_param("sssssssi", $projectName, $projectDescription, $newImage, $projectUrl, $projectUrlTwo, $projectCTA, $category, $projectID);
 } else {
     // Update without changing image
-    $stmt = $mysqli->prepare("UPDATE projects SET projectHeading = ?, projectDescription = ?, url = ?, url_two = ?, projectCTA = ?, blobEntry = ? WHERE projectID = ?");
-    $stmt->bind_param("sssssii", $projectName, $projectDescription, $projectUrl, $projectUrlTwo, $projectCTA, $blobEntry, $projectID);
+    $stmt = $mysqli->prepare("UPDATE projects SET projectHeading = ?, projectDescription = ?, url = ?, url_two = ?, projectCTA = ?, category = ? WHERE projectID = ?");
+    $stmt->bind_param("ssssssi", $projectName, $projectDescription, $projectUrl, $projectUrlTwo, $projectCTA, $category, $projectID);
 }
 
 if ($stmt->execute()) {

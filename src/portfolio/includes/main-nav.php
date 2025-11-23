@@ -1,8 +1,8 @@
 <?php
-// Get blob entries for dynamic menu if not already fetched
-if (!isset($blobResult)) {
-    $blobQuery = "SELECT projectID, projectHeading, url FROM projects WHERE blobEntry = 1 ORDER BY projectID ASC";
-    $blobResult = $mysqli->query($blobQuery);
+// Get non-classic entries for dynamic menu if not already fetched
+if (!isset($navItemsResult)) {
+    $navItemsQuery = "SELECT projectID, projectHeading, url FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
+    $navItemsResult = $mysqli->query($navItemsQuery);
 }
 ?>
 <div class="main-nav-container">
@@ -19,11 +19,11 @@ if (!isset($blobResult)) {
     </li>
     <li class="main-nav">
       <div class="main-nav__popup">
-        <?php if ($blobResult && $blobResult->num_rows > 0): ?>
-          <?php while ($blobItem = $blobResult->fetch_assoc()): ?>
-            <a href="<?php echo htmlspecialchars($blobItem['url']); ?>"
+        <?php if ($navItemsResult && $navItemsResult->num_rows > 0): ?>
+          <?php while ($navItem = $navItemsResult->fetch_assoc()): ?>
+            <a href="<?php echo htmlspecialchars($navItem['url']); ?>"
                class="main-nav__item"
-               data-tooltip="<?php echo htmlspecialchars($blobItem['projectHeading']); ?>"
+               data-tooltip="<?php echo htmlspecialchars($navItem['projectHeading']); ?>"
                data-tooltip-position="auto">
               <span class="blob-bg"></span>
             </a>

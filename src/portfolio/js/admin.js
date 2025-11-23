@@ -170,16 +170,12 @@ document.addEventListener('DOMContentLoaded', function() {
           document.getElementById('editProjectUrlTwo').value = project.url_two || '';
           document.getElementById('editProjectCTA').value = project.projectCTA || '';
 
-          // Set category based on blobEntry
+          // Set category from project data
           if (editCategory) {
-            if (project.blobEntry == 0) {
-              editCategory.value = 'classic-portfolio';
-              if (editImageUploadGroup) editImageUploadGroup.style.display = 'block';
-            } else {
-              editCategory.value = 'recent-artwork';
-              if (editImageUploadGroup) editImageUploadGroup.style.display = 'none';
-            }
+            editCategory.value = project.category || 'classic-portfolio';
           }
+          // Always show image upload
+          if (editImageUploadGroup) editImageUploadGroup.style.display = 'block';
 
           // Set Quill editor content
           if (editQuillEditor) {
@@ -187,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
           }
 
           // Show current image if exists
-          if (project.projectTeaser && project.blobEntry != 1) {
+          if (project.projectTeaser) {
             editImagePreview.innerHTML = `<img src="../uploads/${project.projectTeaser}" alt="${project.projectHeading}">`;
           } else {
             editImagePreview.innerHTML = `

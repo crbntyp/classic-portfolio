@@ -13,14 +13,14 @@ while ($row = $result->fetch_assoc()) {
     $projectURL_two = $row["url_two"];
 }
 
-$nextQuery = "SELECT * FROM projects WHERE projectID > $projectIDurl AND blobEntry = 0 ORDER BY projectID ASC LIMIT 1";
+$nextQuery = "SELECT * FROM projects WHERE projectID > $projectIDurl AND category = 'classic-portfolio' ORDER BY projectID ASC LIMIT 1";
 $nextResult = $mysqli->query($nextQuery) or die($mysqli->error);
 while ($row = $nextResult->fetch_assoc()) {
     $nextID = $row["projectID"];
     $nextHeading = $row["projectHeading"];
 }
 
-$prevQuery = "SELECT * FROM projects WHERE projectID < $projectIDurl AND blobEntry = 0 ORDER BY projectID DESC LIMIT 1";
+$prevQuery = "SELECT * FROM projects WHERE projectID < $projectIDurl AND category = 'classic-portfolio' ORDER BY projectID DESC LIMIT 1";
 $prevResult = $mysqli->query($prevQuery) or die($mysqli->error);
 while ($row = $prevResult->fetch_assoc()) {
     $prevID = $row["projectID"];

@@ -1,9 +1,8 @@
 /**
  * Category Handler
- * Centralized category-to-image-upload toggle logic
+ * Centralized category handling logic
  *
- * Handles showing/hiding image upload fields based on category selection.
- * Classic portfolio requires image uploads, blob categories do not.
+ * All categories now support optional image uploads.
  *
  * Usage:
  * setupCategoryToggle({
@@ -37,8 +36,6 @@ function setupCategoryToggle(config) {
   const categorySelect = document.getElementById(categorySelectId);
   const imageUploadGroup = document.getElementById(imageUploadGroupId);
   const imageInput = document.getElementById(imageInputId);
-  const imagePreview = imagePreviewId ? document.getElementById(imagePreviewId) : null;
-  const fileNameDisplay = fileNameDisplayId ? document.getElementById(fileNameDisplayId) : null;
 
   // Check if required elements exist
   if (!categorySelect || !imageUploadGroup) {
@@ -49,56 +46,24 @@ function setupCategoryToggle(config) {
     return;
   }
 
-  // Blob categories that don't require images
-  const BLOB_CATEGORIES = ['recent-artwork', 'artwork-portfolio', 'vibes'];
+  // Valid categories
+  const VALID_CATEGORIES = ['classic-portfolio', 'recent-artwork', 'artwork-portfolio', 'vibes'];
 
-  // Category change handler
+  // Category change handler - always show image upload for valid categories
   categorySelect.addEventListener('change', function() {
     const selectedCategory = this.value;
 
-    if (selectedCategory === 'classic-portfolio') {
-      // Show image upload for classic portfolio
+    if (VALID_CATEGORIES.includes(selectedCategory)) {
+      // Show image upload for all valid categories (optional upload)
       imageUploadGroup.style.display = 'block';
-
       if (imageInput) {
-        imageInput.required = true;
+        imageInput.required = false; // Images are optional
       }
-
-    } else if (BLOB_CATEGORIES.includes(selectedCategory)) {
-      // Hide image upload for blob categories
-      imageUploadGroup.style.display = 'none';
-
-      // Reset image fields
-      if (imageInput) {
-        imageInput.required = false;
-        imageInput.value = '';
-      }
-
-      // Reset preview
-      if (imagePreview) {
-        imagePreview.innerHTML = '';
-      }
-
-      // Reset filename display
-      if (fileNameDisplay) {
-        fileNameDisplay.textContent = 'No file chosen';
-      }
-
     } else {
-      // No category selected or unknown category
+      // No category selected
       imageUploadGroup.style.display = 'none';
-
       if (imageInput) {
         imageInput.required = false;
-        imageInput.value = '';
-      }
-
-      if (imagePreview) {
-        imagePreview.innerHTML = '';
-      }
-
-      if (fileNameDisplay) {
-        fileNameDisplay.textContent = 'No file chosen';
       }
     }
   });
@@ -107,26 +72,7 @@ function setupCategoryToggle(config) {
   return categorySelect;
 }
 
-/**
- * Check if a category is a blob category
- * @param {string} category - The category value to check
- * @returns {boolean} True if category is a blob category
- */
-function isBlobCategory(category) {
-  const BLOB_CATEGORIES = ['recent-artwork', 'artwork-portfolio', 'vibes'];
-  return BLOB_CATEGORIES.includes(category);
-}
-
-/**
- * Check if a category requires an image upload
- * @param {string} category - The category value to check
- * @returns {boolean} True if category requires image upload
- */
-function requiresImageUpload(category) {
-  return category === 'classic-portfolio';
-}
-
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { setupCategoryToggle, isBlobCategory, requiresImageUpload };
+  module.exports = { setupCategoryToggle };
 }

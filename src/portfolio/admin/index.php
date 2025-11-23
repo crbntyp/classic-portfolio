@@ -17,14 +17,29 @@ if ($sortOrderCheck->num_rows == 0) {
     $mysqli->query("UPDATE projects SET sort_order = (@row_number := @row_number + 1) ORDER BY projectID ASC");
 }
 
+// Check if category column exists, if not add it and migrate from blobEntry
+$categoryCheck = $mysqli->query("SHOW COLUMNS FROM projects LIKE 'category'");
+if ($categoryCheck->num_rows == 0) {
+    $mysqli->query("ALTER TABLE projects ADD COLUMN category VARCHAR(50) NOT NULL DEFAULT 'classic-portfolio'");
+    // Migrate blobEntry values to category
+    $mysqli->query("UPDATE projects SET category = 'recent-artwork' WHERE blobEntry = 1");
+    $mysqli->query("UPDATE projects SET category = 'classic-portfolio' WHERE blobEntry = 0 OR blobEntry IS NULL");
+}
+
 // Get stats
 $projectsCount = $mysqli->query("SELECT COUNT(*) as count FROM projects")->fetch_assoc()['count'];
-$blobCount = $mysqli->query("SELECT COUNT(*) as count FROM projects WHERE blobEntry = 1")->fetch_assoc()['count'];
-$classicCount = $projectsCount - $blobCount;
 
 // Fetch all projects ordered by sort_order (user-defined drag order)
-$projectsQuery = "SELECT projectID, projectHeading, projectTeaser, blobEntry FROM projects ORDER BY sort_order ASC";
+$projectsQuery = "SELECT projectID, projectHeading, projectTeaser, category FROM projects ORDER BY sort_order ASC";
 $projectsResult = $mysqli->query($projectsQuery);
+
+// Category display labels
+$categoryLabels = [
+    'classic-portfolio' => 'Classic',
+    'recent-artwork' => 'Artwork',
+    'artwork-portfolio' => 'Art Portfolio',
+    'vibes' => 'Vibes'
+];
 
 // Fetch all users
 $usersQuery = "SELECT userID, username, email FROM users ORDER BY username ASC";
@@ -51,23 +66,22 @@ $pathPrefix = '../';
         <div class="admin-main">
             <div class="projects-grid">
                 <?php while ($project = $projectsResult->fetch_assoc()): ?>
-                    <div class="project-item <?php echo $project['blobEntry'] == 1 ? 'project-item--blob' : ''; ?>" data-project-id="<?php echo $project['projectID']; ?>">
-                        <?php if ($project['blobEntry'] != 1): ?>
-                            <div class="project-item__image">
-                                <?php if ($project['projectTeaser']): ?>
-                                    <img src="../uploads/<?php echo htmlspecialchars($project['projectTeaser']); ?>"
-                                         alt="<?php echo htmlspecialchars($project['projectHeading']); ?>">
-                                <?php else: ?>
-                                    <div class="project-item__placeholder">
-                                        <i class="lni lni-image"></i>
-                                    </div>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
-                        <div class="project-item__info <?php echo $project['blobEntry'] == 1 ? 'project-item__info--blob' : ''; ?>">
-                            <?php if ($project['blobEntry'] == 1): ?>
-                                <span class="project-item__badge-inline">SHOWCASE</span>
+                    <?php $category = $project['category'] ?? 'classic-portfolio'; ?>
+                    <div class="project-item" data-project-id="<?php echo $project['projectID']; ?>">
+                        <div class="project-item__image">
+                            <?php if ($project['projectTeaser']): ?>
+                                <img src="../uploads/<?php echo htmlspecialchars($project['projectTeaser']); ?>"
+                                     alt="<?php echo htmlspecialchars($project['projectHeading']); ?>">
+                            <?php else: ?>
+                                <div class="project-item__placeholder">
+                                    <i class="lni lni-image"></i>
+                                </div>
                             <?php endif; ?>
+                            <span class="project-item__category project-item__category--<?php echo $category; ?>">
+                                <?php echo $categoryLabels[$category] ?? ucfirst($category); ?>
+                            </span>
+                        </div>
+                        <div class="project-item__info">
                             <div class="project-item__details">
                                 <h4 class="project-item__title"><?php echo htmlspecialchars($project['projectHeading']); ?></h4>
                                 <span class="project-item__id">ID: <?php echo $project['projectID']; ?></span>
@@ -228,7 +242,7 @@ $pathPrefix = '../';
                     </div>
 
                     <div class="form-column">
-                        <div class="form-group" id="addImageUploadGroup" style="display: none;">
+                        <div class="form-group" id="addImageUploadGroup">
                             <label>Project Image</label>
                             <div id="addImagePreview" class="image-preview-box"></div>
                             <div class="file-input-wrapper">

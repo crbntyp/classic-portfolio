@@ -1,9 +1,9 @@
 <?php
 require_once 'portfolio/includes/init.php';
 
-// Query for blob entries (dynamic menu items)
-$blobQuery = "SELECT projectID, projectHeading, url FROM projects WHERE blobEntry = 1 ORDER BY projectID ASC";
-$blobResult = $mysqli->query($blobQuery);
+// Query for non-classic entries (shown as cinders on homepage)
+$cindersQuery = "SELECT projectID, projectHeading, url FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
+$cindersResult = $mysqli->query($cindersQuery);
 
 // Set page variables
 $pageTitle = 'Jonny Pyper | Carbontype | Software Engineering Manager @R7 | Award Winning UI Designer | Crayon Enthusiast';
@@ -31,13 +31,13 @@ $pathPrefix = 'portfolio/';
 
     <!-- Cinders container -->
     <div id="cinders-container">
-      <?php if ($blobResult && $blobResult->num_rows > 0): ?>
+      <?php if ($cindersResult && $cindersResult->num_rows > 0): ?>
         <?php $colors = ['white', 'cyan']; $i = 0; ?>
-        <?php while ($blob = $blobResult->fetch_assoc()): ?>
-          <a href="<?php echo htmlspecialchars($blob['url'] ?: 'portfolio/project.php?id=' . $blob['projectID']); ?>"
+        <?php while ($cinder = $cindersResult->fetch_assoc()): ?>
+          <a href="<?php echo htmlspecialchars($cinder['url'] ?: 'portfolio/project.php?id=' . $cinder['projectID']); ?>"
              class="cinder"
              data-color="<?php echo $colors[$i % 2]; ?>"
-             data-tooltip="<?php echo htmlspecialchars($blob['projectHeading']); ?>"
+             data-tooltip="<?php echo htmlspecialchars($cinder['projectHeading']); ?>"
              data-tooltip-position="top">
             <span class="cinder-spark"></span>
           </a>
