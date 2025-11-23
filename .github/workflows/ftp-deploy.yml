@@ -48,5 +48,6 @@ jobs:
             --exclude '.git/' \
             --exclude 'node_modules/' \
             --exclude '.DS_Store' \
+            --exclude '.env' \
             ./dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/crbntyp/
