@@ -74,7 +74,7 @@
               </a>
               <a href="<?php echo $pathPrefix; ?>portfolio.php" class="about-social-link">
                 <i class="lni lni-gallery"></i>
-                <span>Portfolio</span>
+                <span>Classic Portfolio</span>
               </a>
               <a href="https://github.com/crbntyp" target="_blank" class="about-social-link">
                 <i class="lni lni-git"></i>
