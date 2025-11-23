@@ -64,6 +64,10 @@
           <h3 class="about-column__title">Connect</h3>
           <div class="about-column__content">
             <div class="about-social-links">
+              <a href="/" class="about-social-link">
+                <i class="lni lni-home"></i>
+                <span>crbntyp Home</span>
+              </a>
               <a href="https://www.linkedin.com/in/jonny-pyper-a31955123/" target="_blank" class="about-social-link">
                 <i class="lni lni-linkedin"></i>
                 <span>LinkedIn</span>
