@@ -29,17 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    // Soft low blip
-    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.05);
+    // Soft quick blip
+    oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.02);
     oscillator.type = 'triangle';
 
-    // Very quiet, quick fade
-    gainNode.gain.setValueAtTime(0.04, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+    // Very quiet, instant fade
+    gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.02);
 
     oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.05);
+    oscillator.stop(audioContext.currentTime + 0.02);
   }
 
   // Initialize cinders at center, hidden
