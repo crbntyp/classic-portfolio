@@ -14,6 +14,34 @@ document.addEventListener('DOMContentLoaded', function() {
     cyan: '#00ffff'
   };
 
+  // Audio context for blip sounds
+  let audioContext = null;
+
+  function playBlip() {
+    // Initialize audio context on first interaction (browser requirement)
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    // High-pitched short blip
+    oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.1);
+    oscillator.type = 'sine';
+
+    // Quick fade out
+    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+  }
+
   // Initialize cinders at center, hidden
   cinders.forEach(cinder => {
     cinder.style.opacity = '0';
@@ -26,6 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (spark && colors[colorName]) {
       spark.style.backgroundColor = colors[colorName];
     }
+
+    // Play blip on hover
+    cinder.addEventListener('mouseenter', playBlip);
   });
 
   // Explode cinders from center to random positions across screen
