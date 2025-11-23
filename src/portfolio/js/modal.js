@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     aboutUsTrigger.addEventListener('click', (e) => {
       e.preventDefault();
       aboutUsModal.open();
+      aboutUsTrigger.classList.add('is-active');
     });
 
     // Close when clicking on overlay but not on content
@@ -34,7 +35,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Only close if clicking directly on the overlay, not its children
         if (e.target === aboutOverlay) {
           aboutUsModal.close();
+          aboutUsTrigger.classList.remove('is-active');
         }
+      });
+    }
+
+    // Also remove active state when modal closes via close button
+    const aboutCloseBtn = aboutUsModal.modal.querySelector('.modal__close');
+    if (aboutCloseBtn) {
+      aboutCloseBtn.addEventListener('click', () => {
+        aboutUsTrigger.classList.remove('is-active');
       });
     }
   }
