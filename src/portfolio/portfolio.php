@@ -14,7 +14,6 @@ $pathPrefix = '';
         <?php include_once 'includes/analytics.php'; ?>
 
         <?php include 'includes/user-nav.php'; ?>
-        <?php include 'includes/main-nav.php'; ?>
         <?php include 'includes/login-modal.php'; ?>
         <?php include 'includes/about-us-modal.php'; ?>
 
