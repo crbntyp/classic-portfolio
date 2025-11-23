@@ -36,8 +36,8 @@ jobs:
           echo "Error: dist directory not found"
           exit 1
         fi
-        if [ ! -f "dist/css/main.css" ]; then
-          echo "Error: main.css not found in dist/css"
+        if [ ! -f "dist/portfolio/css/main.css" ]; then
+          echo "Error: main.css not found in dist/portfolio/css"
           exit 1
         fi
         echo "Build artifacts verified successfully"
