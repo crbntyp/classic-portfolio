@@ -15,8 +15,8 @@ if (!isset($pathPrefix)) {
   <?php if (isset($_SESSION['user_id'])): ?>
     <!-- Logged in: Show admin links -->
     <?php if (basename(dirname($_SERVER['PHP_SELF'])) === 'admin'): ?>
-      <a href="#" class="user-link" id="openAddProjectModal">Add</a>
-      <a href="../../" class="user-link">Home</a>
+      <a href="#" class="user-link" id="openAddProjectModal">Add project</a>
+      <a href="../../" class="user-link">crbntyp home</a>
     <?php else: ?>
       <a href="<?php echo $pathPrefix; ?>admin/" class="user-link">Dashboard </a>
     <?php endif; ?>

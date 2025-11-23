@@ -31,6 +31,7 @@ $pathPrefix = '../';
     <div id="bgRotator" class="bg-rotator"></div>
 
     <?php include '../includes/user-nav.php'; ?>
+    <?php include '../includes/about-us-modal.php'; ?>
 
     <div class="admin-container">
         <div class="admin-brand">
