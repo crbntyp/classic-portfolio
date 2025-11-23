@@ -8,6 +8,7 @@ if (!isset($pathPrefix)) {
 ?>
 <div class="user-info">
   <!-- Social links -->
+  <a href="/" class="user-link">crbntyp home</a>
   <a href="https://github.com/crbntyp" class="user-link" target="_blank">GitHub <i class="lni lni-arrow-angular-top-right"></i></a>
   <a href="https://www.behance.net/jonnypyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
   <a href="#" class="user-link" id="aboutUsTrigger">Profile</a>
@@ -16,7 +17,6 @@ if (!isset($pathPrefix)) {
     <!-- Logged in: Show admin links -->
     <?php if (basename(dirname($_SERVER['PHP_SELF'])) === 'admin'): ?>
       <a href="#" class="user-link" id="openAddProjectModal">Add project</a>
-      <a href="../../" class="user-link">crbntyp home</a>
     <?php else: ?>
       <a href="<?php echo $pathPrefix; ?>admin/" class="user-link">Dashboard </a>
     <?php endif; ?>
