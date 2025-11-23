@@ -44,14 +44,9 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          rsync -avz --delete \
+          rsync -avz \
             --exclude '.git/' \
             --exclude 'node_modules/' \
             --exclude '.DS_Store' \
-            --exclude 'uploads/' \
-            --exclude 'gld/' \
-            --exclude 'plyr/' \
-            --exclude 'trckr/' \
-            --exclude 'blsnc/' \
             ./dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/crbntyp/
