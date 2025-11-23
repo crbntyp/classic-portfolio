@@ -21,8 +21,7 @@ $pathPrefix = '';
             <div class="portfolio-content">
                 <div class="portfolio-header">
                     <div class="portfolio-header__content">
-                        <img src="logo.png" class="portfolio-header__logo" alt="Carbontype Logo" />
-                        <h1 class="portfolio-header__title">crbntyp</h1>
+                        <h1 class="portfolio-header__logo-text">crbntyp</h1>
                     </div>
                 </div>
 

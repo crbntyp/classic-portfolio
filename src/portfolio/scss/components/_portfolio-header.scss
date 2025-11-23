@@ -52,6 +52,22 @@
             font-size: 14px;
         }
     }
+
+    &__logo-text {
+        font-family: $font-family-primary;
+        font-size: 64px;
+        font-weight: 800;
+        color: $color-white;
+        clip-path: inset(0 0 44% 0);
+        line-height: 1;
+        margin: 0 0 -28px 0;
+        opacity: 0.9;
+
+        @media (max-width: 767px) {
+            font-size: 48px;
+            margin-bottom: -20px;
+        }
+    }
 }
 
 // Color Palette Display
