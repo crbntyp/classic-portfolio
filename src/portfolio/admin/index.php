@@ -77,10 +77,10 @@ $pathPrefix = '../';
                                     <i class="lni lni-image"></i>
                                 </div>
                             <?php endif; ?>
-                            <span class="project-item__category project-item__category--<?php echo $category; ?>">
-                                <?php echo $categoryLabels[$category] ?? ucfirst($category); ?>
-                            </span>
                         </div>
+                        <span class="project-item__category project-item__category--<?php echo $category; ?>">
+                            <?php echo $categoryLabels[$category] ?? ucfirst($category); ?>
+                        </span>
                         <div class="project-item__info">
                             <div class="project-item__details">
                                 <h4 class="project-item__title"><?php echo htmlspecialchars($project['projectHeading']); ?></h4>

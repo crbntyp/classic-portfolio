@@ -560,6 +560,7 @@
 }
 
 .project-item {
+    position: relative;
     background: $color-bg-black-30;
     border-radius: $border-radius-lg;
     overflow: hidden;
@@ -692,10 +693,10 @@
         width: fit-content;
     }
 
-    // Category pill (positioned in image area)
+    // Category pill (positioned bottom left of card)
     &__category {
         position: absolute;
-        top: $spacing-3xs;
+        bottom: $spacing-3xs;
         left: $spacing-3xs;
         padding: 4px 8px;
         font-size: 9px;
