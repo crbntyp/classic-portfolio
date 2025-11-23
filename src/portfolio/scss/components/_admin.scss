@@ -693,17 +693,17 @@
         width: fit-content;
     }
 
-    // Category pill (positioned bottom left of card)
+    // Category pill
     &__category {
-        position: absolute;
-        bottom: $spacing-3xs;
-        left: $spacing-3xs;
+        display: block;
+        margin-top: $spacing-3xs;
         padding: 4px 8px;
         font-size: 9px;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 1px;
         border-radius: $border-radius-sm;
+        width: fit-content;
 
         // Classic Portfolio - Cyan
         &--classic-portfolio {
