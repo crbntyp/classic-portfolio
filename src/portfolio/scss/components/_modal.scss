@@ -711,6 +711,11 @@
             flex-direction: column;
             gap: 6px;
         }
+
+        &:first-child {
+            flex-direction: column;
+            gap: 4px;
+        }
     }
 
     .project-year {
