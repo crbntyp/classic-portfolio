@@ -281,7 +281,6 @@
     color: $color-white;
     font-size: 12px;
     text-transform: uppercase;
-    opacity: 0.3;
     transition: opacity $transition-fast;
     text-decoration: none;
     z-index: 10000;
@@ -309,12 +308,12 @@
         padding: 2px 5px;
 
         @media (max-width: 1520px) {
-            background-color: #0b0b0b;
+            background-color: #1b1b1b;
         }
 
         &:hover{
             background: cyan;
-            color: black;
+            color: #1b1b1b;
 
         }
     }
