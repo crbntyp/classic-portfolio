@@ -85,6 +85,10 @@
         margin: 0;
         line-height: 1;
         clip-path: inset(0 0 44% 0);
+
+        @media (max-width: 450px) {
+            font-size: 80px;
+        }
     }
 
     &__subtitle {
@@ -97,6 +101,10 @@
         //text-transform: uppercase;
         top: -40px;
         letter-spacing: 1.5px;
+
+        @media (max-width: 450px) {
+            top: -25px;
+        }
     }
 
     &__title {
