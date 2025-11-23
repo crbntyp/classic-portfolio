@@ -144,3 +144,4 @@ $pathPrefix = 'portfolio/';
     Audio disabled -->
 
 <?php include 'portfolio/includes/html-close.php'; ?>
+<!-- Deploy trigger Sun Nov 23 09:46:29 GMT 2025 -->
