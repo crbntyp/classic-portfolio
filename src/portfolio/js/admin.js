@@ -254,6 +254,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const addProjectModal = new ModalManager('addProjectModal', {
     onClose: () => {
+      // Remove active state from trigger
+      const openAddProjectModal = document.getElementById('openAddProjectModal');
+      if (openAddProjectModal) {
+        openAddProjectModal.classList.remove('is-active');
+      }
       // Reset form and clear Quill editor on close
       const addProjectForm = document.getElementById('addProjectForm');
       if (addProjectForm) {
@@ -287,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (openAddProjectModal && addProjectModal.modal) {
     openAddProjectModal.addEventListener('click', function() {
       addProjectModal.open();
+      openAddProjectModal.classList.add('is-active');
     });
   }
 

@@ -20,7 +20,7 @@ $isAdminPage = (basename(dirname($_SERVER['PHP_SELF'])) === 'admin');
   <?php if (isset($_SESSION['user_id'])): ?>
     <!-- Logged in: Show admin links -->
     <?php if ($isAdminPage): ?>
-      <a href="#" class="user-link is-active" id="openAddProjectModal">Add project</a>
+      <a href="#" class="user-link" id="openAddProjectModal">Add project</a>
     <?php else: ?>
       <a href="<?php echo $pathPrefix; ?>admin/" class="user-link">Dashboard</a>
     <?php endif; ?>

@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
 
+    // Resume context if suspended (browser autoplay policy)
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
