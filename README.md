@@ -4,11 +4,20 @@
 
 ## Screenshots
 
-| | | |
-|:---:|:---:|:---:|
-| ![Screenshot 1](screenshots/Screenshot%202025-12-01%20at%2020.34.59.png) | ![Screenshot 2](screenshots/Screenshot%202025-12-01%20at%2020.35.38.png) | ![Screenshot 3](screenshots/Screenshot%202025-12-01%20at%2020.35.58.png) |
-| ![Screenshot 4](screenshots/Screenshot%202025-12-01%20at%2020.37.43.png) | ![Screenshot 5](screenshots/Screenshot%202025-12-01%20at%2020.38.28.png) | ![Screenshot 6](screenshots/Screenshot%202025-12-01%20at%2020.38.41.png) |
-| ![Screenshot 7](screenshots/Screenshot%202025-12-01%20at%2020.38.46.png) | ![Screenshot 8](screenshots/Screenshot%202025-12-01%20at%2020.38.57.png) | |
+<p>
+  <img src="screenshots/Screenshot 2025-12-01 at 20.34.59.png" width="32%" />
+  <img src="screenshots/Screenshot 2025-12-01 at 20.35.38.png" width="32%" />
+  <img src="screenshots/Screenshot 2025-12-01 at 20.35.58.png" width="32%" />
+</p>
+<p>
+  <img src="screenshots/Screenshot 2025-12-01 at 20.37.43.png" width="32%" />
+  <img src="screenshots/Screenshot 2025-12-01 at 20.38.28.png" width="32%" />
+  <img src="screenshots/Screenshot 2025-12-01 at 20.38.41.png" width="32%" />
+</p>
+<p>
+  <img src="screenshots/Screenshot 2025-12-01 at 20.38.46.png" width="32%" />
+  <img src="screenshots/Screenshot 2025-12-01 at 20.38.57.png" width="32%" />
+</p>
 
 **📋 [View Changelog](./CHANGELOG.md)** - See recent refactoring improvements and security fixes
 
