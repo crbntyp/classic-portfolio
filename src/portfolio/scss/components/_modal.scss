@@ -27,6 +27,13 @@
         padding: $spacing-sm;
     }
 
+    // Login modal stays centered on mobile
+    &--centered {
+        @media (max-width: $breakpoint-mobile) {
+            align-items: center;
+        }
+    }
+
     &.active {
         opacity: 1;
         pointer-events: all;
