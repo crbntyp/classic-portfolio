@@ -23,14 +23,13 @@
     overflow-y: auto;
 
     @media (max-width: $breakpoint-mobile) {
-        align-items: flex-start;
         padding: $spacing-sm;
     }
 
-    // Login modal stays centered on mobile
-    &--centered {
+    // Only wide modals align to top on mobile
+    &:has(.modal__content--wide) {
         @media (max-width: $breakpoint-mobile) {
-            align-items: center;
+            align-items: flex-start;
         }
     }
 

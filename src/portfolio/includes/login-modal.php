@@ -1,5 +1,5 @@
 <!-- Login Modal -->
-<div class="modal modal--centered" id="loginModal">
+<div class="modal" id="loginModal">
   <div class="modal__overlay"></div>
   <div class="modal__content modal__content--narrow">
     <button class="modal__close" id="modalClose">
