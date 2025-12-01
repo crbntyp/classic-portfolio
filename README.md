@@ -4,23 +4,11 @@
 
 ## Screenshots
 
-<div align="center">
-  <div>
-    <img src="screenshots/Screenshot 2025-11-09 at 09.39.50.png" alt="Home page" width="49%" />
-    <img src="screenshots/Screenshot 2025-11-09 at 09.39.55.png" alt="Navigation" width="49%" />
-  </div>
-  <div>
-    <img src="screenshots/Screenshot 2025-11-09 at 09.40.09.png" alt="Portfolio carousel" width="49%" />
-    <img src="screenshots/Screenshot 2025-11-09 at 09.40.22.png" alt="Project showcase" width="49%" />
-  </div>
-  <div>
-    <img src="screenshots/Screenshot 2025-11-09 at 09.40.29.png" alt="Project details" width="49%" />
-    <img src="screenshots/Screenshot 2025-11-09 at 09.40.35.png" alt="Login" width="49%" />
-  </div>
-  <div>
-    <img src="screenshots/Screenshot 2025-11-09 at 09.41.00.png" alt="Admin dashboard" width="49%" />
-  </div>
-</div>
+| | | |
+|:---:|:---:|:---:|
+| ![Screenshot 1](screenshots/Screenshot%202025-12-01%20at%2020.34.59.png) | ![Screenshot 2](screenshots/Screenshot%202025-12-01%20at%2020.35.38.png) | ![Screenshot 3](screenshots/Screenshot%202025-12-01%20at%2020.35.58.png) |
+| ![Screenshot 4](screenshots/Screenshot%202025-12-01%20at%2020.37.43.png) | ![Screenshot 5](screenshots/Screenshot%202025-12-01%20at%2020.38.28.png) | ![Screenshot 6](screenshots/Screenshot%202025-12-01%20at%2020.38.41.png) |
+| ![Screenshot 7](screenshots/Screenshot%202025-12-01%20at%2020.38.46.png) | ![Screenshot 8](screenshots/Screenshot%202025-12-01%20at%2020.38.57.png) | |
 
 **📋 [View Changelog](./CHANGELOG.md)** - See recent refactoring improvements and security fixes
 
