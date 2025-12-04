@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (!container || cinders.length === 0) return;
 
+  // Colors now handled via CSS using data-color attribute
   const colors = {
-    white: '#ffffff',
-    cyan: '#00ffff'
+    white: true,
+    cyan: true
   };
 
   // Audio context for blip sounds
@@ -53,13 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cinder.style.left = '50%';
     cinder.style.top = '50%';
 
-    // Set color based on data attribute
-    const colorName = cinder.dataset.color;
-    const spark = cinder.querySelector('.cinder-spark');
-    if (spark && colors[colorName]) {
-      spark.style.backgroundColor = colors[colorName];
-    }
-
     // Play blip on hover
     cinder.addEventListener('mouseenter', playBlip);
   });
@@ -93,22 +87,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const phaseX = Math.random() * Math.PI * 2;
     const phaseY = Math.random() * Math.PI * 2;
     let animStartTime = Date.now();
+    let isHovered = false;
+    let pausedTime = 0;
 
     cinder.style.transition = 'none';
 
+    // Pause on hover
+    cinder.addEventListener('mouseenter', () => {
+      isHovered = true;
+      pausedTime = Date.now();
+    });
+
+    cinder.addEventListener('mouseleave', () => {
+      // Adjust start time to account for pause duration
+      animStartTime += Date.now() - pausedTime;
+      isHovered = false;
+    });
+
     function float() {
-      const elapsed = Date.now() - animStartTime;
-      const offsetX = Math.sin(elapsed * floatSpeed + phaseX) * floatRadius / window.innerWidth * 100;
-      const offsetY = Math.cos(elapsed * floatSpeed * 0.7 + phaseY) * floatRadius / window.innerHeight * 100;
+      if (!isHovered) {
+        const elapsed = Date.now() - animStartTime;
+        const offsetX = Math.sin(elapsed * floatSpeed + phaseX) * floatRadius / window.innerWidth * 100;
+        const offsetY = Math.cos(elapsed * floatSpeed * 0.7 + phaseY) * floatRadius / window.innerHeight * 100;
 
-      // Keep within bounds
-      let newX = startX + offsetX;
-      let newY = startY + offsetY;
-      newX = Math.max(5, Math.min(95, newX));
-      newY = Math.max(5, Math.min(95, newY));
+        // Keep within bounds
+        let newX = startX + offsetX;
+        let newY = startY + offsetY;
+        newX = Math.max(5, Math.min(95, newX));
+        newY = Math.max(5, Math.min(95, newY));
 
-      cinder.style.left = newX + '%';
-      cinder.style.top = newY + '%';
+        cinder.style.left = newX + '%';
+        cinder.style.top = newY + '%';
+      }
 
       requestAnimationFrame(float);
     }

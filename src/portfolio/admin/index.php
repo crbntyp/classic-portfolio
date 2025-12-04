@@ -52,7 +52,13 @@ $pathPrefix = '../';
 ?>
 <?php include '../includes/html-head.php'; ?>
 
-    <div id="bgRotator" class="bg-rotator"></div>
+    <!-- Voice AI Blob Background -->
+    <div class="voice-blob-container" id="voice-blob">
+        <div class="voice-blob voice-blob--primary"></div>
+        <div class="voice-blob voice-blob--secondary"></div>
+        <div class="voice-blob voice-blob--tertiary"></div>
+        <div class="voice-blob voice-blob--core"></div>
+    </div>
 
     <?php include '../includes/user-nav.php'; ?>
     <?php include '../includes/about-us-modal.php'; ?>

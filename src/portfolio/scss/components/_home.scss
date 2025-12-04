@@ -5,6 +5,39 @@
  * Styles for the landing page layout
  */
 
+// Custom cursor
+.custom-cursor {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    opacity: 0.25;
+}
+
+.custom-cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+}
+
+.home-body {
+    cursor: none;
+
+    a, button {
+        cursor: none;
+    }
+}
+
 // Particle canvas background
 #particle-canvas {
     position: fixed;
@@ -36,55 +69,54 @@
 // Blob-styled text - looks like the nav blobs
 .blob-text {
     font-family: $font-family-primary;
-    font-size: 200px;
+    font-size: 125px;
     font-weight: 800;
     margin: 0;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     position: relative;
     display: inline-block;
     clip-path: inset(0 0 44% 0); // Show only top half
-    color: white;
+    color: #1b1b1b;
 
     @media (max-width: 1024px) {
-        font-size: 140px;
+        font-size: 88px;
     }
 
     @media (max-width: $breakpoint-mobile) {
-        font-size: 80px;
+        font-size: 50px;
     }
 
     @media (max-width: 480px) {
-        font-size: 60px;
+        font-size: 38px;
     }
 }
 
 .tagline {
     font-family: $font-family-primary;
-    font-size: 38px;
-    right: 5px;
-    font-weight: 800;
-    color: #2a2d30;
+    font-size: 24px;
+    right: 0;
+    font-weight: 400;
+    color: #1b1b1b;
     margin: 0;
-    top: -100px;
+    top: -64px;
     text-align: right;
     letter-spacing: 0.02em;
     position: relative;
 
     @media (max-width: 1024px) {
-        font-size: 28px;
-        top: -70px;
+        font-size: 18px;
+        top: -44px;
     }
 
     @media (max-width: 767px) {
-        font-size: 16px;
-        top: -40px;
+        font-size: 10px;
+        top: -25px;
         right: 0;
-        color: #3b4651;
     }
 
     @media (max-width: 480px) {
-        font-size: 14px;
-        top: -30px;
+        font-size: 9px;
+        top: -19px;
     }
 
     .tagline-text {
@@ -211,18 +243,31 @@
     display: inline-flex;
 
     &:hover .cinder-spark {
-        transform: scale(1.8);
-        opacity: 0.8;
+        transform: scale(1.5);
+        backdrop-filter: blur(12px);
     }
 }
 
 .cinder-spark {
     display: block;
-    width: 10px;
-    height: 10px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
-    opacity: 0.5;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0.7;
+    transition: transform 0.3s ease, opacity 0.3s ease, backdrop-filter 0.3s ease;
+    position: relative;
+    backdrop-filter: blur(8px);
+}
+
+// Cinder colors
+.cinder[data-color="white"] .cinder-spark {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.cinder[data-color="cyan"] .cinder-spark {
+    background: rgba(0, 255, 255, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.3);
 }
 
 // Blob animation - combines pulsing, morphing, and rotation
@@ -306,16 +351,35 @@
         gap: 4px;
         align-items: center;
         padding: 2px 5px;
+        --hover-color: cyan; // Default, overridden by JS
 
         @media (max-width: 1520px) {
             background-color: #1b1b1b;
         }
 
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 5px;
+            width: calc(100% - 10px);
+            height: 1px;
+            background: var(--hover-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
         &:hover,
         &:active,
         &.is-active {
-            background: cyan;
-            color: #1b1b1b;
+            opacity: 1;
+        }
+
+        &:hover::after,
+        &:active::after,
+        &.is-active::after {
+            transform: scaleX(1);
         }
     }
 }

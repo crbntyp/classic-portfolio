@@ -17,6 +17,14 @@ $pathPrefix = 'portfolio/';
     <?php include 'portfolio/includes/login-modal.php'; ?>
     <?php include 'portfolio/includes/about-us-modal.php'; ?>
 
+    <!-- Voice AI Blob Background -->
+    <div class="voice-blob-container" id="voice-blob">
+        <div class="voice-blob voice-blob--primary"></div>
+        <div class="voice-blob voice-blob--secondary"></div>
+        <div class="voice-blob voice-blob--tertiary"></div>
+        <div class="voice-blob voice-blob--core"></div>
+    </div>
+
     <div class="table">
       <div class="cell">
         <div class="logo-container">
@@ -32,7 +40,7 @@ $pathPrefix = 'portfolio/';
     <!-- Cinders container -->
     <div id="cinders-container">
       <?php if ($cindersResult && $cindersResult->num_rows > 0): ?>
-        <?php $colors = ['white', 'cyan']; $i = 0; ?>
+        <?php $colors = ['cyan', 'white']; $i = 0; ?>
         <?php while ($cinder = $cindersResult->fetch_assoc()): ?>
           <a href="<?php echo htmlspecialchars($cinder['url'] ?: 'portfolio/project.php?id=' . $cinder['projectID']); ?>"
              class="cinder"

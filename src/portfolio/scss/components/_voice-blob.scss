@@ -1,0 +1,348 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * Voice AI Blob Component
+ * Organic, fluid morphing blob animation inspired by voice AI assistants
+ */
+
+// Blob container - positioned behind logo
+.voice-blob-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    z-index: 1;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 1024px) {
+        width: 450px;
+        height: 450px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        width: 320px;
+        height: 320px;
+    }
+
+    @media (max-width: 480px) {
+        width: 260px;
+        height: 260px;
+    }
+}
+
+// Main blob element
+.voice-blob {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    filter: blur(60px);
+    opacity: 0.7;
+    will-change: transform, border-radius;
+}
+
+// Primary blob - cyan/teal gradient
+.voice-blob--primary {
+    background: radial-gradient(
+        ellipse at 30% 30%,
+        rgba(0, 255, 255, 0.8) 0%,
+        rgba(0, 200, 255, 0.6) 30%,
+        rgba(0, 150, 200, 0.4) 50%,
+        rgba(0, 100, 150, 0.2) 70%,
+        transparent 100%
+    );
+    animation: blobMorph1 12s linear infinite;
+}
+
+// Secondary blob - magenta/pink gradient
+.voice-blob--secondary {
+    background: radial-gradient(
+        ellipse at 70% 70%,
+        rgba(255, 0, 150, 0.7) 0%,
+        rgba(200, 0, 100, 0.5) 30%,
+        rgba(150, 0, 80, 0.3) 50%,
+        rgba(100, 0, 60, 0.15) 70%,
+        transparent 100%
+    );
+    animation: blobMorph2 15s linear infinite;
+    animation-delay: -5s;
+}
+
+// Tertiary blob - orange/fire accent
+.voice-blob--tertiary {
+    background: radial-gradient(
+        ellipse at 50% 50%,
+        rgba(255, 120, 0, 0.6) 0%,
+        rgba(255, 80, 0, 0.4) 30%,
+        rgba(200, 50, 0, 0.2) 50%,
+        transparent 70%
+    );
+    width: 70%;
+    height: 70%;
+    filter: blur(40px);
+    opacity: 0.5;
+    animation: blobMorph3 18s linear infinite;
+    animation-delay: -8s;
+}
+
+// Core glow - bright center
+.voice-blob--core {
+    background: radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(200, 255, 255, 0.6) 20%,
+        rgba(100, 200, 255, 0.3) 40%,
+        transparent 60%
+    );
+    width: 40%;
+    height: 40%;
+    filter: blur(30px);
+    opacity: 0.6;
+    animation: corePulse 6s linear infinite;
+}
+
+// Morphing keyframes - seamless organic blob movement
+// Using linear timing for rotation, separate animations for morph
+@keyframes blobMorph1 {
+    0% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        transform: scale(1) translate(0%, 0%);
+    }
+    14% {
+        border-radius: 40% 60% 50% 50% / 50% 50% 60% 40%;
+        transform: scale(1.03) translate(2%, -2%);
+    }
+    28% {
+        border-radius: 30% 60% 70% 40% / 40% 60% 30% 60%;
+        transform: scale(1.05) translate(3%, 1%);
+    }
+    42% {
+        border-radius: 50% 50% 60% 40% / 30% 50% 50% 60%;
+        transform: scale(1.02) translate(1%, 3%);
+    }
+    57% {
+        border-radius: 50% 60% 30% 60% / 30% 50% 60% 40%;
+        transform: scale(0.97) translate(-2%, 2%);
+    }
+    71% {
+        border-radius: 60% 40% 50% 50% / 60% 40% 50% 50%;
+        transform: scale(0.95) translate(-3%, -1%);
+    }
+    85% {
+        border-radius: 55% 45% 40% 60% / 55% 35% 65% 45%;
+        transform: scale(0.98) translate(-1%, -2%);
+    }
+    100% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        transform: scale(1) translate(0%, 0%);
+    }
+}
+
+@keyframes blobMorph2 {
+    0% {
+        border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+        transform: scale(0.95) translate(5%, 5%);
+    }
+    16% {
+        border-radius: 50% 50% 50% 50% / 60% 40% 60% 40%;
+        transform: scale(0.98) translate(2%, 6%);
+    }
+    33% {
+        border-radius: 60% 40% 30% 70% / 40% 60% 40% 60%;
+        transform: scale(1.02) translate(-2%, 4%);
+    }
+    50% {
+        border-radius: 30% 70% 70% 30% / 60% 40% 60% 40%;
+        transform: scale(1.05) translate(-5%, -2%);
+    }
+    66% {
+        border-radius: 50% 50% 60% 40% / 50% 50% 50% 50%;
+        transform: scale(1.02) translate(-3%, -5%);
+    }
+    83% {
+        border-radius: 70% 30% 40% 60% / 30% 70% 30% 70%;
+        transform: scale(0.98) translate(2%, -2%);
+    }
+    100% {
+        border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%;
+        transform: scale(0.95) translate(5%, 5%);
+    }
+}
+
+@keyframes blobMorph3 {
+    0% {
+        border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        transform: scale(1) translate(0%, 0%);
+    }
+    20% {
+        border-radius: 60% 40% 55% 45% / 40% 60% 45% 55%;
+        transform: scale(1.05) translate(5%, -5%);
+    }
+    40% {
+        border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%;
+        transform: scale(1.1) translate(8%, 2%);
+    }
+    60% {
+        border-radius: 45% 55% 60% 40% / 55% 45% 40% 60%;
+        transform: scale(1.02) translate(0%, 8%);
+    }
+    80% {
+        border-radius: 30% 70% 50% 50% / 70% 30% 50% 50%;
+        transform: scale(0.95) translate(-5%, 3%);
+    }
+    100% {
+        border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        transform: scale(1) translate(0%, 0%);
+    }
+}
+
+@keyframes corePulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    25% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    75% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
+
+// Reactive state - when user hovers or interacts
+.voice-blob-container.is-active {
+    .voice-blob--primary {
+        animation-duration: 4s;
+        opacity: 0.85;
+    }
+    .voice-blob--secondary {
+        animation-duration: 5s;
+        opacity: 0.75;
+    }
+    .voice-blob--tertiary {
+        animation-duration: 6s;
+        opacity: 0.65;
+    }
+    .voice-blob--core {
+        animation-duration: 2s;
+        opacity: 0.9;
+    }
+}
+
+// Listening state - more dramatic animation
+.voice-blob-container.is-listening {
+    .voice-blob {
+        animation-duration: 2s !important;
+    }
+    .voice-blob--primary {
+        filter: blur(50px);
+        opacity: 0.9;
+    }
+    .voice-blob--secondary {
+        filter: blur(45px);
+        opacity: 0.85;
+    }
+    .voice-blob--core {
+        animation-duration: 1s !important;
+        filter: blur(20px);
+        opacity: 1;
+    }
+}
+
+// Expanded state - when project overlay is open
+.voice-blob-container.is-expanded {
+    width: 1200px;
+    height: 1200px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+
+    @media (max-width: 1024px) {
+        width: 900px;
+        height: 900px;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        width: 640px;
+        height: 640px;
+    }
+
+    @media (max-width: 480px) {
+        width: 520px;
+        height: 520px;
+    }
+}
+
+// Add transition to default state so it animates back
+.voice-blob-container {
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Project overlay
+.project-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+
+    &.is-visible {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+.project-overlay__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.project-overlay__content {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    height: 50vh;
+    margin: 0 auto;
+    z-index: 1001;
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+
+    .project-overlay.is-visible & {
+        opacity: 1;
+    }
+}
+
+.project-overlay__name {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    font-family: $font-family-primary;
+    font-size: 24px;
+    font-weight: 400;
+}
