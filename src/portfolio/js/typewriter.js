@@ -137,9 +137,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.fadeTagline === 'function') {
       window.fadeTagline();
     }
+    // Play alien onload sound for returning visitors too (loop indefinitely)
+    const alienSound = new Audio('/sounds/alien-onload.mp3');
+    alienSound.volume = 0.1;
+    alienSound.loop = true;
+    alienSound.play().catch(() => {});
+    // Intensify blob colors
+    if (typeof window.intensifyBlob === 'function') {
+      window.intensifyBlob();
+    }
     if (typeof window.explodeCinders === 'function') {
       window.explodeCinders();
     }
+    // Show top nav after a short delay
+    setTimeout(() => {
+      if (typeof window.showTopNav === 'function') {
+        window.showTopNav();
+      }
+    }, 500);
   }
 
   // Main sequence
@@ -186,9 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Wait for fade to complete
         await new Promise(r => setTimeout(r, 1200));
 
-        // Play alien onload sound after fade
+        // Play alien onload sound after fade (loop indefinitely)
         const alienSound = new Audio('/sounds/alien-onload.mp3');
-        alienSound.volume = 0.4;
+        alienSound.volume = 0.1;
+        alienSound.loop = true;
         alienSound.play().catch(err => console.log('Audio error:', err));
 
         // Intensify blob colors
@@ -199,6 +215,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof window.explodeCinders === 'function') {
           window.explodeCinders();
         }
+
+        // Show top nav after a short delay
+        setTimeout(() => {
+          if (typeof window.showTopNav === 'function') {
+            window.showTopNav();
+          }
+        }, 500);
 
         // Mark animation as played for this session
         sessionStorage.setItem('taglineAnimationPlayed', 'true');

@@ -1,8 +1,8 @@
 <?php
 require_once 'portfolio/includes/init.php';
 
-// Query for non-classic entries (shown as cinders on homepage)
-$cindersQuery = "SELECT projectID, projectHeading, url FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
+// Query for all projects (shown as cinders on homepage)
+$cindersQuery = "SELECT projectID, projectHeading, url FROM projects ORDER BY sort_order ASC";
 $cindersResult = $mysqli->query($cindersQuery);
 
 // Set page variables
@@ -13,9 +13,23 @@ $pathPrefix = 'portfolio/';
 ?>
 <?php include 'portfolio/includes/html-head.php'; ?>
 
-    <?php include 'portfolio/includes/user-nav.php'; ?>
     <?php include 'portfolio/includes/login-modal.php'; ?>
     <?php include 'portfolio/includes/about-us-modal.php'; ?>
+
+    <!-- Top Navigation -->
+    <nav class="top-nav" id="top-nav">
+      <a href="/" class="top-nav__logo">crbntyp</a>
+      <div class="top-nav__center">
+        <a href="#work" class="top-nav__link">Recent Work</a>
+        <a href="#services" class="top-nav__link">What I do</a>
+        <a href="#contact" class="top-nav__link top-nav__link--button">Start a Project</a>
+      </div>
+      <div class="top-nav__socials">
+        <a href="https://github.com/jonnypyper" class="top-nav__social" target="_blank"><i class="lni lni-github"></i></a>
+        <a href="https://linkedin.com/in/jonnypyper" class="top-nav__social" target="_blank"><i class="lni lni-linkedin"></i></a>
+        <a href="https://behance.net/carbontype" class="top-nav__social" target="_blank"><i class="lni lni-behance"></i></a>
+      </div>
+    </nav>
 
     <!-- Voice AI Blob Background -->
     <div class="voice-blob-container" id="voice-blob">

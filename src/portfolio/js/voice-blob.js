@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function() {
         audio.play().catch(() => {});
     }
 
-    // Trigger a chain of 1-5 pulses in quick succession
+    // Trigger a chain of 1-5 pulses
     function triggerPulseChain() {
         const pulseCount = 1 + Math.floor(Math.random() * 5); // 1-5 pulses
-        const pulseDelay = 80 + Math.random() * 120; // 80-200ms between pulses
+        const pulseDelay = 50 + Math.random() * 100; // 50-150ms between pulses (quick chaining)
 
         // Play ONE random sound for this chain
         const chainIntensity = 0.5 + Math.random() * 0.5;
@@ -117,9 +117,9 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 15, [0.33, 0.67, 0.16]),
             morphValue(elapsed, 50, 15, [0.47, 0.53, 0.18])
         ];
-        const pScale = 1 + Math.sin(elapsed * 0.5) * 0.03 + Math.sin(elapsed * 0.23) * 0.02 + pulseScale;
-        const pTransX = Math.sin(elapsed * 0.4) * 3 + Math.sin(elapsed * 0.17) * 2;
-        const pTransY = Math.cos(elapsed * 0.35) * 3 + Math.cos(elapsed * 0.21) * 2;
+        const pScale = 1 + Math.sin(elapsed * 0.5) * 0.05 + Math.sin(elapsed * 0.23) * 0.04 + pulseScale;
+        const pTransX = Math.sin(elapsed * 0.4) * 8 + Math.sin(elapsed * 0.17) * 5;
+        const pTransY = Math.cos(elapsed * 0.35) * 8 + Math.cos(elapsed * 0.21) * 5;
         // Continuous rotation - never resets
         const pRotate = elapsed * 8 + Math.sin(elapsed * 0.3) * 15;
 
@@ -145,9 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 18, [0.3, 0.6, 0.12]),
             morphValue(elapsed, 50, 18, [0.27, 0.53, 0.1])
         ];
-        const sScale = 0.95 + Math.sin(elapsed * 0.4 + 1) * 0.04 + Math.sin(elapsed * 0.19) * 0.03 + pulseScale * 0.8;
-        const sTransX = Math.sin(elapsed * 0.3 + 2) * 4 + Math.sin(elapsed * 0.13) * 3;
-        const sTransY = Math.cos(elapsed * 0.28 + 1) * 4 + Math.cos(elapsed * 0.16) * 3;
+        const sScale = 0.95 + Math.sin(elapsed * 0.4 + 1) * 0.06 + Math.sin(elapsed * 0.19) * 0.04 + pulseScale * 0.8;
+        const sTransX = Math.sin(elapsed * 0.3 + 2) * 10 + Math.sin(elapsed * 0.13) * 6;
+        const sTransY = Math.cos(elapsed * 0.28 + 1) * 10 + Math.cos(elapsed * 0.16) * 6;
         // Counter-rotation for visual interest
         const sRotate = -elapsed * 6 + Math.sin(elapsed * 0.25 + 1) * 20;
 
@@ -171,9 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 12, [0.21, 0.39, 0.08]),
             morphValue(elapsed, 50, 12, [0.17, 0.43, 0.1])
         ];
-        const tScale = 1 + Math.sin(elapsed * 0.3) * 0.05 + Math.sin(elapsed * 0.11) * 0.03 + pulseScale * 0.6;
-        const tTransX = Math.sin(elapsed * 0.25 + 3) * 5 + Math.sin(elapsed * 0.09) * 3;
-        const tTransY = Math.cos(elapsed * 0.22 + 2) * 5 + Math.cos(elapsed * 0.12) * 3;
+        const tScale = 1 + Math.sin(elapsed * 0.3) * 0.07 + Math.sin(elapsed * 0.11) * 0.05 + pulseScale * 0.6;
+        const tTransX = Math.sin(elapsed * 0.25 + 3) * 12 + Math.sin(elapsed * 0.09) * 7;
+        const tTransY = Math.cos(elapsed * 0.22 + 2) * 12 + Math.cos(elapsed * 0.12) * 7;
         // Slower rotation with wobble
         const tRotate = elapsed * 4 + Math.sin(elapsed * 0.18) * 25;
 
@@ -213,3 +213,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
     animate();
 });
+

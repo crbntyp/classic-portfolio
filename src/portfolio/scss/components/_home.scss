@@ -468,3 +468,128 @@
         display: none;
     }
 }
+
+// Top Navigation
+.top-nav {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+
+    // All children start hidden above
+    > * {
+        transform: translateY(-50px);
+        opacity: 0;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    opacity 0.6s ease;
+    }
+
+    // Staggered delays when visible
+    &.is-visible > *:nth-child(1) { transition-delay: 0ms; }
+    &.is-visible > *:nth-child(2) { transition-delay: 100ms; }
+    &.is-visible > *:nth-child(3) { transition-delay: 200ms; }
+
+    &.is-visible > * {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        left: 16px;
+        right: 16px;
+        top: 16px;
+    }
+}
+
+.top-nav__center {
+    position: absolute;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+
+    // Override the stagger animation transforms to include centering
+    .top-nav & {
+        transform: translateX(-50%) translateY(-50px);
+    }
+
+    .top-nav.is-visible & {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        gap: 16px;
+    }
+}
+
+.top-nav__logo {
+    font-family: $font-family-primary;
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    clip-path: inset(0 0 40% 0);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+        opacity: 0.8;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 20px;
+    }
+}
+
+.top-nav__link {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: white;
+    }
+
+    @media (max-width: $breakpoint-mobile) {
+        font-size: 12px;
+    }
+
+    &--button {
+        border: 1px solid rgba(255, 0, 150, 0.6);
+        border-radius: 50px;
+        padding: 8px 20px;
+        transition: color 0.2s ease, border-color 0.2s ease;
+
+        &:hover {
+            color: white;
+            border-color: rgba(255, 0, 150, 1);
+        }
+
+        @media (max-width: $breakpoint-mobile) {
+            padding: 6px 14px;
+        }
+    }
+}
+
+.top-nav__socials {
+    display: flex;
+    gap: 16px;
+
+    @media (max-width: 550px) {
+        display: none;
+    }
+}
+
+.top-nav__social {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 18px;
+    transition: color 0.2s ease;
+
+    &:hover {
+        color: white;
+    }
+}
