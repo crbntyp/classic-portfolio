@@ -20,6 +20,53 @@ document.addEventListener('DOMContentLoaded', function() {
         blob.style.animation = 'none';
     });
 
+    // Pulse chain settings
+    let lastChainTime = 0;
+    let lastCoreOpacity = 0;
+    const CHAIN_COOLDOWN = 8000; // Minimum ms between pulse chains (8 seconds)
+    const alienSounds = ['/sounds/alien-random-1.mp3', '/sounds/alien-random-2.mp3', '/sounds/alien-random-4.mp3'];
+
+    // Visual pulse state
+    let pulseScale = 0;
+    let pulseDecay = 0.85; // Even slower decay for more impactful pulse
+
+    function playPulseSound(intensity) {
+        const soundFile = alienSounds[Math.floor(Math.random() * alienSounds.length)];
+        const audio = new Audio(soundFile);
+        audio.volume = 0.12 + intensity * 0.08;
+        audio.play().catch(() => {});
+    }
+
+    // Trigger a chain of 1-5 pulses in quick succession
+    function triggerPulseChain() {
+        const pulseCount = 1 + Math.floor(Math.random() * 5); // 1-5 pulses
+        const pulseDelay = 80 + Math.random() * 120; // 80-200ms between pulses
+
+        // Play ONE random sound for this chain
+        const chainIntensity = 0.5 + Math.random() * 0.5;
+        playPulseSound(chainIntensity);
+
+        for (let i = 0; i < pulseCount; i++) {
+            setTimeout(() => {
+                const intensity = 0.5 + Math.random() * 0.5; // 0.5-1.0
+
+                // Visual pulse - very big and impactful
+                pulseScale = intensity * 0.7;
+
+                // Logo ripple
+                if (window.triggerLogoRipple) {
+                    window.triggerLogoRipple(intensity);
+                }
+            }, i * pulseDelay);
+        }
+    }
+
+    // Intensify blob colors - called when animation finishes
+    let isIntensified = false;
+    window.intensifyBlob = function() {
+        isIntensified = true;
+    };
+
     // Mouse tracking
     let mouseX = 0;
     let mouseY = 0;
@@ -70,14 +117,15 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 15, [0.33, 0.67, 0.16]),
             morphValue(elapsed, 50, 15, [0.47, 0.53, 0.18])
         ];
-        const pScale = 1 + Math.sin(elapsed * 0.5) * 0.03 + Math.sin(elapsed * 0.23) * 0.02;
+        const pScale = 1 + Math.sin(elapsed * 0.5) * 0.03 + Math.sin(elapsed * 0.23) * 0.02 + pulseScale;
         const pTransX = Math.sin(elapsed * 0.4) * 3 + Math.sin(elapsed * 0.17) * 2;
         const pTransY = Math.cos(elapsed * 0.35) * 3 + Math.cos(elapsed * 0.21) * 2;
         // Continuous rotation - never resets
         const pRotate = elapsed * 8 + Math.sin(elapsed * 0.3) * 15;
 
-        // Intensity pulsing - opacity swells
-        const pOpacity = 0.7 + Math.sin(elapsed * 0.15) * 0.15 + Math.sin(elapsed * 0.07) * 0.1;
+        // Intensity pulsing - opacity swells (boost when intensified)
+        const intensityBoost = isIntensified ? 0.35 : 0;
+        const pOpacity = Math.min(1, 0.8 + intensityBoost + Math.sin(elapsed * 0.15) * 0.15 + Math.sin(elapsed * 0.07) * 0.1);
         // Blur variation - sharper when intense, softer when fading
         const pBlur = 60 - Math.sin(elapsed * 0.15) * 15 - Math.sin(elapsed * 0.09) * 8;
 
@@ -97,14 +145,14 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 18, [0.3, 0.6, 0.12]),
             morphValue(elapsed, 50, 18, [0.27, 0.53, 0.1])
         ];
-        const sScale = 0.95 + Math.sin(elapsed * 0.4 + 1) * 0.04 + Math.sin(elapsed * 0.19) * 0.03;
+        const sScale = 0.95 + Math.sin(elapsed * 0.4 + 1) * 0.04 + Math.sin(elapsed * 0.19) * 0.03 + pulseScale * 0.8;
         const sTransX = Math.sin(elapsed * 0.3 + 2) * 4 + Math.sin(elapsed * 0.13) * 3;
         const sTransY = Math.cos(elapsed * 0.28 + 1) * 4 + Math.cos(elapsed * 0.16) * 3;
         // Counter-rotation for visual interest
         const sRotate = -elapsed * 6 + Math.sin(elapsed * 0.25 + 1) * 20;
 
         // Intensity pulsing - offset phase from primary for interesting overlap
-        const sOpacity = 0.65 + Math.sin(elapsed * 0.12 + 2) * 0.2 + Math.sin(elapsed * 0.05 + 1) * 0.1;
+        const sOpacity = Math.min(1, 0.75 + intensityBoost + Math.sin(elapsed * 0.12 + 2) * 0.2 + Math.sin(elapsed * 0.05 + 1) * 0.1);
         const sBlur = 55 - Math.sin(elapsed * 0.12 + 2) * 12 - Math.sin(elapsed * 0.08) * 6;
 
         secondary.style.borderRadius = generateBorderRadius(s1);
@@ -123,14 +171,14 @@ document.addEventListener('DOMContentLoaded', function() {
             morphValue(elapsed, 50, 12, [0.21, 0.39, 0.08]),
             morphValue(elapsed, 50, 12, [0.17, 0.43, 0.1])
         ];
-        const tScale = 1 + Math.sin(elapsed * 0.3) * 0.05 + Math.sin(elapsed * 0.11) * 0.03;
+        const tScale = 1 + Math.sin(elapsed * 0.3) * 0.05 + Math.sin(elapsed * 0.11) * 0.03 + pulseScale * 0.6;
         const tTransX = Math.sin(elapsed * 0.25 + 3) * 5 + Math.sin(elapsed * 0.09) * 3;
         const tTransY = Math.cos(elapsed * 0.22 + 2) * 5 + Math.cos(elapsed * 0.12) * 3;
         // Slower rotation with wobble
         const tRotate = elapsed * 4 + Math.sin(elapsed * 0.18) * 25;
 
         // Orange flares up occasionally - longer cycle
-        const tOpacity = 0.45 + Math.sin(elapsed * 0.08) * 0.25 + Math.sin(elapsed * 0.03) * 0.15;
+        const tOpacity = Math.min(1, 0.6 + intensityBoost + Math.sin(elapsed * 0.08) * 0.25 + Math.sin(elapsed * 0.03) * 0.15);
         const tBlur = 40 - Math.sin(elapsed * 0.08) * 10 - Math.sin(elapsed * 0.04) * 5;
 
         tertiary.style.borderRadius = generateBorderRadius(t1);
@@ -139,14 +187,26 @@ document.addEventListener('DOMContentLoaded', function() {
         tertiary.style.filter = `blur(${tBlur}px)`;
 
         // CORE - white glow (gentle pulse, gets bright when colors intensify)
-        const coreScale = 1 + Math.sin(elapsed * 0.6) * 0.08 + Math.sin(elapsed * 0.27) * 0.05;
+        const baseCoreScale = 1 + Math.sin(elapsed * 0.6) * 0.08 + Math.sin(elapsed * 0.27) * 0.05;
+        const coreScale = baseCoreScale + pulseScale; // Add pulse effect
         // Core brightens when other blobs are intense
-        const coreOpacity = 0.5 + Math.sin(elapsed * 0.5) * 0.2 + Math.sin(elapsed * 0.31) * 0.15 + Math.sin(elapsed * 0.11) * 0.1;
+        const coreOpacity = 0.6 + intensityBoost * 0.5 + Math.sin(elapsed * 0.5) * 0.2 + Math.sin(elapsed * 0.31) * 0.15 + Math.sin(elapsed * 0.11) * 0.1;
         const coreBlur = 30 - Math.sin(elapsed * 0.5) * 8 - Math.sin(elapsed * 0.19) * 5;
 
         core.style.transform = `scale(${coreScale})`;
         core.style.opacity = coreOpacity;
         core.style.filter = `blur(${coreBlur}px)`;
+
+        // Decay pulse scale
+        pulseScale *= pulseDecay;
+
+        // Detect peaks and trigger pulse chains
+        const now = Date.now();
+        if (coreOpacity < lastCoreOpacity && lastCoreOpacity > 0.65 && now - lastChainTime > CHAIN_COOLDOWN) {
+            triggerPulseChain();
+            lastChainTime = now;
+        }
+        lastCoreOpacity = coreOpacity;
 
         requestAnimationFrame(animate);
     }

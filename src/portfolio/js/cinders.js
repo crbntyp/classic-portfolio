@@ -72,23 +72,38 @@ document.addEventListener('DOMContentLoaded', function() {
         cinder.style.left = targetX + '%';
         cinder.style.top = targetY + '%';
 
-        // After explosion, start floating
+        // After explosion, start orbiting around center
         setTimeout(() => {
-          startFloating(cinder, targetX, targetY);
+          startOrbiting(cinder, targetX, targetY, index);
         }, 1200);
       }, index * 150);
     });
   };
 
-  // Float animation for individual cinder
-  function startFloating(cinder, startX, startY) {
-    const floatSpeed = 0.0003 + Math.random() * 0.0003;
-    const floatRadius = 20 + Math.random() * 30;
-    const phaseX = Math.random() * Math.PI * 2;
-    const phaseY = Math.random() * Math.PI * 2;
+  // Orbit animation - side view (elliptical with depth effect)
+  function startOrbiting(cinder, startX, startY, index) {
+    const spark = cinder.querySelector('.cinder-spark');
+
+    // Center of orbit (screen center)
+    const centerX = 50;
+    const centerY = 50;
+
+    // Calculate initial angle and orbit radius from explosion position
+    const dx = startX - centerX;
+    const dy = startY - centerY;
+    const initialAngle = Math.atan2(dy, dx);
+    const orbitRadiusX = Math.sqrt(dx * dx + dy * dy); // Horizontal radius
+    const orbitRadiusY = orbitRadiusX * 0.3; // Vertical radius (flattened for side view)
+
+    // Orbit speed - varies per cinder
+    const orbitSpeed = 0.0001 + Math.random() * 0.00008;
+    // Direction: some orbit clockwise, some counter-clockwise
+    const direction = Math.random() > 0.5 ? 1 : -1;
+
     let animStartTime = Date.now();
     let isHovered = false;
     let pausedTime = 0;
+    let totalPausedDuration = 0;
 
     cinder.style.transition = 'none';
 
@@ -99,31 +114,45 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     cinder.addEventListener('mouseleave', () => {
-      // Adjust start time to account for pause duration
-      animStartTime += Date.now() - pausedTime;
+      totalPausedDuration += Date.now() - pausedTime;
       isHovered = false;
     });
 
-    function float() {
+    function orbit() {
       if (!isHovered) {
-        const elapsed = Date.now() - animStartTime;
-        const offsetX = Math.sin(elapsed * floatSpeed + phaseX) * floatRadius / window.innerWidth * 100;
-        const offsetY = Math.cos(elapsed * floatSpeed * 0.7 + phaseY) * floatRadius / window.innerHeight * 100;
+        const elapsed = Date.now() - animStartTime - totalPausedDuration;
 
-        // Keep within bounds
-        let newX = startX + offsetX;
-        let newY = startY + offsetY;
-        newX = Math.max(5, Math.min(95, newX));
-        newY = Math.max(5, Math.min(95, newY));
+        // Current angle in orbit
+        const currentAngle = initialAngle + elapsed * orbitSpeed * direction;
 
-        cinder.style.left = newX + '%';
-        cinder.style.top = newY + '%';
+        // Elliptical orbit (side view - wide horizontally, narrow vertically)
+        const newX = centerX + Math.cos(currentAngle) * orbitRadiusX;
+        const newY = centerY + Math.sin(currentAngle) * orbitRadiusY;
+
+        // Depth effect based on position in orbit
+        // When sin(angle) is positive, cinder is "in front" (larger, brighter)
+        // When sin(angle) is negative, cinder is "behind" (smaller, faded - behind blob)
+        const depth = Math.sin(currentAngle);
+        const scale = 0.3 + (depth + 1) * 0.85; // Scale from 0.3 (back) to 2.0 (front)
+        const opacity = 0.1 + (depth + 1) * 0.45; // Opacity from 0.1 (back/hidden) to 1.0 (front)
+
+        // Keep within screen bounds
+        const clampedX = Math.max(5, Math.min(95, newX));
+        const clampedY = Math.max(5, Math.min(95, newY));
+
+        cinder.style.left = clampedX + '%';
+        cinder.style.top = clampedY + '%';
+
+        if (spark) {
+          spark.style.transform = `scale(${scale})`;
+          spark.style.opacity = opacity;
+        }
       }
 
-      requestAnimationFrame(float);
+      requestAnimationFrame(orbit);
     }
 
-    float();
+    orbit();
   }
 
   // Reset cinders to center (for loop)

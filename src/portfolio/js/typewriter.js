@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   const textEl = document.querySelector('.tagline-text');
   const dotsEl = document.querySelector('.tagline-dots');
-  const cursorEl = document.querySelector('.tagline-cursor');
 
   if (!textEl || !dotsEl) return;
 
@@ -16,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { text: 'Award winning UI Designer', dots: true },
     { text: 'UI Engineer', dots: true },
     { text: 'People Leader', dots: true },
-    { text: 'hello@crbntyp.com', dots: false, final: true, isEmail: true }
+    { text: 'hello@crbntyp.com', dots: true, isEmail: true },
+    { text: 'loaded', dots: true, final: true }
   ];
 
   const TYPING_SPEED = 150;
@@ -124,21 +124,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Show final state immediately (skip animation)
+  // Show final state immediately (skip animation) - hide tagline completely
   function showFinalState() {
-    const finalPhrase = phrases.find(p => p.final);
-    if (finalPhrase) {
-      const link = document.createElement('a');
-      link.href = 'mailto:' + finalPhrase.text;
-      link.className = 'tagline-link';
-      link.textContent = finalPhrase.text;
-      textEl.innerHTML = '';
-      textEl.appendChild(link);
-      cursorEl.style.display = 'none';
-      hideLoading();
-      if (typeof window.explodeCinders === 'function') {
-        window.explodeCinders();
-      }
+    // For returning visitors, just hide the tagline entirely
+    const taglineEl = document.querySelector('.tagline');
+    if (taglineEl) {
+      taglineEl.style.opacity = '0';
+      taglineEl.style.visibility = 'hidden';
+    }
+    hideLoading();
+    // Trigger PixiJS tagline fade
+    if (typeof window.fadeTagline === 'function') {
+      window.fadeTagline();
+    }
+    if (typeof window.explodeCinders === 'function') {
+      window.explodeCinders();
     }
   }
 
@@ -161,12 +161,45 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (phrase.final) {
-        // Final phrase - hide cursor, loading and explode cinders
-        cursorEl.style.display = 'none';
+        // Final phrase - show dots, then fade out
+        await new Promise(r => setTimeout(r, PAUSE_AFTER_TYPING));
+        await animateDots(DOTS_DURATION);
+
         hideLoading();
+
+        // Fade out tagline (both HTML and PixiJS versions)
+        const taglineEl = document.querySelector('.tagline');
+        if (taglineEl) {
+          taglineEl.style.transition = 'opacity 1s ease';
+          taglineEl.style.opacity = '0';
+        }
+        // Trigger PixiJS tagline fade - retry if not ready yet
+        const tryFadeTagline = () => {
+          if (typeof window.fadeTagline === 'function') {
+            window.fadeTagline();
+          } else {
+            setTimeout(tryFadeTagline, 100);
+          }
+        };
+        tryFadeTagline();
+
+        // Wait for fade to complete
+        await new Promise(r => setTimeout(r, 1200));
+
+        // Play alien onload sound after fade
+        const alienSound = new Audio('/sounds/alien-onload.mp3');
+        alienSound.volume = 0.4;
+        alienSound.play().catch(err => console.log('Audio error:', err));
+
+        // Intensify blob colors
+        if (typeof window.intensifyBlob === 'function') {
+          window.intensifyBlob();
+        }
+
         if (typeof window.explodeCinders === 'function') {
           window.explodeCinders();
         }
+
         // Mark animation as played for this session
         sessionStorage.setItem('taglineAnimationPlayed', 'true');
       } else if (phrase.dots) {

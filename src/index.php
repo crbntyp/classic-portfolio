@@ -29,7 +29,7 @@ $pathPrefix = 'portfolio/';
       <div class="cell">
         <div class="logo-container">
           <h1 class="blob-text">crbntyp</h1>
-          <p class="tagline"><span class="tagline-text"></span><span class="tagline-dots"></span><span class="tagline-cursor">|</span></p>
+          <p class="tagline"><span class="tagline-text"></span><span class="tagline-dots"></span></p>
         </div>
       </div>
 
