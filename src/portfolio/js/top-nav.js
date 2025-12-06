@@ -1,6 +1,6 @@
 /**
  * Top Navigation
- * Handles the slide-down animation of the top nav after tagline fades
+ * Handles the staggered fade-in animation of nav elements
  */
 
 window.showTopNav = function() {
@@ -23,3 +23,12 @@ window.showTopNav = function() {
         setTimeout(() => logo.classList.add('is-visible'), 1200);
     }
 };
+
+// Auto-show nav after a short delay on page load
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (typeof window.showTopNav === 'function') {
+            window.showTopNav();
+        }
+    }, 800);
+});

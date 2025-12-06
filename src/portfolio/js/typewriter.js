@@ -124,6 +124,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Play ambient sound on first user interaction (browsers block autoplay)
+  function playAmbientSound() {
+    const alienSound = new Audio('/sounds/alien-onload.mp3');
+    alienSound.volume = 0.1;
+    alienSound.loop = true;
+    alienSound.play().catch(() => {});
+    // Remove listeners after first play
+    document.removeEventListener('click', playAmbientSound);
+    document.removeEventListener('mousemove', playAmbientSound);
+    document.removeEventListener('keydown', playAmbientSound);
+  }
+
   // Show final state immediately (skip animation) - hide tagline completely
   function showFinalState() {
     // For returning visitors, just hide the tagline entirely
@@ -137,11 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.fadeTagline === 'function') {
       window.fadeTagline();
     }
-    // Play alien onload sound for returning visitors too (loop indefinitely)
-    const alienSound = new Audio('/sounds/alien-onload.mp3');
-    alienSound.volume = 0.1;
-    alienSound.loop = true;
-    alienSound.play().catch(() => {});
+    // Play ambient sound on first user interaction
+    document.addEventListener('click', playAmbientSound, { once: true });
+    document.addEventListener('mousemove', playAmbientSound, { once: true });
+    document.addEventListener('keydown', playAmbientSound, { once: true });
     // Intensify blob colors
     if (typeof window.intensifyBlob === 'function') {
       window.intensifyBlob();
@@ -149,12 +160,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.explodeCinders === 'function') {
       window.explodeCinders();
     }
-    // Show top nav after a short delay
-    setTimeout(() => {
-      if (typeof window.showTopNav === 'function') {
-        window.showTopNav();
-      }
-    }, 500);
+    // Show top nav immediately for returning visitors
+    if (typeof window.showTopNav === 'function') {
+      window.showTopNav();
+    }
   }
 
   // Main sequence

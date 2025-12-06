@@ -16,20 +16,49 @@ $pathPrefix = 'portfolio/';
     <?php include 'portfolio/includes/login-modal.php'; ?>
     <?php include 'portfolio/includes/about-us-modal.php'; ?>
 
-    <!-- Top Navigation -->
+    <!-- Logo - fixed top left, rotated -->
+    <a href="/" class="site-logo" id="site-logo">crbntyp</a>
+
+    <!-- Top Navigation - far right (desktop) -->
     <nav class="top-nav" id="top-nav">
-      <a href="/" class="top-nav__logo">crbntyp</a>
-      <div class="top-nav__center">
-        <a href="#work" class="top-nav__link">Recent Work</a>
-        <a href="#services" class="top-nav__link">What I do</a>
-        <a href="#contact" class="top-nav__link top-nav__link--button">Start a Project</a>
-      </div>
-      <div class="top-nav__socials">
-        <a href="https://github.com/jonnypyper" class="top-nav__social" target="_blank"><i class="lni lni-github"></i></a>
-        <a href="https://linkedin.com/in/jonnypyper" class="top-nav__social" target="_blank"><i class="lni lni-linkedin"></i></a>
-        <a href="https://behance.net/carbontype" class="top-nav__social" target="_blank"><i class="lni lni-behance"></i></a>
-      </div>
+      <a href="#work" class="top-nav__link">Recent Work</a>
+      <a href="#services" class="top-nav__link">How I can help you</a>
+      <a href="#contact" class="top-nav__link top-nav__link--button">Start a Project</a>
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <a href="/portfolio/admin/" class="top-nav__link">Admin</a>
+      <?php else: ?>
+        <a href="#" class="top-nav__link top-nav__link--icon" id="loginTrigger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
+      <?php endif; ?>
     </nav>
+
+    <!-- Mobile Navigation -->
+    <button class="burger-menu" id="burger-menu" aria-label="Toggle menu">
+      <span class="burger-menu__line"></span>
+      <span class="burger-menu__line"></span>
+    </button>
+
+    <div class="mobile-nav" id="mobile-nav">
+      <div class="mobile-nav__backdrop" id="mobile-nav-backdrop"></div>
+      <div class="mobile-nav__content">
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <a href="/portfolio/admin/" class="mobile-nav__link">Admin</a>
+        <?php else: ?>
+          <a href="#" class="mobile-nav__link" id="mobileLoginTrigger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login</a>
+        <?php endif; ?>
+        <a href="#work" class="mobile-nav__link">Recent Work</a>
+        <a href="#services" class="mobile-nav__link">How I can help you</a>
+      </div>
+    </div>
+
+    <!-- Mobile Start a Project button -->
+    <a href="#contact" class="mobile-cta">Start a Project</a>
+
+    <!-- Social icons - fixed bottom left, stacked -->
+    <div class="site-socials" id="site-socials">
+      <a href="https://github.com/jonnypyper" class="site-socials__link" target="_blank"><i class="lni lni-github"></i></a>
+      <a href="https://linkedin.com/in/jonnypyper" class="site-socials__link" target="_blank"><i class="lni lni-linkedin"></i></a>
+      <a href="https://behance.net/carbontype" class="site-socials__link" target="_blank"><i class="lni lni-behance"></i></a>
+    </div>
 
     <!-- Voice AI Blob Background -->
     <div class="voice-blob-container" id="voice-blob">
