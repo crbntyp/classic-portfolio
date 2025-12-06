@@ -81,7 +81,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Handle nav link clicks
   document.querySelectorAll('.top-nav__link, .mobile-nav__link, .mobile-cta').forEach(link => {
     const href = link.getAttribute('href');
-    if (hashMap[href]) {
+
+    // Featured Work - under construction
+    if (href === '#work') {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Under construction');
+      });
+    }
+    // Modal links
+    else if (hashMap[href]) {
       link.addEventListener('click', (e) => {
         e.preventDefault();
 
