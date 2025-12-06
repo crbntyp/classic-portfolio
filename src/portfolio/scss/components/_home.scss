@@ -5,55 +5,6 @@
  * Styles for the landing page layout
  */
 
-// Custom cursor (desktop only)
-.custom-cursor {
-    position: fixed;
-    width: 30px;
-    height: 30px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-50%, -50%);
-    opacity: 0.25;
-
-    @media (max-width: 1024px) {
-        display: none;
-    }
-}
-
-.custom-cursor-dot {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    background: #fff;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99998;
-    transform: translate(-50%, -50%);
-    opacity: 0.5;
-
-    @media (max-width: 1024px) {
-        display: none;
-    }
-}
-
-.home-body {
-    cursor: none;
-
-    a, button {
-        cursor: none;
-    }
-
-    @media (max-width: 1024px) {
-        cursor: auto;
-
-        a, button {
-            cursor: pointer;
-        }
-    }
-}
-
 // Particle canvas background
 #particle-canvas {
     position: fixed;
@@ -542,10 +493,8 @@
         opacity: 1;
     }
 
-    @media (max-width: $breakpoint-mobile) {
-        right: 16px;
-        top: 16px;
-        gap: 16px;
+    @media (max-width: $breakpoint-tablet) {
+        display: none;
     }
 }
 
@@ -580,10 +529,6 @@
         }
     }
 
-    @media (max-width: $breakpoint-mobile) {
-        font-size: 12px;
-    }
-
     &--icon {
         // Icon-only link (lock icon)
         &::after {
@@ -597,10 +542,6 @@
         i {
             display: inline-block;
             color: inherit;
-        }
-
-        @media (max-width: $breakpoint-mobile) {
-            font-size: 14px;
         }
     }
 
@@ -619,10 +560,6 @@
             color: white;
             background-color: rgba(255, 0, 150, 1);
             border-color: rgba(255, 0, 150, 1);
-        }
-
-        @media (max-width: $breakpoint-mobile) {
-            padding: 6px 14px;
         }
     }
 }
@@ -652,7 +589,7 @@
         opacity: 1;
     }
 
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: $breakpoint-tablet) {
         bottom: 16px;
         left: 0;
         width: 80px;
@@ -672,7 +609,7 @@
 }
 
 // =============================================================================
-// MOBILE NAVIGATION (767px and below)
+// MOBILE NAVIGATION (1023px and below)
 // =============================================================================
 
 // Mobile header - contains lock icon and burger menu
@@ -685,7 +622,7 @@
     align-items: center;
     gap: 16px;
 
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: $breakpoint-tablet) {
         display: flex;
     }
 
@@ -750,7 +687,7 @@
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: $breakpoint-tablet) {
         display: flex;
     }
 
@@ -818,7 +755,7 @@
     right: 20px;
     z-index: 9999; // Below mobile-nav overlay so it gets blurred
     font-family: 'lores-12', sans-serif;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
@@ -827,7 +764,7 @@
     padding: 10px 20px;
     transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: $breakpoint-tablet) {
         display: block;
     }
 
@@ -835,12 +772,5 @@
         color: white;
         background-color: rgba(255, 0, 150, 1);
         border-color: rgba(255, 0, 150, 1);
-    }
-}
-
-// Hide desktop nav on mobile
-@media (max-width: $breakpoint-mobile) {
-    .top-nav {
-        display: none;
     }
 }

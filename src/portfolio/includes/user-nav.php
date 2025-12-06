@@ -11,16 +11,21 @@ $isHomePage = ($_SERVER['REQUEST_URI'] === '/' || $_SERVER['REQUEST_URI'] === '/
 $isAdminPage = (basename(dirname($_SERVER['PHP_SELF'])) === 'admin');
 ?>
 <div class="user-info">
-  <!-- Social links -->
   <a href="/" class="user-link<?php echo $isHomePage ? ' is-active' : ''; ?>">crbntyp home</a>
-  <a href="https://github.com/crbntyp" class="user-link" target="_blank">GitHub <i class="lni lni-arrow-angular-top-right"></i></a>
-  <a href="https://www.behance.net/jonnypyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
-  <a href="#" class="user-link" id="aboutUsTrigger">Profile</a>
+  <?php if (!$isAdminPage): ?>
+    <!-- Social links and profile (hidden on admin) -->
+    <a href="https://github.com/crbntyp" class="user-link" target="_blank">GitHub <i class="lni lni-arrow-angular-top-right"></i></a>
+    <a href="https://www.behance.net/jonnypyper" class="user-link" target="_blank">Behance <i class="lni lni-arrow-angular-top-right"></i></a>
+    <a href="#" class="user-link" id="aboutUsTrigger">Profile</a>
+  <?php endif; ?>
 
   <?php if (isset($_SESSION['user_id'])): ?>
     <!-- Logged in: Show admin links -->
     <?php if ($isAdminPage): ?>
-      <a href="#" class="user-link" id="openAddProjectModal">Add project</a>
+      <a href="#" class="user-link" id="openAddProjectModal">Add Project</a>
+      <a href="#" class="user-link" id="openAddShrugModal">Add Shrug</a>
+      <a href="#" class="user-link" id="openEditServicesModal">Edit How I can help</a>
+      <a href="#" class="user-link" id="openEditAboutModal">Edit What is crbntyp</a>
     <?php else: ?>
       <a href="<?php echo $pathPrefix; ?>admin/" class="user-link">Dashboard</a>
     <?php endif; ?>

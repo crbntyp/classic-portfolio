@@ -190,7 +190,7 @@
 }
 
 // Mobile behavior for blobs - show tooltips only when tapped
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
     .main-nav__item[data-tooltip] {
         // Hide by default
         &::before,

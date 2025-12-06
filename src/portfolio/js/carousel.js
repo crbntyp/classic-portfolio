@@ -38,9 +38,6 @@ class Carousel {
         // Create counter
         this.createCounter();
 
-        // Create custom cursor
-        this.createCustomCursor();
-
         // Wait for images to load before calculating height
         await this.waitForImages();
 
@@ -194,36 +191,6 @@ class Carousel {
         counter.textContent = `1/${this.slides.length}`;
         document.body.appendChild(counter);
         this.counter = counter;
-    }
-
-    createCustomCursor() {
-        // Create custom cursor element
-        const cursor = document.createElement('div');
-        cursor.className = 'carousel-cursor';
-        cursor.textContent = 'Read More';
-        document.body.appendChild(cursor);
-        this.customCursor = cursor;
-
-        // Setup cursor tracking
-        const holderLinks = this.container.querySelectorAll('.holder a');
-
-        holderLinks.forEach(link => {
-            // Show cursor on hover
-            link.addEventListener('mouseenter', () => {
-                this.customCursor.classList.add('active');
-            });
-
-            // Hide cursor on leave
-            link.addEventListener('mouseleave', () => {
-                this.customCursor.classList.remove('active');
-            });
-
-            // Track mouse movement
-            link.addEventListener('mousemove', (e) => {
-                this.customCursor.style.left = e.clientX + 'px';
-                this.customCursor.style.top = e.clientY + 'px';
-            });
-        });
     }
 
     updateCounter() {

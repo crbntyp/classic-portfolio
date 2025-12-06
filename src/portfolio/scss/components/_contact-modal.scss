@@ -1,0 +1,207 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * Contact Modal (Start a Project)
+ * Tier selection + contact form
+ */
+
+.modal__overlay--contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  overflow-y: auto;
+  cursor: default;
+  background: rgba(#1b1b1b, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.contact-overlay-content {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+
+  // Prevent closing modal when clicking content
+  pointer-events: auto;
+}
+
+.contact-intro {
+  color: $color-text-white-70;
+  font-size: $font-size-md;
+  margin-bottom: $spacing-md;
+}
+
+// Tier Selector
+.tier-selector {
+  margin-bottom: $spacing-md;
+
+  &__label {
+    display: block;
+    color: $color-text-white-60;
+    font-size: $font-size-sm;
+    margin-bottom: $spacing-xs;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  &__options {
+    display: flex;
+    gap: $spacing-xs;
+    justify-content: center;
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+    }
+  }
+}
+
+.tier-option {
+  flex: 1;
+  max-width: 180px;
+  padding: $spacing-sm $spacing-xs;
+  background: $color-bg-white-05;
+  border: 1px solid $color-border-white-10;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: $breakpoint-mobile) {
+    max-width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: $spacing-xs $spacing-sm;
+  }
+
+  &:hover {
+    background: $color-bg-white-10;
+    border-color: $color-border-white-20;
+  }
+
+  &--selected {
+    background: $color-primary-15;
+    border-color: $color-primary-40;
+
+    .tier-option__name {
+      color: $color-primary;
+    }
+  }
+
+  &__name {
+    color: $color-white;
+    font-size: $font-size-sm;
+    font-weight: 700;
+    transition: color $transition-fast;
+  }
+
+  &__price {
+    color: $color-text-white-60;
+    font-size: $font-size-small;
+  }
+}
+
+// Contact Form
+.contact-form {
+  text-align: left;
+
+  .form-row {
+    display: flex;
+    gap: $spacing-sm;
+
+    @media (max-width: $breakpoint-mobile) {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .form-group {
+      flex: 1;
+    }
+  }
+
+  .form-group {
+    margin-bottom: $spacing-sm;
+
+    label {
+      display: block;
+      color: $color-text-white-60;
+      font-size: $font-size-small;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: $color-bg-white-05;
+      border: 1px solid $color-border-white-10;
+      border-radius: $border-radius-md;
+      color: $color-white;
+      font-size: $font-size-base;
+      transition: border-color $transition-fast, background $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $color-primary-40;
+        background: $color-bg-white-10;
+      }
+
+      &::placeholder {
+        color: $color-text-white-50;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+  }
+
+  .error-message {
+    background: $color-error-10;
+    border: 1px solid $color-error-30;
+    color: $color-error-light;
+    padding: $spacing-xs;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-sm;
+  }
+
+  .success-message {
+    background: $color-success-10;
+    border: 1px solid $color-success-30;
+    color: $color-success;
+    padding: $spacing-xs;
+    border-radius: $border-radius-md;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-sm;
+  }
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px $spacing-sm;
+  background: $color-white;
+  color: $color-darkest;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-primary;
+    color: $color-darkest;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

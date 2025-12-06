@@ -179,7 +179,7 @@
     a {
         display: block;
         position: relative;
-        cursor: none; // Hide default cursor
+        cursor: pointer;
     }
 }
 
@@ -190,27 +190,6 @@
 
     &:hover {
         opacity: 0.8;
-    }
-}
-
-/* Custom cursor label for carousel images */
-.carousel-cursor {
-    position: fixed;
-    background: $color-bg-black-85;
-    color: $color-white;
-    padding: 6px $spacing-xs;
-    border-radius: $border-radius-xs;
-    font-size: $font-size-small;
-    font-weight: $font-weight-regular;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity $transition-fast;
-    transform: translate(-50%, -50%);
-    white-space: nowrap;
-
-    &.active {
-        opacity: 1;
     }
 }
 

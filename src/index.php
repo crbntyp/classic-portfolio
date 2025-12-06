@@ -15,14 +15,18 @@ $pathPrefix = 'portfolio/';
 
     <?php include 'portfolio/includes/login-modal.php'; ?>
     <?php include 'portfolio/includes/about-us-modal.php'; ?>
+    <?php include 'portfolio/includes/services-modal.php'; ?>
+    <?php include 'portfolio/includes/contact-modal.php'; ?>
+    <?php include 'portfolio/includes/shrug-modal.php'; ?>
 
     <!-- Logo - fixed top left, rotated -->
     <a href="/" class="site-logo" id="site-logo">crbntyp</a>
 
     <!-- Top Navigation - far right (desktop) -->
     <nav class="top-nav" id="top-nav">
-      <a href="#work" class="top-nav__link">Recent Work</a>
-      <a href="#services" class="top-nav__link">How I can help you?</a>
+      <a href="#work" class="top-nav__link">Featured Work</a>
+      <a href="#services" class="top-nav__link">How I can help you</a>
+      <a href="#shrug" class="top-nav__link">Shrug</a>
       <a href="#about" class="top-nav__link">What is crbntyp?</a>
       <a href="#contact" class="top-nav__link top-nav__link--button">Start a Project</a>
       <?php if (isset($_SESSION['user_id'])): ?>
@@ -49,8 +53,9 @@ $pathPrefix = 'portfolio/';
       <div class="mobile-nav__backdrop" id="mobile-nav-backdrop"></div>
       <div class="mobile-nav__burger-zone"></div>
       <div class="mobile-nav__content">
-        <a href="#work" class="mobile-nav__link">Recent Work</a>
-        <a href="#services" class="mobile-nav__link">How I can help you?</a>
+        <a href="#work" class="mobile-nav__link">Featured Work</a>
+        <a href="#services" class="mobile-nav__link">How I can help you</a>
+        <a href="#shrug" class="mobile-nav__link">Shrug</a>
         <a href="#about" class="mobile-nav__link">What is crbntyp?</a>
         <a href="#contact" class="mobile-nav__link">Start a Project</a>
       </div>
