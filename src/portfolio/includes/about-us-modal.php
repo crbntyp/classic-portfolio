@@ -99,59 +99,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Mobile navigation -->
-      <div class="about-nav">
-        <button class="about-nav__btn is-disabled" id="aboutNavPrev" onclick="aboutScrollLeft()">
-          <i class="lni lni-arrow-left"></i>
-        </button>
-        <button class="about-nav__btn" id="aboutNavNext" onclick="aboutScrollRight()">
-          <i class="lni lni-arrow-right"></i>
-        </button>
-      </div>
     </div>
   </div>
 </div>
-
-<script>
-function aboutScrollLeft() {
-  var grid = document.querySelector('.about-grid');
-  var prev = document.getElementById('aboutNavPrev');
-  var next = document.getElementById('aboutNavNext');
-
-  grid.scrollTo({ left: 0, behavior: 'smooth' });
-
-  // Going to start - disable left, enable right
-  prev.classList.add('is-disabled');
-  next.classList.remove('is-disabled');
-}
-
-function aboutScrollRight() {
-  var grid = document.querySelector('.about-grid');
-  var prev = document.getElementById('aboutNavPrev');
-  var next = document.getElementById('aboutNavNext');
-  var col = grid.querySelector('.about-column');
-  var width = col ? col.offsetWidth : 200;
-
-  grid.scrollBy({ left: width, behavior: 'smooth' });
-
-  // Moving right - enable left
-  prev.classList.remove('is-disabled');
-
-  // Check if at end after scroll
-  setTimeout(function() {
-    if (grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 10) {
-      next.classList.add('is-disabled');
-    }
-  }, 500);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  var aboutContent = document.querySelector('.about-overlay-content');
-  if (aboutContent) {
-    aboutContent.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-  }
-});
-</script>
