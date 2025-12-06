@@ -5,7 +5,7 @@
  * Styles for the landing page layout
  */
 
-// Custom cursor
+// Custom cursor (desktop only)
 .custom-cursor {
     position: fixed;
     width: 30px;
@@ -16,6 +16,10 @@
     z-index: 99999;
     transform: translate(-50%, -50%);
     opacity: 0.25;
+
+    @media (max-width: 1024px) {
+        display: none;
+    }
 }
 
 .custom-cursor-dot {
@@ -28,6 +32,10 @@
     z-index: 99998;
     transform: translate(-50%, -50%);
     opacity: 0.5;
+
+    @media (max-width: 1024px) {
+        display: none;
+    }
 }
 
 .home-body {
@@ -35,6 +43,14 @@
 
     a, button {
         cursor: none;
+    }
+
+    @media (max-width: 1024px) {
+        cursor: auto;
+
+        a, button {
+            cursor: pointer;
+        }
     }
 }
 
@@ -83,11 +99,11 @@
     }
 
     @media (max-width: $breakpoint-mobile) {
-        font-size: 50px;
+        font-size: 100px;
     }
 
     @media (max-width: 480px) {
-        font-size: 38px;
+        font-size: 76px;
     }
 }
 
@@ -520,6 +536,7 @@
     > *:nth-child(2) { transition-delay: 150ms; }
     > *:nth-child(3) { transition-delay: 300ms; }
     > *:nth-child(4) { transition-delay: 450ms; }
+    > *:nth-child(5) { transition-delay: 600ms; }
 
     &.is-visible > * {
         opacity: 1;
@@ -637,7 +654,9 @@
 
     @media (max-width: $breakpoint-mobile) {
         bottom: 16px;
-        left: 16px;
+        left: 0;
+        width: 80px;
+        align-items: center;
         gap: 12px;
     }
 }
@@ -656,24 +675,47 @@
 // MOBILE NAVIGATION (767px and below)
 // =============================================================================
 
-// Burger menu - left center
-.burger-menu {
+// Mobile header - contains lock icon and burger menu
+.mobile-header {
     display: none;
     position: fixed;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 20px;
+    right: 20px;
     z-index: 10001;
-    background: none;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    gap: 16px;
 
     @media (max-width: $breakpoint-mobile) {
         display: flex;
     }
+
+    &__lock {
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            color: white;
+        }
+
+        svg {
+            display: block;
+        }
+    }
+}
+
+// Burger menu
+.burger-menu {
+    display: flex;
+    background: none;
+    border: none;
+    padding: 10px;
+    margin: -10px;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 6px;
 
     &__line {
         display: block;
@@ -683,13 +725,8 @@
         transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    // Move to top right and animate to X when open
+    // Animate to X when open
     &.is-open {
-        left: auto;
-        right: 20px;
-        top: 20px;
-        transform: none;
-
         .burger-menu__line:nth-child(1) {
             transform: rotate(45deg) translate(3px, 3px);
         }
@@ -714,7 +751,7 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 
     @media (max-width: $breakpoint-mobile) {
-        display: block;
+        display: flex;
     }
 
     &.is-open {
@@ -732,6 +769,20 @@
         backdrop-filter: blur(20px);
     }
 
+    // Left zone for burger icon
+    &__burger-zone {
+        position: relative;
+        z-index: 1;
+        width: 80px;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 20px;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        flex-shrink: 0;
+    }
+
     &__content {
         position: relative;
         z-index: 1;
@@ -740,13 +791,14 @@
         justify-content: center;
         align-items: flex-start;
         height: 100%;
-        padding-left: 60px;
+        padding-left: 40px;
+        padding-right: 40px;
         gap: 24px;
     }
 
     &__link {
         font-family: 'lores-12', sans-serif;
-        font-size: 50px;
+        font-size: 30px;
         font-weight: 400;
         color: rgba(255, 255, 255, 0.8);
         text-decoration: none;
@@ -754,10 +806,6 @@
 
         &:hover {
             color: white;
-        }
-
-        i {
-            margin-right: 12px;
         }
     }
 }
@@ -768,7 +816,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 10002;
+    z-index: 9999; // Below mobile-nav overlay so it gets blurred
     font-family: 'lores-12', sans-serif;
     font-size: 12px;
     font-weight: 700;

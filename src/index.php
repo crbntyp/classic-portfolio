@@ -22,31 +22,37 @@ $pathPrefix = 'portfolio/';
     <!-- Top Navigation - far right (desktop) -->
     <nav class="top-nav" id="top-nav">
       <a href="#work" class="top-nav__link">Recent Work</a>
-      <a href="#services" class="top-nav__link">How I can help you</a>
+      <a href="#services" class="top-nav__link">How I can help you?</a>
+      <a href="#about" class="top-nav__link">What is crbntyp?</a>
       <a href="#contact" class="top-nav__link top-nav__link--button">Start a Project</a>
       <?php if (isset($_SESSION['user_id'])): ?>
-        <a href="/portfolio/admin/" class="top-nav__link">Admin</a>
+        <a href="/portfolio/admin/" class="top-nav__link top-nav__link--icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5"/></svg></a>
       <?php else: ?>
         <a href="#" class="top-nav__link top-nav__link--icon" id="loginTrigger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
       <?php endif; ?>
     </nav>
 
     <!-- Mobile Navigation -->
-    <button class="burger-menu" id="burger-menu" aria-label="Toggle menu">
-      <span class="burger-menu__line"></span>
-      <span class="burger-menu__line"></span>
-    </button>
+    <div class="mobile-header">
+      <?php if (isset($_SESSION['user_id'])): ?>
+        <a href="/portfolio/admin/" class="mobile-header__lock"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 5-5 5 5 0 0 1 5 5"/></svg></a>
+      <?php else: ?>
+        <a href="#" class="mobile-header__lock" id="mobileLoginTrigger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
+      <?php endif; ?>
+      <button class="burger-menu" id="burger-menu" aria-label="Toggle menu">
+        <span class="burger-menu__line"></span>
+        <span class="burger-menu__line"></span>
+      </button>
+    </div>
 
     <div class="mobile-nav" id="mobile-nav">
       <div class="mobile-nav__backdrop" id="mobile-nav-backdrop"></div>
+      <div class="mobile-nav__burger-zone"></div>
       <div class="mobile-nav__content">
-        <?php if (isset($_SESSION['user_id'])): ?>
-          <a href="/portfolio/admin/" class="mobile-nav__link">Admin</a>
-        <?php else: ?>
-          <a href="#" class="mobile-nav__link" id="mobileLoginTrigger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login</a>
-        <?php endif; ?>
         <a href="#work" class="mobile-nav__link">Recent Work</a>
-        <a href="#services" class="mobile-nav__link">How I can help you</a>
+        <a href="#services" class="mobile-nav__link">How I can help you?</a>
+        <a href="#about" class="mobile-nav__link">What is crbntyp?</a>
+        <a href="#contact" class="mobile-nav__link">Start a Project</a>
       </div>
     </div>
 
@@ -85,9 +91,13 @@ $pathPrefix = 'portfolio/';
       <?php if ($cindersResult && $cindersResult->num_rows > 0): ?>
         <?php $colors = ['cyan', 'white']; $i = 0; ?>
         <?php while ($cinder = $cindersResult->fetch_assoc()): ?>
-          <a href="<?php echo htmlspecialchars($cinder['url'] ?: 'portfolio/project.php?id=' . $cinder['projectID']); ?>"
+          <?php
+            $isClassicPortfolio = $cinder['url'] && strpos($cinder['url'], 'carbontype.co/archive') !== false;
+            $href = ($cinder['url'] && !$isClassicPortfolio) ? htmlspecialchars($cinder['url']) : 'javascript:void(0)';
+          ?>
+          <a href="<?php echo $href; ?>"
              class="cinder"
-             target="_blank"
+             <?php if ($cinder['url'] && !$isClassicPortfolio): ?>target="_blank"<?php endif; ?>
              data-color="<?php echo $colors[$i % 2]; ?>"
              data-tooltip="<?php echo htmlspecialchars($cinder['projectHeading']); ?>"
              data-tooltip-position="top">

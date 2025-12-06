@@ -95,8 +95,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const orbitRadiusX = Math.sqrt(dx * dx + dy * dy); // Horizontal radius
     const orbitRadiusY = orbitRadiusX * 0.3; // Vertical radius (flattened for side view)
 
-    // Orbit speed - varies per cinder
-    const orbitSpeed = 0.0001 + Math.random() * 0.00008;
+    // Orbit speed - varies per cinder (slower)
+    const orbitSpeed = 0.00004 + Math.random() * 0.00003;
     // Direction: some orbit clockwise, some counter-clockwise
     const direction = Math.random() > 0.5 ? 1 : -1;
 
