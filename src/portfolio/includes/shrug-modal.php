@@ -29,7 +29,7 @@ krsort($shrugMonths);
         <h2 class="shrug-title">Shrug</h2>
         <p class="shrug-subtitle">Thoughts, observations, and things that make me go "meh"</p>
 
-        <?php if (count($shrugMonths) > 1): ?>
+        <?php if (count($shrugMonths) >= 1): ?>
         <!-- Date Filter -->
         <div class="shrug-filter" id="shrugFilter">
           <button class="shrug-filter__btn shrug-filter__btn--active" data-filter="all">All</button>
