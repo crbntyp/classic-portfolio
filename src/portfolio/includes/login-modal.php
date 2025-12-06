@@ -2,7 +2,7 @@
 <div class="modal" id="loginModal">
   <div class="modal__overlay"></div>
   <div class="modal__content modal__content--narrow">
-    <button class="modal__close" id="modalClose">close window</button>
+    <button class="modal__close" id="modalClose"></button>
     <h2 class="modal__logo-text">crbntyp</h2>
     <form class="login-form" id="loginForm">
       <div id="loginError" class="error-message" style="display: none;"></div>
