@@ -2,32 +2,110 @@
 
 /**
  * Services Modal (How I can help you)
- * 3-tier pricing cards
+ * 3-tier pricing cards - styled to match Shrug modal
  */
 
 .modal__overlay--services {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: $spacing-md;
+  padding: $spacing-lg $spacing-md;
   overflow-y: auto;
   cursor: default;
   background: rgba(#1b1b1b, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  .modal:not(.active) & {
+    pointer-events: none !important;
+  }
 }
 
 .services-overlay-content {
-  max-width: 1100px;
-  width: 100%;
-  text-align: center;
+  width: 90vw;
+  max-width: 1200px;
   pointer-events: auto;
+  padding: $spacing-lg 0;
 }
 
-.services-intro {
-  color: $color-text-white-70;
-  font-size: $font-size-md;
+// Header - centered title and subtitle
+.services-header {
+  text-align: center;
   margin-bottom: $spacing-lg;
+}
+
+.services-title {
+  font-family: $font-family-primary;
+  font-size: 72px;
+  font-weight: 800;
+  color: $color-white;
+  margin: 0;
+  clip-path: inset(0 0 44% 0);
+  line-height: 1;
+  margin-bottom: -20px;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+    margin-bottom: -12px;
+  }
+}
+
+.services-subtitle {
+  font-family: 'lores-12', sans-serif;
+  color: $color-text-white-50;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 11px;
+  }
+}
+
+// Budget note
+.services-note {
+  font-family: 'lores-12', sans-serif;
+  color: #4CAF50;
+  font-size: 14px;
+  text-align: center;
+  margin: 0 0 $spacing-lg;
+  padding: $spacing-sm $spacing-md;
+  line-height: 1.6;
+  border: 1px solid #4CAF50;
+  position: relative;
+  overflow: hidden;
+
+  // Glass reflection animation
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    transform: skewX(-20deg);
+    animation: glass-reflection 12s ease-in-out infinite;
+  }
+}
+
+@keyframes glass-reflection {
+  0% {
+    left: -100%;
+  }
+  15% {
+    left: 150%;
+  }
+  100% {
+    left: 150%;
+  }
 }
 
 // Pricing Grid
@@ -46,26 +124,19 @@
 
 // Pricing Card
 .pricing-card {
-  background: $color-bg-white-05;
-  border: 1px solid $color-border-white-10;
-  border-radius: $border-radius-lg;
+
+  border-radius: 0;
   padding: $spacing-md;
   text-align: center;
   position: relative;
-  transition: transform $transition-fast, border-color $transition-fast;
-
-  &:hover {
-    border-color: $color-border-white-20;
-  }
+  transition: all $transition-fast;
+  backdrop-filter: blur(10px);
 
   // Featured card (middle tier)
   &--featured {
-    background: $color-bg-white-10;
-    border-color: $color-primary-30;
-    transform: scale(1.05);
+    
 
     @media (max-width: $breakpoint-tablet) {
-      transform: none;
       order: -1; // Show first on mobile
     }
 
@@ -92,9 +163,10 @@
     background: $color-primary;
     color: $color-darkest;
     padding: 4px 14px;
-    border-radius: $border-radius-pill;
-    font-size: $font-size-xs;
-    font-weight: 700;
+    border-radius: 0;
+    font-family: 'lores-12', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -108,9 +180,10 @@
   }
 
   &__tier {
+    font-family: 'lores-12', sans-serif;
     color: $color-white;
-    font-size: $font-size-lg;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 300;
     margin: 0 0 $spacing-xs;
   }
 
@@ -123,13 +196,15 @@
   }
 
   &__currency {
+    font-family: $font-family-primary;
     color: $color-text-white-60;
-    font-size: $font-size-large;
+    font-size: 24px;
     font-weight: 400;
     margin-top: 8px;
   }
 
   &__amount {
+    font-family: $font-family-primary;
     color: $color-white;
     font-size: 56px;
     font-weight: 800;
@@ -137,8 +212,9 @@
   }
 
   &__desc {
+    font-family: 'lores-12', sans-serif;
     color: $color-text-white-50;
-    font-size: $font-size-sm;
+    font-size: 11px;
     margin: 0;
   }
 
@@ -150,10 +226,11 @@
     text-align: left;
 
     li {
+      font-family: 'lores-12', sans-serif;
       padding: 10px 0;
       border-bottom: 1px solid $color-border-white-10;
-      color: $color-text-white-80;
-      font-size: $font-size-sm;
+      color: $color-text-white-70;
+      font-size: 11px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -164,10 +241,10 @@
 
       &::before {
         content: '';
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
         background: $color-primary-20;
-        border-radius: 50%;
+        border-radius: 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -182,16 +259,19 @@
 
   // CTA button
   &__cta {
+    font-family: 'lores-12', sans-serif;
     width: 100%;
     padding: 14px $spacing-sm;
     background: $color-white;
     color: $color-darkest;
     border: none;
-    border-radius: $border-radius-md;
-    font-size: $font-size-base;
-    font-weight: 700;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 400;
     cursor: pointer;
     transition: all $transition-fast;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     &:hover {
       background: $color-primary;

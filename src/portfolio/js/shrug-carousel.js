@@ -1,101 +1,71 @@
 /**
- * Shrug Carousel
- * Horizontal carousel for shrug entries when 4+ exist
+ * Shrug Masonry
+ * Masonry grid layout for shrug entries with date filtering
  */
 
-class ShrugCarousel {
+class ShrugMasonry {
   constructor() {
     this.container = document.getElementById('shrugEntries');
-    this.prevBtn = document.getElementById('shrugNavPrev');
-    this.nextBtn = document.getElementById('shrugNavNext');
-    this.counter = document.getElementById('shrugNavCounter');
+    this.filterContainer = document.getElementById('shrugFilter');
+    this.masonry = null;
 
     if (!this.container) return;
 
     this.entries = this.container.querySelectorAll('.shrug-entry');
-    this.totalCount = parseInt(this.container.dataset.count) || this.entries.length;
-    this.visibleCount = 3;
-    this.currentIndex = 0;
+    if (this.entries.length === 0) return;
 
-    // Only initialize if 4+ entries
-    if (this.totalCount >= 4) {
-      this.init();
-    }
+    this.init();
+    this.initFilter();
   }
 
   init() {
-    if (this.prevBtn) {
-      this.prevBtn.addEventListener('click', () => this.prev());
-    }
-
-    if (this.nextBtn) {
-      this.nextBtn.addEventListener('click', () => this.next());
-    }
-
-    // Handle scroll events for manual scrolling
-    this.container.addEventListener('scroll', () => this.onScroll());
-
-    this.updateUI();
-  }
-
-  prev() {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-      this.scrollToIndex();
-    }
-  }
-
-  next() {
-    const maxIndex = Math.max(0, this.totalCount - this.visibleCount);
-    if (this.currentIndex < maxIndex) {
-      this.currentIndex++;
-      this.scrollToIndex();
-    }
-  }
-
-  scrollToIndex() {
-    const entry = this.entries[this.currentIndex];
-    if (entry) {
-      const scrollLeft = entry.offsetLeft - this.container.offsetLeft;
-      this.container.scrollTo({
-        left: scrollLeft,
-        behavior: 'smooth'
+    // Initialize Masonry
+    if (typeof Masonry !== 'undefined') {
+      this.masonry = new Masonry(this.container, {
+        itemSelector: '.shrug-entry:not(.is-hidden)',
+        columnWidth: '.shrug-entry:not(.is-hidden)',
+        percentPosition: true,
+        gutter: 20,
+        transitionDuration: '0.3s'
       });
     }
-    this.updateUI();
   }
 
-  onScroll() {
-    // Debounce scroll updates
-    clearTimeout(this.scrollTimeout);
-    this.scrollTimeout = setTimeout(() => {
-      // Calculate current index based on scroll position
-      const entryWidth = this.entries[0]?.offsetWidth || 0;
-      const gap = 20; // Match SCSS $spacing-sm
-      const scrollPos = this.container.scrollLeft;
+  initFilter() {
+    if (!this.filterContainer) return;
 
-      this.currentIndex = Math.round(scrollPos / (entryWidth + gap));
-      this.updateUI();
-    }, 100);
+    const buttons = this.filterContainer.querySelectorAll('.shrug-filter__btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active state
+        buttons.forEach(b => b.classList.remove('shrug-filter__btn--active'));
+        btn.classList.add('shrug-filter__btn--active');
+
+        // Filter entries
+        const filter = btn.dataset.filter;
+        this.filterEntries(filter);
+      });
+    });
   }
 
-  updateUI() {
-    const maxIndex = Math.max(0, this.totalCount - this.visibleCount);
+  filterEntries(filter) {
+    this.entries.forEach(entry => {
+      if (filter === 'all' || entry.dataset.month === filter) {
+        entry.classList.remove('is-hidden');
+      } else {
+        entry.classList.add('is-hidden');
+      }
+    });
 
-    // Update buttons
-    if (this.prevBtn) {
-      this.prevBtn.classList.toggle('is-disabled', this.currentIndex === 0);
-    }
+    // Refresh masonry layout
+    this.refresh();
+  }
 
-    if (this.nextBtn) {
-      this.nextBtn.classList.toggle('is-disabled', this.currentIndex >= maxIndex);
-    }
-
-    // Update counter
-    if (this.counter) {
-      const start = this.currentIndex + 1;
-      const end = Math.min(this.currentIndex + this.visibleCount, this.totalCount);
-      this.counter.textContent = `${start}-${end} of ${this.totalCount}`;
+  // Reinitialize masonry (useful after content changes)
+  refresh() {
+    if (this.masonry) {
+      this.masonry.reloadItems();
+      this.masonry.layout();
     }
   }
 }
@@ -103,16 +73,21 @@ class ShrugCarousel {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize immediately if modal is already in DOM
-  new ShrugCarousel();
+  let shrugMasonry = new ShrugMasonry();
 
-  // Also reinitialize when shrug modal opens (in case of dynamic content)
+  // Also reinitialize when shrug modal opens
   const shrugModal = document.getElementById('shrugModal');
   if (shrugModal) {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class' && shrugModal.classList.contains('active')) {
           // Small delay to ensure DOM is ready
-          setTimeout(() => new ShrugCarousel(), 100);
+          setTimeout(() => {
+            shrugMasonry = new ShrugMasonry();
+            if (shrugMasonry.masonry) {
+              shrugMasonry.refresh();
+            }
+          }, 100);
         }
       });
     });

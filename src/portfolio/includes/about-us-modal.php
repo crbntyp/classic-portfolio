@@ -1,9 +1,7 @@
 <!-- About Us Modal -->
 <div class="modal modal--fullscreen" id="aboutUsModal">
   <div class="modal__overlay modal__overlay--about">
-    <button class="modal__close" id="aboutUsModalClose">
-      <i class="lni lni-close"></i>
-    </button>
+    <button class="modal__close" id="aboutUsModalClose">close window</button>
     <div class="about-overlay-content">
       <h2 class="modal__logo-text">crbntyp</h2>
 
@@ -12,8 +10,19 @@
         <div class="about-column">
           <h3 class="about-column__title">About</h3>
           <div class="about-column__content">
-            <p>Engineering Manager with over 25 years of industry experience. Award-winning UI designer, UI engineer, and people leader with a passion for building products and people that make a difference.</p>
-            <p>Currently leading multi-stack engineering teams, inspiring junior engineers, and building user experiences that delight.</p>
+            <p class="about-tagline">Engineering Manager with a Design Heart &amp; Technical Mind</p>
+            <p>You don't survive 25 years in the tech industry by standing still. I am an autodidact to my core—I have spent my career pivoting, learning, and evolving alongside the technology itself. I don't just manage the process; I have learned every role within it from scratch.</p>
+
+            <p class="about-section-title">The Design &amp; Engineering Lens (1999–2013)</p>
+            <p>My career began when the web was young and roles weren't siloed. Back then, UX, UI, and content were all one job—if you designed it, you built it. At Magnett Systems I did exactly that, eventually growing into a Head of Design role at i3 Digital and Engage. That decade of doing everything taught me how to deliver award-winning work from concept to code.</p>
+
+            <p class="about-section-title">The Architecture Lens (2013–2018)</p>
+            <p>As the industry matured and specialised, so did I. At the BBC and Rapid7, I evolved into a UI Engineer and Architect—bridging design and development at scale. I understand the constraints my team faces today because I spent years solving them myself.</p>
+
+            <p class="about-section-title">The Leadership Lens (Present)</p>
+            <p>Today, I lead multi-stack engineering teams at Rapid7. Being self-taught has made me a more empathetic leader; I know how hard it is to master a new skill. I focus on inspiring junior engineers, fostering psychological safety, and encouraging my team to own their own growth.</p>
+
+            <p class="about-current">Currently: Engineering Manager at Rapid7.<br>Motto: Never stop learning.</p>
           </div>
         </div>
 
@@ -72,10 +81,6 @@
                 <i class="lni lni-behance"></i>
                 <span>Behance</span>
               </a>
-              <a href="<?php echo $pathPrefix; ?>portfolio.php" class="about-social-link">
-                <i class="lni lni-gallery"></i>
-                <span>Classic Portfolio</span>
-              </a>
               <a href="https://github.com/crbntyp" target="_blank" class="about-social-link">
                 <i class="lni lni-git"></i>
                 <span>GitHub</span>
@@ -84,6 +89,12 @@
                 <i class="lni lni-instagram"></i>
                 <span>Instagram</span>
               </a>
+            </div>
+
+            <h3 class="about-column__title about-column__title--spaced">Bookmarks</h3>
+            <div class="about-bookmarks">
+              <a href="https://www.anthropic.com" target="_blank">Anthropic</a>
+              <a href="https://designvault.io/" target="_blank">Design Vault</a>
             </div>
           </div>
         </div>

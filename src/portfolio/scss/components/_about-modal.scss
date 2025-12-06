@@ -1,0 +1,336 @@
+@use '../abstracts/variables' as *;
+
+/**
+ * About Modal
+ * Styled to match Shrug Modal
+ */
+
+.modal__overlay--about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  overflow-y: auto;
+  cursor: default;
+  background: rgba(#1b1b1b, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.about-overlay-content {
+  max-width: 1200px;
+  width: 100%;
+  pointer-events: auto;
+  overflow: visible;
+  position: relative;
+  z-index: 10;
+}
+
+// Ensure about columns are above any other overlays
+.about-column__content {
+  position: relative;
+  z-index: 10;
+}
+
+// Logo text
+.modal__logo-text {
+  font-family: $font-family-primary;
+  font-size: 72px;
+  font-weight: 800;
+  color: $color-white;
+  margin: 0 0 $spacing-xs;
+  clip-path: inset(0 0 44% 0);
+  line-height: 1;
+  margin-bottom: -20px;
+  text-align: center;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 48px;
+    margin-bottom: -12px;
+  }
+}
+
+// About Grid - 25% / 50% / 25% columns
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+  pointer-events: auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    grid-template-columns: 1fr;
+    max-height: 60vh;
+    overflow-y: auto;
+    overflow-x: visible;
+  }
+}
+
+// About Columns
+.about-column {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    min-height: 200px;
+  }
+
+  &__title {
+    font-family: 'lores-12', sans-serif;
+    color: $color-white;
+    font-size: 18px;
+    font-weight: 300;
+    margin: 0 0 4px;
+    padding-bottom: $spacing-xs;
+    border-bottom: 1px solid $color-border-white-10;
+    text-transform: none;
+    letter-spacing: 0;
+
+    &--spaced {
+      margin-top: $spacing-md;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    font-family: 'lores-12', sans-serif;
+    color: $color-text-white-70;
+    font-size: 11px;
+    line-height: 1.7;
+    padding-right: 0;
+    padding-bottom: 0;
+
+    // Custom scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: $color-bg-white-20 transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $color-bg-white-20;
+      border-radius: 2px;
+    }
+  }
+
+  p {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    line-height: 1.7;
+    color: $color-text-white-70;
+    margin: 0 0 $spacing-xs;
+    font-weight: 300;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// About section typography
+.about-tagline {
+  font-family: 'lores-12', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: $color-white;
+  margin-bottom: $spacing-sm !important;
+}
+
+.about-section-title {
+  font-family: 'lores-12', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-primary;
+  margin-top: $spacing-sm !important;
+  margin-bottom: 4px !important;
+}
+
+.about-current {
+  font-family: 'lores-12', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: $color-white;
+  margin-top: $spacing-sm !important;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $color-border-white-10;
+}
+
+// Column subtitle (for sub-sections like Bookmarks)
+.about-column__subtitle {
+  font-family: 'lores-12', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: $color-white;
+  margin: $spacing-md 0 $spacing-xs;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $color-border-white-10;
+}
+
+// Bookmarks section
+.about-bookmarks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  a {
+    display: block;
+    color: $color-text-white-70;
+    text-decoration: none;
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    padding: 6px 0;
+    transition: all $transition-fast;
+    font-weight: 300;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      color: $color-primary;
+    }
+  }
+}
+
+// Work list styling
+.about-work-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    color: $color-text-white-70;
+    padding: $spacing-2xs 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-weight: 300;
+    display: flex;
+    align-items: start;
+    gap: $spacing-2xs;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    &:first-child {
+      flex-direction: column;
+      gap: 4px;
+      padding-top: 0;
+    }
+  }
+
+  .project-year {
+    font-family: 'lores-12', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    color: $color-text-white-50;
+    background: $color-bg-white-05;
+    padding: 2px 6px;
+    border-radius: 0;
+    flex-shrink: 0;
+
+    &--present {
+      background: $color-primary;
+      color: $color-darkest;
+    }
+  }
+}
+
+// Social links styling
+.about-social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-social-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2xs;
+  color: $color-text-white-70;
+  text-decoration: none;
+  font-family: 'lores-12', sans-serif;
+  font-size: 11px;
+  padding: 6px 0;
+  transition: all $transition-fast;
+  font-weight: 300;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  pointer-events: auto;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  i {
+    font-size: 16px;
+    width: 20px;
+    color: $color-text-white-50;
+    transition: color $transition-fast;
+  }
+
+  &:hover {
+    color: $color-white;
+
+    i {
+      color: $color-primary;
+    }
+  }
+}
+
+// Mobile navigation
+.about-nav {
+  display: none;
+
+  @media (max-width: $breakpoint-tablet) {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-xs;
+    margin-top: $spacing-sm;
+  }
+}
+
+.about-nav__btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: 50%;
+  color: $color-white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(.is-disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &.is-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}

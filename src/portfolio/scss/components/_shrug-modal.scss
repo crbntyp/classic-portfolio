@@ -7,46 +7,31 @@
 
 .modal__overlay--shrug {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: $spacing-md;
+  padding: $spacing-lg $spacing-md;
   overflow-y: auto;
   cursor: default;
   background: rgba(#1b1b1b, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+
+  // Ensure overlay doesn't block when modal is inactive
+  .modal:not(.active) & {
+    pointer-events: none !important;
+  }
 }
 
 .shrug-overlay-content {
-  max-width: 1200px;
-  width: 100%;
+  width: 90vw;
   pointer-events: auto;
+  padding: $spacing-lg 0;
 }
 
-// Grid Layout
-.shrug-grid {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: $spacing-md;
-  align-items: start;
-
-  @media (max-width: $breakpoint-tablet) {
-    grid-template-columns: 1fr;
-    gap: $spacing-sm;
-  }
-}
-
-// Title Column (fixed)
-.shrug-column--title {
-  position: sticky;
-  top: $spacing-md;
-  text-align: left;
-
-  @media (max-width: $breakpoint-tablet) {
-    position: static;
-    text-align: center;
-    margin-bottom: $spacing-sm;
-  }
+// Header - centered title and subtitle
+.shrug-header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
 }
 
 .shrug-title {
@@ -54,7 +39,7 @@
   font-size: 72px;
   font-weight: 800;
   color: $color-white;
-  margin: 0 0 $spacing-xs;
+  margin: 0;
   clip-path: inset(0 0 44% 0);
   line-height: 1;
   margin-bottom: -20px;
@@ -66,79 +51,72 @@
 }
 
 .shrug-subtitle {
+  font-family: 'lores-12', sans-serif;
   color: $color-text-white-50;
-  font-size: $font-size-sm;
+  font-size: 12px;
   margin: 0;
   line-height: 1.5;
 
   @media (max-width: $breakpoint-tablet) {
-    font-size: $font-size-small;
+    font-size: 11px;
   }
 }
 
-// Entries Container
-.shrug-entries {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-sm;
-
-  // When in carousel mode
-  .has-carousel & {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  @media (max-width: $breakpoint-tablet) {
-    grid-template-columns: 1fr;
-    max-height: 60vh;
-    overflow-y: auto;
-
-    .has-carousel & {
-      display: grid;
-      overflow-x: visible;
-      scroll-snap-type: none;
-    }
-  }
-}
-
-// Individual Entry
-.shrug-entry {
-  background: $color-bg-white-05;
-  border: 1px solid $color-border-white-10;
-  border-radius: $border-radius-lg;
-  padding: $spacing-sm;
-  height: 320px;
+// Date Filter
+.shrug-filter {
   display: flex;
-  flex-direction: column;
-  transition: border-color $transition-fast;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: $spacing-2xs;
+  margin-top: $spacing-sm;
 
-  // Carousel mode sizing
-  .has-carousel & {
-    min-width: calc(33.333% - #{$spacing-sm});
-    flex-shrink: 0;
-    scroll-snap-align: start;
+  &__btn {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    color: $color-text-white-50;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all $transition-fast;
 
-    @media (max-width: $breakpoint-tablet) {
-      min-width: 100%;
+    &:hover {
+      color: $color-white;
+    }
+
+    &--active {
+      color: $color-primary;
+      border-color: $color-primary;
     }
   }
+}
 
-  &:hover {
-    border-color: $color-border-white-20;
+// Masonry Grid Container - full width
+.shrug-entries {
+  width: 100%;
+}
+
+// Individual Entry - Masonry item
+.shrug-entry {
+  width: calc(25% - 15px); // 4 columns with gap
+  margin-bottom: $spacing-sm;
+  padding: $spacing-sm;
+  //background: $color-bg-white-05;
+  //border: 1px solid $color-border-white-10;
+  border-radius: 0;
+  transition: all $transition-fast;
+
+  &.is-hidden {
+    display: none;
   }
 
+
   @media (max-width: $breakpoint-tablet) {
-    height: auto;
-    min-height: 200px;
+    width: calc(50% - 10px); // 2 columns on tablet
+  }
+
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%; // 1 column on mobile
   }
 
   &__header {
@@ -148,49 +126,42 @@
   }
 
   &__title {
+    font-family: 'lores-12', sans-serif;
     color: $color-white;
-    font-size: $font-size-md;
-    font-weight: 700;
+    font-size: 18px;
+    font-weight: 300;
     margin: 0 0 4px;
   }
 
   &__date {
+    font-family: 'lores-12', sans-serif;
     color: $color-text-white-50;
-    font-size: $font-size-xs;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
+  &__author {
+    color: $color-primary;
+  }
+
   &__content {
-    flex: 1;
-    overflow-y: auto;
+    font-family: 'lores-12', sans-serif;
     color: $color-text-white-70;
-    font-size: $font-size-sm;
-    line-height: 1.6;
-
-    // Custom scrollbar
-    scrollbar-width: thin;
-    scrollbar-color: $color-bg-white-20 transparent;
-
-    &::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: $color-bg-white-20;
-      border-radius: 2px;
-    }
+    font-size: 11px;
+    line-height: 1.7;
 
     p {
       margin: 0 0 $spacing-xs;
+      font-size: 11px;
 
       &:last-child {
         margin-bottom: 0;
       }
+    }
+
+    strong {
+      font-weight: 700;
     }
   }
 }
@@ -204,47 +175,4 @@
   font-size: $font-size-md;
 }
 
-// Navigation
-.shrug-nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $spacing-sm;
-  margin-top: $spacing-md;
-
-  @media (max-width: $breakpoint-tablet) {
-    display: none;
-  }
-
-  &__btn {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: $color-bg-white-10;
-    border: 1px solid $color-border-white-20;
-    border-radius: 50%;
-    color: $color-white;
-    font-size: 18px;
-    cursor: pointer;
-    transition: all $transition-fast;
-
-    &:hover:not(.is-disabled) {
-      background: $color-bg-white-20;
-      border-color: $color-primary-40;
-    }
-
-    &.is-disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-  }
-
-  &__counter {
-    color: $color-text-white-50;
-    font-size: $font-size-sm;
-    min-width: 80px;
-    text-align: center;
-  }
-}
+// Navigation removed - using masonry grid instead of carousel

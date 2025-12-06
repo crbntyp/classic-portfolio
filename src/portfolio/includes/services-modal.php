@@ -1,12 +1,15 @@
 <!-- Services Modal (How I can help you) -->
 <div class="modal modal--fullscreen" id="servicesModal">
   <div class="modal__overlay modal__overlay--services">
-    <button class="modal__close" id="servicesModalClose">
-      <i class="lni lni-close"></i>
-    </button>
+    <button class="modal__close" id="servicesModalClose">close window</button>
     <div class="services-overlay-content">
-      <h2 class="modal__logo-text">crbntyp</h2>
-      <p class="services-intro">Tailored web solutions for every need</p>
+      <!-- Centered Header -->
+      <div class="services-header">
+        <h2 class="services-title">lets work together</h2>
+        <p class="services-subtitle">Here for local businesses, we're keen to give you what you need at a 5th of the price</p>
+      </div>
+
+      <p class="services-note">If these prices are still out of budget, let's still have a chat — grab me on hello@crbntyp.com any time to discuss!</p>
 
       <div class="pricing-grid">
         <!-- Tier 1: Static -->

@@ -17,8 +17,9 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     padding: $spacing-sm 0;
     overflow-y: auto;
 
@@ -35,6 +36,7 @@
 
     &.active {
         opacity: 1;
+        visibility: visible;
         pointer-events: all;
     }
 
@@ -49,21 +51,6 @@
         -webkit-backdrop-filter: $blur-md;
         cursor: pointer;
 
-        // About modal overlay - contains content directly
-        &--about {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: $spacing-md;
-            overflow-y: auto;
-            cursor: default;
-            background: rgba(#1b1b1b, 0.6);
-            backdrop-filter: none;
-
-            @media (max-width: $breakpoint-mobile) {
-                padding: $spacing-sm;
-            }
-        }
     }
 
     // Fullscreen modal variant (no modal__content box)
@@ -152,25 +139,24 @@
 
     &__close {
         position: fixed;
-        top: 15px;
-        right: 15px;
+        top: 20px;
+        right: 20px;
         background: none;
         border: none;
         color: $color-white;
-        font-size: 18px;
+        font-family: 'lores-12', sans-serif;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
         cursor: pointer;
-        opacity: 0.7;
+        opacity: 0.5;
         transition: opacity $transition-fast;
-        padding: 5px;
+        padding: 8px 12px;
         line-height: 1;
         z-index: 20001;
 
         &:hover {
             opacity: 1;
-        }
-
-        i {
-            display: block;
         }
     }
 }
@@ -497,279 +483,4 @@
     height: 120px;
 }
 
-// About overlay content wrapper
-.about-overlay-content {
-    max-width: 900px;
-    width: 100%;
-    text-align: center;
-    color: $color-white;
-    position: relative;
-    z-index: 1;
-}
-
-.modal__overlay--about{
-    backdrop-filter: blur(10px);
-}
-
-// About Us Modal styles
-.about-us-content {
-    color: $color-text-white-90;
-    font-size: $font-size-sm;
-    line-height: 1.6;
-    text-align: left;
-    letter-spacing: 0;
-    font-weight: 300;
-
-    p {
-        margin: 0 0 $spacing-xs 0;
-
-        &:last-of-type {
-            margin-bottom: $spacing-sm;
-        }
-        span{
-            font-size: 30px;
-            display: block;
-            line-height: 38px;
-            margin-bottom: 20px;
-            font-weight: 800;
-
-            @media (max-width: $breakpoint-mobile) {
-                font-size: $font-size-h5;
-                line-height: 1.4;
-                margin-bottom: $spacing-xs;
-            }
-        }
-    }
-
-    .about-us-links {
-        display: flex;
-        gap: $spacing-xs;
-        justify-content: center;
-        margin-top: $spacing-sm;
-
-        .about-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: $spacing-2xs $spacing-xs;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: $border-radius-md;
-            color: $color-white;
-            font-size: $font-size-xs;
-            font-weight: $font-weight-semibold;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all $transition-fast;
-
-            i {
-                font-size: 18px;
-            }
-
-            &:hover {
-                background: rgba(255, 255, 255, 0.2);
-                border-color: rgba(255, 255, 255, 0.4);
-                transform: translateY(-2px);
-            }
-        }
-    }
-}
-
-// About Modal 3-column grid
-.about-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: $spacing-lg;
-    text-align: left;
-    margin-top: $spacing-sm;
-    height: 310px;
-
-    @media (max-width: $breakpoint-mobile) {
-        display: flex;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        gap: 0;
-        height: 350px;
-        margin: $spacing-sm (-$spacing-sm) 0;
-        padding: 0 $spacing-sm;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-    }
-}
-
-// Mobile navigation buttons
-.about-nav {
-    display: none;
-
-    @media (max-width: $breakpoint-mobile) {
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        position: fixed;
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 20003;
-    }
-}
-
-.about-nav__btn {
-    width: 40px;
-    height: 32px;
-    border: none;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: $border-radius-sm;
-    color: $color-white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all $transition-fast;
-
-    i {
-        font-size: 14px;
-    }
-
-    &:hover:not(.is-disabled):not(:disabled) {
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    &:disabled,
-    &.is-disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
-}
-
-.about-column {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-
-    @media (max-width: $breakpoint-mobile) {
-        flex: 0 0 45%;
-        scroll-snap-align: start;
-        padding: 0 $spacing-xs;
-    }
-
-    @media (max-width: 600px) {
-        flex: 0 0 75%;
-    }
-
-    &__title {
-        font-size: $font-size-xs;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: rgba(255, 255, 255, 0.5);
-        margin: 0 0 $spacing-xs 0;
-        padding-bottom: $spacing-2xs;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        flex-shrink: 0;
-    }
-
-    &__content {
-        overflow-y: auto;
-        flex: 1;
-        min-height: 0;
-        padding-right: $spacing-2xs;
-        padding-bottom: $spacing-md;
-        @include custom-scrollbar();
-    }
-
-    p {
-        font-size: $font-size-sm;
-        line-height: 1.7;
-        color: rgba(255, 255, 255, 0.8);
-        margin: 0 0 $spacing-2xs 0;
-        font-weight: 300;
-    }
-}
-
-.about-work-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-        font-size: $font-size-sm;
-        color: rgba(255, 255, 255, 0.8);
-        padding: $spacing-2xs 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-weight: 300;
-        display: flex;
-        align-items: start;
-        gap: $spacing-2xs;
-
-        &:last-child {
-            border-bottom: none;
-        }
-
-        @media (max-width: $breakpoint-mobile) {
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        &:first-child {
-            flex-direction: column;
-            gap: 4px;
-            padding-top: 0;
-        }
-    }
-
-    .project-year {
-        font-size: 10px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.4);
-        background: rgba(255, 255, 255, 0.08);
-        padding: 2px 6px;
-        border-radius: 3px;
-        flex-shrink: 0;
-
-        &--present {
-            background: #4CAF50;
-            color: #fff;
-        }
-    }
-}
-
-.about-social-links {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.about-social-link {
-    display: flex;
-    align-items: center;
-    gap: $spacing-2xs;
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    font-size: $font-size-sm;
-    padding: 4px 0;
-    transition: all $transition-fast;
-    font-weight: 300;
-
-    i {
-        font-size: 18px;
-        width: 24px;
-        opacity: 0.6;
-        transition: opacity $transition-fast;
-    }
-
-    &:hover {
-        color: $color-white;
-
-        i {
-            opacity: 1;
-        }
-    }
-}
+// About modal styles moved to _about-modal.scss

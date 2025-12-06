@@ -1,12 +1,12 @@
 <!-- Contact Modal (Start a Project) -->
 <div class="modal modal--fullscreen" id="contactModal">
   <div class="modal__overlay modal__overlay--contact">
-    <button class="modal__close" id="contactModalClose">
-      <i class="lni lni-close"></i>
-    </button>
+    <button class="modal__close" id="contactModalClose">close window</button>
     <div class="contact-overlay-content">
-      <h2 class="modal__logo-text">crbntyp</h2>
-      <p class="contact-intro">Ready to bring your vision to life? Let's talk.</p>
+      <div class="contact-header">
+        <h2 class="contact-title">Start a Project</h2>
+        <p class="contact-subtitle">Ready to bring your vision to life? Let's talk.</p>
+      </div>
 
       <form class="contact-form" id="contactForm">
         <div id="contactError" class="error-message" style="display: none;"></div>
