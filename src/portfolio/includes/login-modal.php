@@ -4,7 +4,8 @@
     <button class="modal__close" id="modalClose">close window</button>
     <div class="login-overlay-content">
       <div class="login-header">
-        <h2 class="login-title">Sign In</h2>
+        <h2 class="login-title">dshbrd</h2>
+        <p class="login-subtitle">Don't you try and hack my shit...I know Rowan Adair!</p>
       </div>
       <form class="login-form" id="loginForm">
         <div id="loginError" class="error-message" style="display: none;"></div>

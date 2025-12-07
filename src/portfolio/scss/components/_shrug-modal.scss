@@ -7,10 +7,10 @@
 
 .modal__overlay--shrug {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
-  padding: $spacing-lg $spacing-md;
-  overflow-y: auto;
+  padding: 0;
+  overflow: hidden;
   cursor: default;
   background: rgba(#1b1b1b, 0.6);
   backdrop-filter: blur(10px);
@@ -23,9 +23,9 @@
 }
 
 .shrug-overlay-content {
-  width: 90vw;
+  width: 100%;
+  height: 100vh;
   pointer-events: auto;
-  padding: $spacing-lg 0;
 }
 
 // Header - centered title and subtitle
@@ -98,13 +98,19 @@
 
 // Individual Entry - Masonry item
 .shrug-entry {
+  position: relative;
   width: calc(25% - 15px); // 4 columns with gap
   margin-bottom: $spacing-sm;
   padding: $spacing-sm;
   //background: $color-bg-white-05;
   //border: 1px solid $color-border-white-10;
   border-radius: 0;
+  cursor: pointer;
   transition: all $transition-fast;
+
+  &:hover:not(.is-expanded) {
+    background: $color-bg-white-05;
+  }
 
   &.is-hidden {
     display: none;
@@ -148,12 +154,12 @@
   &__content {
     font-family: 'lores-12', sans-serif;
     color: $color-text-white-70;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.7;
 
     p {
       margin: 0 0 $spacing-xs;
-      font-size: 13px;
+      font-size: 14px;
 
       &:last-child {
         margin-bottom: 0;
@@ -161,9 +167,18 @@
     }
 
     strong {
-      font-weight: 700;
+      font-weight: 800;
     }
   }
+}
+
+// Read more link
+.shrug-read-more {
+  color: $color-primary;
+  font-family: 'lores-12', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 // Empty state
@@ -176,3 +191,237 @@
 }
 
 // Navigation removed - using masonry grid instead of carousel
+
+// Left side - shrinks when reader opens
+.shrug-list {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: $spacing-lg;
+  transition: width 0.3s ease;
+
+  .has-reader & {
+    width: 50%;
+
+    // Reduce to 2 columns when reader is open
+    .shrug-entry {
+      width: calc(50% - 10px);
+    }
+
+    @media (max-width: $breakpoint-tablet) {
+      display: none;
+    }
+  }
+}
+
+// Slide-in reading panel
+.shrug-reader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
+  background: #1b1b1b;
+  border-left: 1px solid $color-border-white-10;
+  z-index: 20003;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: $spacing-lg $spacing-xl;
+
+  &.is-open {
+    transform: translateX(0);
+  }
+
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color-border-white-10;
+    border-radius: 3px;
+  }
+}
+
+.shrug-reader__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-family: 'lores-12', sans-serif;
+  font-size: 11px;
+  color: $color-text-white-50;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: $color-white;
+  }
+}
+
+.shrug-reader__title {
+  font-family: 'lores-12', sans-serif;
+  color: $color-white;
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0 0 $spacing-xs;
+  padding-top: $spacing-lg;
+  line-height: 1.3;
+}
+
+.shrug-reader__meta {
+  font-family: 'lores-12', sans-serif;
+  color: $color-text-white-50;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-sm;
+  border-bottom: 1px solid $color-border-white-10;
+}
+
+.shrug-reader__author {
+  color: $color-primary;
+}
+
+.shrug-reader__content {
+  font-family: 'lores-12', sans-serif;
+  color: $color-text-white-70;
+  font-size: 16px;
+  line-height: 1.7;
+
+  p {
+    margin: 0 0 $spacing-sm;
+    font-size: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong {
+    color: $color-white;
+    font-weight: 800;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  ul, ol {
+    margin: 0 0 $spacing-sm;
+    padding-left: $spacing-md;
+  }
+
+  li {
+    margin-bottom: $spacing-2xs;
+  }
+}
+
+.shrug-reader__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: $spacing-md;
+  padding-top: $spacing-sm;
+  border-top: 1px solid $color-border-white-10;
+}
+
+// Disable interaction and blur when reader is open
+.shrug-list.has-reader-open {
+  pointer-events: none;
+  filter: blur(3px);
+  opacity: 0.6;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+// Tags within entry
+.shrug-entry__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: $spacing-sm;
+  padding-top: $spacing-xs;
+  border-top: 1px solid $color-border-white-10;
+}
+
+.shrug-tag {
+  font-family: 'lores-12', sans-serif;
+  font-size: 10px;
+  color: $color-text-white-50;
+  background: transparent;
+  border: 1px solid $color-border-white-10;
+  padding: 4px 10px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all $transition-fast;
+
+  &:hover {
+    color: $color-white;
+    border-color: $color-primary;
+  }
+
+  &.is-active {
+    color: $color-primary;
+    border-color: $color-primary;
+  }
+}
+
+// Active tag filter indicator
+.shrug-tag-filter {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+
+  &.is-active {
+    display: flex;
+  }
+
+  &__label {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    color: $color-text-white-50;
+  }
+
+  &__tag {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    color: $color-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__clear {
+    font-family: 'lores-12', sans-serif;
+    font-size: 11px;
+    color: $color-text-white-50;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-white;
+    }
+  }
+}
+

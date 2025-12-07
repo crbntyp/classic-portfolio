@@ -47,6 +47,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (modal && modal.el) {
       modal.el.classList.remove('active');
       document.body.style.overflow = '';
+
+      // Close shrug reader panel and clear hash when closing shrug modal
+      if (key === 'shrug') {
+        const reader = document.getElementById('shrugReader');
+        const overlayContent = document.querySelector('.shrug-overlay-content');
+        const entriesContainer = document.getElementById('shrugEntries');
+
+        if (reader) reader.classList.remove('is-open');
+        if (overlayContent) overlayContent.classList.remove('has-reader');
+        if (entriesContainer) {
+          entriesContainer.classList.remove('has-expanded');
+          entriesContainer.querySelectorAll('.shrug-entry').forEach(e => e.classList.remove('is-active'));
+        }
+
+        if (window.location.hash.startsWith('#shrug/')) {
+          history.pushState({}, '', window.location.pathname);
+        }
+      }
     }
   }
 
@@ -62,19 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close button click
     if (modal.close) {
       modal.close.addEventListener('click', () => closeModal(key));
-    }
-
-    // Overlay click (close when clicking outside content)
-    if (modal.el) {
-      const overlay = modal.el.querySelector('.modal__overlay');
-      if (overlay) {
-        overlay.addEventListener('click', (e) => {
-          // Only close if clicking the overlay itself, not its children
-          if (e.target === overlay) {
-            closeModal(key);
-          }
-        });
-      }
     }
   });
 

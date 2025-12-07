@@ -5,11 +5,11 @@
     <div class="services-overlay-content">
       <!-- Centered Header -->
       <div class="services-header">
-        <h2 class="services-title">lets work together</h2>
+        <h2 class="services-title">let's work together</h2>
         <p class="services-subtitle">Here for local businesses, we're keen to give you what you need at a 5th of the price</p>
       </div>
 
-      <p class="services-note">If these prices are still out of budget, let's still have a chat — grab me on hello@crbntyp.com any time to discuss!</p>
+      <p class="services-note">If these prices are still a bit much, let's still have a chat — grab me on hello@crbntyp.com any time to discuss!</p>
 
       <div class="pricing-grid">
         <!-- Tier 1: Static -->
@@ -20,11 +20,11 @@
               <span class="pricing-card__currency">£</span>
               <span class="pricing-card__amount">500</span>
             </div>
-            <p class="pricing-card__desc">Perfect for portfolios and landing pages</p>
+            <p class="pricing-card__desc">Perfect for small brochure sites</p>
           </div>
           <ul class="pricing-card__features">
             <li>Custom design</li>
-            <li>Responsive layout</li>
+            <li>Responsive layout - Works on your phone</li>
             <li>Up to 5 pages</li>
             <li>Contact form</li>
             <li>Basic SEO setup</li>
@@ -71,6 +71,26 @@
             <li>Priority support</li>
           </ul>
           <button class="pricing-card__cta" data-tier="premium">Get Started</button>
+        </div>
+
+        <!-- Tier 4: AI Strategy -->
+        <div class="pricing-card">
+          <div class="pricing-card__header">
+            <h3 class="pricing-card__tier">AI Strategy</h3>
+            <div class="pricing-card__price pricing-card__price--text">
+              <span class="pricing-card__amount">let's talk</span>
+            </div>
+            <p class="pricing-card__desc">Transform how your team works</p>
+          </div>
+          <ul class="pricing-card__features">
+            <li>AI workflow audit</li>
+            <li>Tool recommendations</li>
+            <li>Designer & developer efficiency</li>
+            <li>Deployment automation</li>
+            <li>Team training session</li>
+            <li>Optional monthly retainer</li>
+          </ul>
+          <button class="pricing-card__cta" data-tier="ai-strategy">Get Started</button>
         </div>
       </div>
     </div>

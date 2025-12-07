@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+button, input, select, textarea {
+    font-family: inherit;
+}
+
 body, html {
     font-size: $font-size-base;
     font-weight: $font-weight-light;

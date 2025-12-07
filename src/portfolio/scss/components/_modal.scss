@@ -373,26 +373,6 @@
 
     }
 
-    .btn-login {
-        width: 100%;
-        padding: $spacing-xs $spacing-md;
-        background: $color-white;
-        color: $color-darkest;
-        border: none;
-        border-radius: $border-radius-md;
-        font-size: $font-size-base;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        cursor: pointer;
-        margin-top: $spacing-xs;
-        font-family: $font-family-primary;
-        @include hover-lift();
-
-        &:hover {
-            background: rgba(255, 255, 255, 0.9);
-        }
-    }
 }
 
 // Quill Editor Styles

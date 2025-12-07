@@ -3,7 +3,10 @@
   <div class="modal__overlay modal__overlay--about">
     <button class="modal__close" id="aboutUsModalClose">close window</button>
     <div class="about-overlay-content">
-      <h2 class="modal__logo-text">crbntyp</h2>
+      <div class="about-header">
+        <h2 class="modal__logo-text">crbntyp</h2>
+        <p class="about-subtitle">Naturally gifted designer, with a mathmatical loaf...</p>
+      </div>
 
       <div class="about-grid">
         <!-- Column 1: About Me -->

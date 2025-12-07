@@ -67,10 +67,6 @@ class ModalManager {
       this.closeBtn.addEventListener('click', this.close);
     }
 
-    if (this.overlay) {
-      this.overlay.addEventListener('click', this.close);
-    }
-
     // Global escape key handler (only when modal is open)
     if (this.options.closeOnEscape) {
       document.addEventListener('keydown', this._handleEscape);
@@ -142,10 +138,6 @@ class ModalManager {
   destroy() {
     if (this.closeBtn) {
       this.closeBtn.removeEventListener('click', this.close);
-    }
-
-    if (this.overlay) {
-      this.overlay.removeEventListener('click', this.close);
     }
 
     if (this.options.closeOnEscape) {

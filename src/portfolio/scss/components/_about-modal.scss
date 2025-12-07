@@ -32,6 +32,12 @@
   z-index: 10;
 }
 
+// Header
+.about-header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+}
+
 // Logo text
 .modal__logo-text {
   font-family: $font-family-primary;
@@ -42,7 +48,6 @@
   clip-path: inset(0 0 44% 0);
   line-height: 1;
   margin-bottom: -20px;
-  text-align: center;
 
   @media (max-width: $breakpoint-tablet) {
     font-size: 48px;
@@ -50,10 +55,22 @@
   }
 }
 
+.about-subtitle {
+  font-family: 'lores-12', sans-serif;
+  color: $color-text-white-50;
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+
+  @media (max-width: $breakpoint-tablet) {
+    font-size: 11px;
+  }
+}
+
 // About Grid - 25% / 50% / 25% columns
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 1.5fr 1.5fr 1fr;
   gap: $spacing-md;
   margin-top: $spacing-md;
   pointer-events: auto;
