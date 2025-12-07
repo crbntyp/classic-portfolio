@@ -500,11 +500,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (shrugSubmitBtn) shrugSubmitBtn.textContent = 'Update Shrug';
 
     if (shrugQuillEditor) {
-      // Set HTML content if it contains tags, otherwise set as text
-      if (entry.content && entry.content.includes('<')) {
-        shrugQuillEditor.root.innerHTML = entry.content;
-      } else {
-        shrugQuillEditor.setText(entry.content || '');
+      // Use Quill's clipboard method to properly parse HTML including lists
+      shrugQuillEditor.setText('');  // Clear first
+      if (entry.content) {
+        shrugQuillEditor.clipboard.dangerouslyPasteHTML(entry.content);
       }
     }
 

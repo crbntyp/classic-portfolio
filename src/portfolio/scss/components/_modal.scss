@@ -431,8 +431,10 @@
     }
 
     .ql-editor p, .ql-editor.ql-blank::before{
-        font-size: 12px !important;
+        font-size: 14px !important;
         color: white !important;
+        -webkit-font-smoothing: antialiased;
+        font-family: 'lores-12', sans-serif;
     }
 
     .ql-container {
@@ -452,6 +454,7 @@
                 color: $color-white !important;
                 font-style: normal;
                 opacity: 0.7;
+                -webkit-font-smoothing: antialiased;
             }
 
             p, ul, ol {
@@ -471,7 +474,7 @@
 }
 
 .ql-toolbar.ql-snow + .ql-container.ql-snow{
-    height: 120px;
+    height: 300px !important;
 }
 
 // About modal styles moved to _about-modal.scss

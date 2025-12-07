@@ -1366,13 +1366,13 @@
     .ql-container {
         border: none;
         font-family: 'lores-12', sans-serif;
-        font-size: 12px;
+        font-size: 14px;
     }
 
     .ql-toolbar.ql-snow + .ql-container.ql-snow {
-        height: 300px !important;
-        min-height: 300px;
-        max-height: 300px;
+        height: 400px !important;
+        min-height: 400px;
+        max-height: 400px;
         overflow: auto;
     }
 
@@ -1387,6 +1387,21 @@
 
         p {
             margin-bottom: $spacing-xs;
+        }
+
+        ul, ol {
+            padding-left: 1.5em;
+            margin-bottom: $spacing-xs;
+            color: $color-white;
+        }
+
+        li {
+            margin-bottom: 4px;
+            color: $color-white;
+
+            &::marker {
+                color: $color-white;
+            }
         }
     }
 }

@@ -120,11 +120,12 @@
   border-radius: 0;
   font-family: 'lores-12', sans-serif;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 700 !important;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all $transition-fast;
+  -webkit-font-smoothing: antialiased !important;
 
   &:hover {
     background: $color-primary;
