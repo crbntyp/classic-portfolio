@@ -896,4 +896,86 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // ============================================================================
+  // BOOKMARKS ADMIN
+  // ============================================================================
+
+  // Initialize Quill Editor for Bookmarks
+  let bookmarksQuillEditor = null;
+  const bookmarksQuillContainer = document.getElementById('bookmarksEditor');
+
+  if (bookmarksQuillContainer) {
+    bookmarksQuillEditor = new Quill('#bookmarksEditor', {
+      theme: 'snow',
+      placeholder: '[https://example.com] Example Site\n[https://github.com] GitHub',
+      modules: {
+        toolbar: false // No toolbar - just plain text entry
+      }
+    });
+
+    // Load existing bookmarks content
+    fetch('get-bookmarks.php', {
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success && data.content) {
+        bookmarksQuillEditor.root.innerHTML = data.content;
+      }
+    })
+    .catch(error => {
+      console.error('Error loading bookmarks:', error);
+    });
+  }
+
+  // Bookmarks save button
+  const bookmarksSaveBtn = document.getElementById('bookmarksSaveBtn');
+  const bookmarksSuccessMessage = document.getElementById('bookmarksSuccessMessage');
+
+  if (bookmarksSaveBtn && bookmarksQuillEditor) {
+    bookmarksSaveBtn.addEventListener('click', async function() {
+      // Disable button
+      this.disabled = true;
+      this.textContent = 'Saving...';
+
+      // Hide previous success message
+      if (bookmarksSuccessMessage) {
+        bookmarksSuccessMessage.style.display = 'none';
+      }
+
+      try {
+        const content = bookmarksQuillEditor.root.innerHTML;
+        const formData = new FormData();
+        formData.append('content', content);
+
+        const response = await fetch('save-bookmarks.php', {
+          method: 'POST',
+          body: formData,
+          credentials: 'same-origin'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Show success message
+          if (bookmarksSuccessMessage) {
+            bookmarksSuccessMessage.style.display = 'flex';
+            setTimeout(() => {
+              bookmarksSuccessMessage.style.display = 'none';
+            }, 3000);
+          }
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Save error:', error);
+        alert('An error occurred while saving. Please try again.');
+      }
+
+      // Re-enable button
+      this.disabled = false;
+      this.textContent = 'Save Bookmarks';
+    });
+  }
 });

@@ -1,3 +1,41 @@
+<?php
+// Load bookmarks from database
+$bookmarksHtml = '';
+if (isset($mysqli) && $mysqli) {
+    $result = $mysqli->query("SELECT setting_value FROM site_settings WHERE setting_key = 'bookmarks_html'");
+    if ($result && $row = $result->fetch_assoc()) {
+        $bookmarksHtml = $row['setting_value'];
+    }
+}
+
+// Parse bookmarks from HTML - each <p> contains [URL] Display Text
+$bookmarks = [];
+if (!empty($bookmarksHtml)) {
+    // Extract text from each <p> tag
+    preg_match_all('/<p[^>]*>(.*?)<\/p>/s', $bookmarksHtml, $matches);
+    foreach ($matches[1] as $line) {
+        $line = strip_tags($line);
+        $line = trim($line);
+        if (empty($line)) continue;
+
+        // Parse [URL] Display Text format
+        if (preg_match('/^\[(https?:\/\/[^\]]+)\]\s*(.+)$/i', $line, $parts)) {
+            $bookmarks[] = [
+                'url' => $parts[1],
+                'text' => trim($parts[2])
+            ];
+        }
+    }
+}
+
+// Fallback to defaults if no bookmarks in database
+if (empty($bookmarks)) {
+    $bookmarks = [
+        ['url' => 'https://www.anthropic.com', 'text' => 'Anthropic'],
+        ['url' => 'https://designvault.io/', 'text' => 'Design Vault']
+    ];
+}
+?>
 <!-- About Us Modal -->
 <div class="modal modal--fullscreen" id="aboutUsModal">
   <div class="modal__overlay modal__overlay--about">
@@ -96,8 +134,9 @@
 
             <h3 class="about-column__title about-column__title--spaced">Bookmarks</h3>
             <div class="about-bookmarks">
-              <a href="https://www.anthropic.com" target="_blank">Anthropic</a>
-              <a href="https://designvault.io/" target="_blank">Design Vault</a>
+              <?php foreach ($bookmarks as $bookmark): ?>
+              <a href="<?php echo htmlspecialchars($bookmark['url']); ?>" target="_blank"><?php echo htmlspecialchars($bookmark['text']); ?></a>
+              <?php endforeach; ?>
             </div>
           </div>
         </div>

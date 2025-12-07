@@ -85,8 +85,7 @@ $pathPrefix = '../';
                 <div class="admin-tabs__left">
                     <button class="admin-tab active" data-tab="projects">Projects (<?php echo $projectsCount; ?>)</button>
                     <button class="admin-tab" data-tab="shrug">Shrug (<?php echo $shrugCount; ?>)</button>
-                    <button class="admin-tab" data-tab="services">Services</button>
-                    <button class="admin-tab" data-tab="about">About</button>
+                    <button class="admin-tab" data-tab="bookmarks">Bookmarks</button>
                 </div>
                 <div class="admin-tabs__right">
                     <a href="/" class="admin-tab">Home</a>
@@ -104,8 +103,7 @@ $pathPrefix = '../';
                     <div class="admin-tabs-mobile__dropdown" id="mobileTabDropdown">
                         <button class="admin-tabs-mobile__item active" data-tab="projects">Projects (<?php echo $projectsCount; ?>)</button>
                         <button class="admin-tabs-mobile__item" data-tab="shrug">Shrug (<?php echo $shrugCount; ?>)</button>
-                        <button class="admin-tabs-mobile__item" data-tab="services">Services</button>
-                        <button class="admin-tabs-mobile__item" data-tab="about">About</button>
+                        <button class="admin-tabs-mobile__item" data-tab="bookmarks">Bookmarks</button>
                     </div>
                 </div>
                 <div class="admin-tabs-mobile__right">
@@ -116,6 +114,10 @@ $pathPrefix = '../';
 
             <!-- Projects Tab -->
             <div class="admin-tab-content active" id="tab-projects">
+                <div class="projects-tab-header">
+                    <span class="projects-tab-header__title">All Projects</span>
+                    <button type="button" class="project-add-btn" id="openAddProjectModal">Project +</button>
+                </div>
                 <div class="projects-grid">
                 <?php while ($project = $projectsResult->fetch_assoc()): ?>
                     <?php $category = $project['category'] ?? 'classic-portfolio'; ?>
@@ -164,9 +166,7 @@ $pathPrefix = '../';
                     <div class="shrug-admin__form">
                         <div class="shrug-admin__form-header">
                             <span class="shrug-admin__form-title" id="shrugFormTitle">Add New Shrug</span>
-                            <button type="button" class="shrug-new-btn" id="shrugNewBtn">
-                                <i class="lni lni-plus"></i>
-                            </button>
+                            <button type="button" class="shrug-new-btn" id="shrugNewBtn">Shrug +</button>
                         </div>
                         <form id="shrugForm" class="shrug-form">
                             <input type="hidden" id="shrugId" name="id" value="">
@@ -247,17 +247,21 @@ $pathPrefix = '../';
                 window.shrugData = <?php echo json_encode($shrugEntries); ?>;
             </script>
 
-            <!-- Services Tab -->
-            <div class="admin-tab-content" id="tab-services">
-                <div class="admin-tab-placeholder">
-                    <p>Services management coming soon</p>
-                </div>
-            </div>
-
-            <!-- About Tab -->
-            <div class="admin-tab-content" id="tab-about">
-                <div class="admin-tab-placeholder">
-                    <p>About content management coming soon</p>
+            <!-- Bookmarks Tab -->
+            <div class="admin-tab-content" id="tab-bookmarks">
+                <div class="bookmarks-admin">
+                    <div class="bookmarks-admin__header">
+                        <span class="bookmarks-admin__title">Edit Bookmarks</span>
+                    </div>
+                    <p class="bookmarks-admin__hint">Format: <code>[https://url.com] Display Text</code> — one per line</p>
+                    <div id="bookmarksEditor" class="quill-editor"></div>
+                    <div class="bookmarks-admin__actions">
+                        <button type="button" class="btn-login" id="bookmarksSaveBtn">Save Bookmarks</button>
+                    </div>
+                    <div class="shrug-success-message" id="bookmarksSuccessMessage" style="display: none;">
+                        <i class="lni lni-checkmark-circle"></i>
+                        <span>Bookmarks saved successfully!</span>
+                    </div>
                 </div>
             </div>
         </div>

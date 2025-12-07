@@ -13,10 +13,14 @@
 .admin-body {
     background: $color-black;
 
-    // Crisp pixel fonts for form elements
-    textarea,
-    input,
-    select {
+    // Base admin font styles - crisp pixel fonts
+    font-family: 'lores-12', sans-serif;
+    font-size: 12px;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: unset;
+
+    // Apply to all elements
+    * {
         -webkit-font-smoothing: none;
         -moz-osx-font-smoothing: unset;
     }
@@ -206,7 +210,7 @@
     h3 {
         font-family: 'lores-12', sans-serif;
         color: $color-text-white-70;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 400;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -255,7 +259,7 @@
     &__title {
         font-family: 'lores-12', sans-serif;
         color: $color-white;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 400;
         text-transform: uppercase;
         margin: 0 0 20px 0;
@@ -323,7 +327,7 @@
         border: none;
         color: white;
         font-family: 'lores-12', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
         text-transform: uppercase;
         cursor: pointer;
 
@@ -360,7 +364,7 @@
         border: none;
         color: rgba(255, 255, 255, 0.7);
         font-family: 'lores-12', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
         text-transform: uppercase;
         text-align: left;
         text-decoration: none;
@@ -381,7 +385,7 @@
         padding: 12px 14px;
         color: rgba(255, 255, 255, 0.7);
         font-family: 'lores-12', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
         text-transform: uppercase;
         text-decoration: none;
         transition: color 0.2s ease;
@@ -400,8 +404,8 @@
     border: none;
     color: white;
     padding: 8px 14px;
-    font-size: 11px;
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    letter-spacing: 1.5px;
     cursor: pointer;
     transition: all 0.3s ease;
     border-bottom: 1px solid transparent;
@@ -453,7 +457,7 @@
     border: none;
     color: $color-darkest;
     padding: $spacing-2xs $spacing-xs;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
     cursor: pointer;
     border-radius: 0;
@@ -493,7 +497,7 @@
     p {
         font-family: 'lores-12', sans-serif;
         color: $color-text-white-50;
-        font-size: 14px;
+        font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -586,7 +590,7 @@
         label {
             font-family: 'lores-12', sans-serif;
             color: $color-text-white-70;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -701,6 +705,42 @@
     }
 }
 
+// Projects Tab Header
+.projects-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-sm;
+
+    &__title {
+        font-family: 'lores-12', sans-serif;
+        color: $color-white;
+        font-size: 12px;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+}
+
+.project-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid rgba(0, 255, 136, 0.4);
+    color: #00ff88;
+    font-family: 'lores-12', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all $transition-fast;
+
+    &:hover {
+        background: rgba(0, 255, 136, 0.15);
+        border-color: #00ff88;
+    }
+}
+
 // Projects Grid
 .projects-grid {
     display: grid;
@@ -784,10 +824,10 @@
     &__title {
         font-family: 'lores-12', sans-serif;
         color: $color-white;
-        font-size: 11px;
-        text-transform: uppercase;
+        font-size: 12px;
         font-weight: 400;
         margin: 0 0 $spacing-xxs 0;
+        text-transform: uppercase;
     }
 
     &__id {
@@ -866,7 +906,7 @@
         font-size: 10px;
         font-weight: 400;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        //letter-spacing: 1px;
         border-radius: $border-radius-sm;
         width: fit-content;
 
@@ -1016,17 +1056,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    padding: 6px 12px;
     background: transparent;
     border: 1px solid rgba(0, 255, 136, 0.4);
     color: #00ff88;
+    font-family: 'lores-12', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
     cursor: pointer;
     transition: all $transition-fast;
-
-    i {
-        font-size: 14px;
-    }
 
     &:hover {
         background: rgba(0, 255, 136, 0.15);
@@ -1080,7 +1118,7 @@
             border-radius: 0;
             color: $color-white;
             font-family: 'lores-12', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             transition: border-color $transition-fast;
 
             &:focus {
@@ -1113,7 +1151,7 @@
                 span {
                     font-family: 'lores-12', sans-serif;
                     color: $color-text-white-70;
-                    font-size: 14px;
+                    font-size: 12px;
                     text-transform: uppercase;
                 }
             }
@@ -1135,7 +1173,7 @@
     border: 1px solid rgba(0, 255, 136, 0.3);
     color: #00ff88;
     font-family: 'lores-12', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
 
     i {
         font-size: 18px;
@@ -1235,8 +1273,53 @@
     padding: $spacing-lg;
     font-family: 'lores-12', sans-serif;
     color: $color-text-white-50;
-    font-size: 14px;
+    font-size: 12px;
     text-transform: uppercase;
+}
+
+// Bookmarks Admin
+.bookmarks-admin {
+    @include glass-card($bg-opacity: 0.05, $border-opacity: 0, $blur: $blur-sm, $radius: $border-radius-lg);
+    padding: $spacing-md;
+    max-width: 800px;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-sm;
+    }
+
+    &__title {
+        display: block;
+        font-family: 'lores-12', sans-serif;
+        color: $color-white;
+        font-size: 12px;
+        font-weight: 400;
+        text-transform: uppercase;
+    }
+
+    &__hint {
+        font-family: 'lores-12', sans-serif;
+        color: $color-text-white-50;
+        font-size: 12px;
+        margin: 0 0 $spacing-sm 0;
+
+        code {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 2px 6px;
+            color: #00ffff;
+        }
+    }
+
+    &__actions {
+        margin-top: $spacing-sm;
+    }
+
+    .quill-editor {
+        min-height: 300px;
+    }
 }
 
 // Quill Editor Styling for Admin
@@ -1283,7 +1366,7 @@
     .ql-container {
         border: none;
         font-family: 'lores-12', sans-serif;
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .ql-toolbar.ql-snow + .ql-container.ql-snow {
