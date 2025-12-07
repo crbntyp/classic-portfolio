@@ -67,7 +67,7 @@
   .form-group {
     margin-bottom: $spacing-sm;
 
-    label {
+    label:not(.file-input-label) {
       display: block;
       font-family: 'lores-12', sans-serif;
       color: $color-text-white-50;

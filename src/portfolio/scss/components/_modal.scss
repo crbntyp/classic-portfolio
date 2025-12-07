@@ -78,6 +78,10 @@
             max-width: 315px;
         }
 
+        &--project {
+            max-width: 800px;
+        }
+
         &--wide {
             max-width: 1200px;
             width: 95%;
@@ -134,7 +138,15 @@
         text-align: center;
         clip-path: inset(0 0 44% 0);
         line-height: 1;
-        margin-bottom: 20px;
+        margin-bottom: -20px;
+    }
+
+    &__subtitle {
+        font-family: 'lores-12', sans-serif;
+        color: $color-text-white-50;
+        font-size: 12px;
+        text-align: center;
+        margin: 0 0 $spacing-md 0;
     }
 
     &__close {
@@ -319,17 +331,16 @@
 .login-form {
     .form-group {
         margin-bottom: 20px;
-        select, button, input{
-            font-family: $font-family-primary !important;
-        }
-        label {
+
+        label:not(.file-input-label) {
             display: block;
-            color: white;
-            font-size: 15px;
+            font-family: 'lores-12', sans-serif;
+            color: $color-text-white-70;
+            font-size: 11px;
             font-weight: 400;
             margin-bottom: $spacing-3xs;
-            //text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input,
@@ -338,10 +349,10 @@
             padding: $spacing-3xs $spacing-xs;
             background: $color-bg-black-10;
             border: 1px solid $color-border-white-10;
-            border-radius: $border-radius-md;
+            border-radius: 0;
             color: $color-white;
-            font-size: $font-size-base;
-            font-family: $font-family-primary;
+            font-size: 12px;
+            font-family: 'lores-12', sans-serif;
             transition: all $transition-fast;
             box-sizing: border-box;
 

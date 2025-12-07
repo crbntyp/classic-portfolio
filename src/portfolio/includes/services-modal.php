@@ -76,10 +76,7 @@
         <!-- Tier 4: AI Strategy -->
         <div class="pricing-card">
           <div class="pricing-card__header">
-            <h3 class="pricing-card__tier">AI Strategy</h3>
-            <div class="pricing-card__price pricing-card__price--text">
-              <span class="pricing-card__amount">let's talk</span>
-            </div>
+            <h3 class="pricing-card__tier">Agency AI Strategy Consultation</h3>
             <p class="pricing-card__desc">Transform how your team works</p>
           </div>
           <ul class="pricing-card__features">

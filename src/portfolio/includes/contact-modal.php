@@ -28,6 +28,10 @@
               <span class="tier-option__name">Premium</span>
               <span class="tier-option__price">£1500</span>
             </button>
+            <button type="button" class="tier-option" data-tier="consultation">
+              <span class="tier-option__name">Consultation</span>
+              <span class="tier-option__price">Your Requirements</span>
+            </button>
           </div>
           <input type="hidden" name="tier" id="selectedTier" value="updateable">
         </div>

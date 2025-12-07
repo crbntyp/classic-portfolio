@@ -28,6 +28,17 @@ if ($categoryCheck->num_rows == 0) {
 
 // Get stats
 $projectsCount = $mysqli->query("SELECT COUNT(*) as count FROM projects")->fetch_assoc()['count'];
+$shrugCount = $mysqli->query("SELECT COUNT(*) as count FROM shrug_entries")->fetch_assoc()['count'];
+
+// Fetch all shrug entries for admin
+$shrugQuery = "SELECT id, title, slug, content, tags, published, sort_order, created_at FROM shrug_entries ORDER BY sort_order ASC, created_at DESC";
+$shrugResult = $mysqli->query($shrugQuery);
+$shrugEntries = [];
+if ($shrugResult) {
+    while ($row = $shrugResult->fetch_assoc()) {
+        $shrugEntries[] = $row;
+    }
+}
 
 // Fetch all projects ordered by sort_order (user-defined drag order)
 $projectsQuery = "SELECT projectID, projectHeading, projectTeaser, category FROM projects ORDER BY sort_order ASC";
@@ -60,17 +71,52 @@ $pathPrefix = '../';
         <div class="voice-blob voice-blob--core"></div>
     </div>
 
-    <?php include '../includes/user-nav.php'; ?>
     <?php include '../includes/about-us-modal.php'; ?>
 
     <div class="admin-container">
         <div class="admin-brand">
             <h1 class="admin-brand__logo-text">crbntyp</h1>
-            <h3 class="admin-brand__subtitle">crbntyp admin <span style="color: cyan;">//</span> projects (<?php echo $projectsCount; ?>)</h3>
+            <h3 class="admin-brand__subtitle">Custom portfolio CMS system, tailored for crbntyp...</h3>
         </div>
 
         <div class="admin-main">
-            <div class="projects-grid">
+            <!-- Tab Navigation -->
+            <div class="admin-tabs">
+                <div class="admin-tabs__left">
+                    <button class="admin-tab active" data-tab="projects">Projects (<?php echo $projectsCount; ?>)</button>
+                    <button class="admin-tab" data-tab="shrug">Shrug (<?php echo $shrugCount; ?>)</button>
+                    <button class="admin-tab" data-tab="services">Services</button>
+                    <button class="admin-tab" data-tab="about">About</button>
+                </div>
+                <div class="admin-tabs__right">
+                    <a href="/" class="admin-tab">Home</a>
+                    <a href="<?php echo $pathPrefix; ?>logout.php" class="admin-tab">Logout</a>
+                </div>
+            </div>
+
+            <!-- Mobile Tab Dropdown -->
+            <div class="admin-tabs-mobile">
+                <div class="admin-tabs-mobile__left">
+                    <button class="admin-tabs-mobile__trigger" id="mobileTabTrigger">
+                        <span id="mobileTabLabel">Projects (<?php echo $projectsCount; ?>)</span>
+                        <i class="lni lni-chevron-down"></i>
+                    </button>
+                    <div class="admin-tabs-mobile__dropdown" id="mobileTabDropdown">
+                        <button class="admin-tabs-mobile__item active" data-tab="projects">Projects (<?php echo $projectsCount; ?>)</button>
+                        <button class="admin-tabs-mobile__item" data-tab="shrug">Shrug (<?php echo $shrugCount; ?>)</button>
+                        <button class="admin-tabs-mobile__item" data-tab="services">Services</button>
+                        <button class="admin-tabs-mobile__item" data-tab="about">About</button>
+                    </div>
+                </div>
+                <div class="admin-tabs-mobile__right">
+                    <a href="/" class="admin-tabs-mobile__link">Home</a>
+                    <a href="<?php echo $pathPrefix; ?>logout.php" class="admin-tabs-mobile__link">Logout</a>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div class="admin-tab-content active" id="tab-projects">
+                <div class="projects-grid">
                 <?php while ($project = $projectsResult->fetch_assoc()): ?>
                     <?php $category = $project['category'] ?? 'classic-portfolio'; ?>
                     <div class="project-item" data-project-id="<?php echo $project['projectID']; ?>">
@@ -108,6 +154,111 @@ $pathPrefix = '../';
                         </div>
                     </div>
                 <?php endwhile; ?>
+                </div>
+            </div>
+
+            <!-- Shrug Tab -->
+            <div class="admin-tab-content" id="tab-shrug">
+                <div class="shrug-admin">
+                    <!-- Left: Form -->
+                    <div class="shrug-admin__form">
+                        <div class="shrug-admin__form-header">
+                            <span class="shrug-admin__form-title" id="shrugFormTitle">Add New Shrug</span>
+                            <button type="button" class="shrug-new-btn" id="shrugNewBtn">
+                                <i class="lni lni-plus"></i>
+                            </button>
+                        </div>
+                        <form id="shrugForm" class="shrug-form">
+                            <input type="hidden" id="shrugId" name="id" value="">
+
+                            <div class="form-group">
+                                <label for="shrugTitle">Title</label>
+                                <input type="text" id="shrugTitle" name="title" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="shrugSlug">Slug</label>
+                                <input type="text" id="shrugSlug" name="slug" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="shrugContent">Content</label>
+                                <div id="shrugContentEditor" class="quill-editor"></div>
+                                <input type="hidden" id="shrugContent" name="content">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="shrugTags">Tags (comma separated)</label>
+                                <input type="text" id="shrugTags" name="tags" placeholder="tag1, tag2, tag3">
+                            </div>
+
+                            <div class="form-group form-group--checkbox">
+                                <label>
+                                    <input type="checkbox" id="shrugPublished" name="published" value="1" checked>
+                                    <span>Published</span>
+                                </label>
+                            </div>
+
+                            <div class="shrug-form__actions">
+                                <button type="submit" class="btn-login" id="shrugSubmitBtn">Save Shrug</button>
+                            </div>
+                            <div class="shrug-success-message" id="shrugSuccessMessage" style="display: none;">
+                                <i class="lni lni-checkmark-circle"></i>
+                                <span id="shrugSuccessText">Saved successfully!</span>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right: List -->
+                    <div class="shrug-admin__list">
+                        <span class="shrug-admin__list-title">All Shrugs (<?php echo count($shrugEntries); ?>)</span>
+                        <div class="shrug-list-admin">
+                            <?php foreach ($shrugEntries as $shrug): ?>
+                            <div class="shrug-list-item" data-id="<?php echo $shrug['id']; ?>">
+                                <div class="shrug-list-item__info">
+                                    <span class="shrug-list-item__title"><?php echo htmlspecialchars($shrug['title']); ?></span>
+                                    <span class="shrug-list-item__meta">
+                                        <?php echo date('M j, Y', strtotime($shrug['created_at'])); ?>
+                                        <?php if (!$shrug['published']): ?>
+                                            <span class="shrug-list-item__draft">Draft</span>
+                                        <?php endif; ?>
+                                    </span>
+                                </div>
+                                <div class="shrug-list-item__actions">
+                                    <button type="button" class="shrug-list-item__edit" data-id="<?php echo $shrug['id']; ?>" title="Edit">
+                                        <i class="lni lni-pen-to-square"></i>
+                                    </button>
+                                    <button type="button" class="shrug-list-item__delete" data-id="<?php echo $shrug['id']; ?>" data-title="<?php echo htmlspecialchars($shrug['title']); ?>" title="Delete">
+                                        <i class="lni lni-trash-3"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                            <?php if (empty($shrugEntries)): ?>
+                            <div class="shrug-list-empty">No shrug posts yet</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shrug data for JS -->
+            <script>
+                window.shrugData = <?php echo json_encode($shrugEntries); ?>;
+            </script>
+
+            <!-- Services Tab -->
+            <div class="admin-tab-content" id="tab-services">
+                <div class="admin-tab-placeholder">
+                    <p>Services management coming soon</p>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div class="admin-tab-content" id="tab-about">
+                <div class="admin-tab-placeholder">
+                    <p>About content management coming soon</p>
+                </div>
             </div>
         </div>
     </div>
@@ -115,11 +266,8 @@ $pathPrefix = '../';
     <!-- Edit Project Modal -->
     <div class="modal" id="editProjectModal">
         <div class="modal__overlay"></div>
-        <div class="modal__content">
-            <button class="modal__close" id="editProjectModalClose">
-                <i class="lni lni-close"></i>
-            </button>
-
+        <button class="modal__close" id="editProjectModalClose">close window</button>
+        <div class="modal__content modal__content--project">
             <!-- Upload overlay for loading and success states -->
             <div class="upload-overlay" id="editUploadOverlay">
                 <div class="upload-spinner" id="editUploadSpinner">
@@ -132,6 +280,7 @@ $pathPrefix = '../';
             </div>
 
             <h2 class="modal__logo-text">crbntyp</h2>
+            <p class="modal__subtitle">Edit project details</p>
 
             <form class="login-form" id="editProjectForm" enctype="multipart/form-data">
                 <div id="editProjectError" class="error-message" style="display: none;"></div>
@@ -201,11 +350,8 @@ $pathPrefix = '../';
     <!-- Add Project Modal -->
     <div class="modal" id="addProjectModal">
         <div class="modal__overlay"></div>
-        <div class="modal__content">
-            <button class="modal__close" id="addProjectModalClose">
-                <i class="lni lni-close"></i>
-            </button>
-
+        <button class="modal__close" id="addProjectModalClose">close window</button>
+        <div class="modal__content modal__content--project">
             <!-- Upload overlay for loading and success states -->
             <div class="upload-overlay" id="addUploadOverlay">
                 <div class="upload-spinner" id="addUploadSpinner">
@@ -218,6 +364,7 @@ $pathPrefix = '../';
             </div>
 
             <h2 class="modal__logo-text">crbntyp</h2>
+            <p class="modal__subtitle">Add a new project to your portfolio</p>
 
             <form class="login-form" id="addProjectForm" enctype="multipart/form-data">
                 <div id="addProjectError" class="error-message" style="display: none;"></div>
