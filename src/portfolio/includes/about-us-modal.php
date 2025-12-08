@@ -62,8 +62,6 @@ if (empty($bookmarks)) {
 
             <p class="about-section-title">The Leadership Lens (Present)</p>
             <p>Today, I lead multi-stack engineering teams at Rapid7. Being self-taught has made me a more empathetic leader; I know how hard it is to master a new skill. I focus on inspiring junior engineers, fostering psychological safety, and encouraging my team to own their own growth.</p>
-
-            <p class="about-current">Currently: Engineering Manager at Rapid7.<br>Motto: Never stop learning.</p>
           </div>
         </div>
 
@@ -72,7 +70,7 @@ if (empty($bookmarks)) {
           <h3 class="about-column__title">Projects I've worked on</h3>
           <div class="about-column__content">
             <ul class="about-work-list">
-              <li><span class="project-year project-year--present">2023 - PRESENT</span>Cloud: Agent, Antivirus, VR Forensics &amp; Orchestration Automation</li>
+              <li><span class="project-year project-year--present">2023 - PRESENT</span>Cloud Dev: Agent, Antivirus, VR Forensics &amp; Security Orchestration, Automation, and Response</li>
               <li><span class="project-year">2022</span> R7 Design System MUI</li>
               <li><span class="project-year">2020</span> R7 Design System React</li>
               <li><span class="project-year">2018</span> R7 Design System</li>
