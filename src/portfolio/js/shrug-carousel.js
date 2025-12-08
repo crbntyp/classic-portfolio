@@ -16,6 +16,7 @@ class ShrugMasonry {
     // Reader panel elements
     this.reader = document.getElementById('shrugReader');
     this.readerClose = document.getElementById('shrugReaderClose');
+    this.readerAvatar = document.getElementById('shrugReaderAvatar');
     this.readerTitle = document.getElementById('shrugReaderTitle');
     this.readerMeta = document.getElementById('shrugReaderMeta');
     this.readerContent = document.getElementById('shrugReaderContent');
@@ -225,10 +226,12 @@ class ShrugMasonry {
     // Get content from the entry
     const title = entry.querySelector('.shrug-entry__title')?.textContent || '';
     const date = entry.querySelector('.shrug-entry__date')?.innerHTML || '';
+    const avatar = entry.querySelector('.shrug-entry__avatar')?.src || '';
     const content = entry.dataset.fullContent || entry.querySelector('.shrug-entry__content')?.innerHTML || '';
     const tagsContainer = entry.querySelector('.shrug-entry__tags');
 
     // Populate reader
+    if (this.readerAvatar) this.readerAvatar.src = avatar;
     if (this.readerTitle) this.readerTitle.textContent = title;
     if (this.readerMeta) this.readerMeta.innerHTML = date;
     if (this.readerContent) this.readerContent.innerHTML = content;

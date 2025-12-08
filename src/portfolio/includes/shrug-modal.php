@@ -55,8 +55,11 @@ krsort($shrugMonths);
             <?php foreach ($shrugEntries as $entry): ?>
               <div class="shrug-entry" data-month="<?php echo date('Y-m', strtotime($entry['created_at'])); ?>" data-slug="<?php echo htmlspecialchars($entry['slug']); ?>" data-tags="<?php echo htmlspecialchars($entry['tags'] ?? ''); ?>" data-full-content="<?php echo htmlspecialchars($entry['content']); ?>">
                 <div class="shrug-entry__header">
-                  <h3 class="shrug-entry__title"><?php echo htmlspecialchars($entry['title']); ?></h3>
-                  <span class="shrug-entry__date"><?php echo date('M j, Y', strtotime($entry['created_at'])); ?> / <span class="shrug-entry__author">Jonny Pyper</span></span>
+                  <img src="portfolio/img/prof<?php echo rand(1, 9); ?>.png" alt="" class="shrug-entry__avatar">
+                  <div class="shrug-entry__meta">
+                    <h3 class="shrug-entry__title"><?php echo htmlspecialchars($entry['title']); ?></h3>
+                    <span class="shrug-entry__date"><?php echo date('M j, Y', strtotime($entry['created_at'])); ?> / <span class="shrug-entry__author">Jonny Pyper</span></span>
+                  </div>
                 </div>
                 <div class="shrug-entry__content">
                   <?php
@@ -107,8 +110,13 @@ krsort($shrugMonths);
       <!-- Right side: Reader Panel -->
       <div class="shrug-reader" id="shrugReader">
         <button class="shrug-reader__close" id="shrugReaderClose">close shrug</button>
-        <h2 class="shrug-reader__title" id="shrugReaderTitle"></h2>
-        <div class="shrug-reader__meta" id="shrugReaderMeta"></div>
+        <div class="shrug-reader__header">
+          <img src="" alt="" class="shrug-reader__avatar" id="shrugReaderAvatar">
+          <div class="shrug-reader__header-meta">
+            <h2 class="shrug-reader__title" id="shrugReaderTitle"></h2>
+            <div class="shrug-reader__meta" id="shrugReaderMeta"></div>
+          </div>
+        </div>
         <div class="shrug-reader__content" id="shrugReaderContent"></div>
         <div class="shrug-reader__tags" id="shrugReaderTags"></div>
       </div>
