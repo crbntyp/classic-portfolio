@@ -6,7 +6,7 @@ $cindersQuery = "SELECT projectID, projectHeading, url, category FROM projects O
 $cindersResult = $mysqli->query($cindersQuery);
 
 // Query for featured work carousel (non-classic portfolio items)
-$carouselQuery = "SELECT projectID, projectHeading, url, category FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
+$carouselQuery = "SELECT projectID, projectHeading, url, category, projectTeaser FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
 $carouselResult = $mysqli->query($carouselQuery);
 
 // Set page variables
@@ -72,7 +72,7 @@ $pathPrefix = 'portfolio/';
     <div class="site-socials" id="site-socials">
       <a href="https://github.com/jonnypyper" class="site-socials__link" target="_blank"><i class="lni lni-github"></i></a>
       <a href="https://linkedin.com/in/jonnypyper" class="site-socials__link" target="_blank"><i class="lni lni-linkedin"></i></a>
-      <a href="https://behance.net/carbontype" class="site-socials__link" target="_blank"><i class="lni lni-behance"></i></a>
+      <a href="https://www.behance.net/jonnypyper" class="site-socials__link" target="_blank"><i class="lni lni-behance"></i></a>
     </div>
 
     <!-- Voice AI Blob Background -->
@@ -126,11 +126,13 @@ $pathPrefix = 'portfolio/';
           <?php $index = 1; ?>
           <?php while ($item = $carouselResult->fetch_assoc()): ?>
             <a href="<?php echo htmlspecialchars($item['url']); ?>" class="work-carousel__card" target="_blank">
+              <?php if (!empty($item['projectTeaser'])): ?>
+                <img src="portfolio/uploads/<?php echo htmlspecialchars($item['projectTeaser']); ?>" alt="<?php echo htmlspecialchars($item['projectHeading']); ?>" class="work-carousel__image">
+              <?php endif; ?>
               <div class="work-carousel__header">
+                <span class="work-carousel__category"><?php echo htmlspecialchars(str_replace('-', ' ', $item['category'])); ?></span>
                 <h3 class="work-carousel__title"><?php echo htmlspecialchars($item['projectHeading']); ?></h3>
-                <span class="work-carousel__index"><?php echo str_pad($index, 2, '0', STR_PAD_LEFT); ?></span>
               </div>
-              <span class="work-carousel__category"><?php echo htmlspecialchars(str_replace('-', ' ', $item['category'])); ?></span>
             </a>
             <?php $index++; ?>
           <?php endwhile; ?>

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let scrollPosition = 0;
   const scrollSpeed = 0.5; // pixels per frame
   const cardWidth = 320;
+  const cardGap = 20;
   let singleSetWidth = 0;
 
   // Duplicate cards for seamless infinite scroll
@@ -22,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const cards = Array.from(track.querySelectorAll('.work-carousel__card'));
     if (cards.length === 0) return;
 
-    // Calculate width of one complete set
-    singleSetWidth = cards.length * cardWidth;
+    // Calculate width of one complete set (card width + gap)
+    singleSetWidth = cards.length * (cardWidth + cardGap);
 
     // Clone the entire set twice (so we have 3 sets total: original + 2 clones)
     // This ensures we always have cards visible during the loop
@@ -88,8 +89,10 @@ document.addEventListener('DOMContentLoaded', function() {
       animationId = null;
     }
 
-    // Reset transform to center before fading out
-    track.style.transform = 'translateX(0)';
+    // Store current position for the fade animation
+    // Don't reset transform - let CSS handle the scale/fade from current position
+    const currentTransform = `translateX(-${scrollPosition}px)`;
+    track.style.transform = currentTransform;
 
     // Add closing class to trigger fade out transition
     carousel.classList.add('is-closing');
