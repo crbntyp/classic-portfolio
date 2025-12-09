@@ -224,7 +224,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 50000;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
@@ -279,6 +279,11 @@
         opacity: 0;
         transform: translateY(20px);
 
+        @media (max-width: 500px) {
+            width: 90vw;
+            height: 90vh;
+        }
+
         // Subtle top accent line
         &::before {
             content: '';
@@ -325,12 +330,6 @@
             .work-carousel__index {
                 opacity: 0.4;
             }
-        }
-
-        @media (max-width: $breakpoint-mobile) {
-            width: 280px;
-            height: 180px;
-            padding: 24px;
         }
     }
 
