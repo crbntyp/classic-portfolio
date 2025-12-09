@@ -88,6 +88,9 @@ document.addEventListener('DOMContentLoaded', function() {
       animationId = null;
     }
 
+    // Reset transform to center before fading out
+    track.style.transform = 'translateX(0)';
+
     // Add closing class to trigger fade out transition
     carousel.classList.add('is-closing');
 
