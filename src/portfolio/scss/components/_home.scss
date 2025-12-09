@@ -201,6 +201,193 @@
     height: 100%;
     pointer-events: none;
     z-index: 100;
+    transition: filter 0.4s ease, opacity 0.4s ease;
+
+    &.is-blurred {
+        filter: blur(8px);
+        opacity: 0.3;
+        pointer-events: none !important;
+
+        .cinder {
+            pointer-events: none !important;
+        }
+    }
+}
+
+// Work Carousel
+.work-carousel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+
+    &.is-active {
+        opacity: 1;
+        visibility: visible;
+
+        .work-carousel__track {
+            animation: carouselReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .work-carousel__card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    &.is-closing {
+        opacity: 0;
+        transition: opacity 0.6s ease;
+
+        .work-carousel__track {
+            transform: scale(0.8) !important;
+            opacity: 0 !important;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+    }
+
+    &__track {
+        display: flex;
+        gap: 0;
+        will-change: transform;
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    &__card {
+        flex-shrink: 0;
+        width: 320px;
+        height: 500px;
+        padding: 28px 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: transparent;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(20px);
+
+        // Subtle top accent line
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 20%,
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent 100%
+            );
+        }
+
+        // Hover glow effect
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                180deg,
+                rgba($color-primary, 0.03) 0%,
+                transparent 50%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        &:hover {
+            &::after {
+                opacity: 1;
+            }
+
+            .work-carousel__title {
+                color: $color-primary;
+            }
+
+            .work-carousel__index {
+                opacity: 0.4;
+            }
+        }
+
+        @media (max-width: $breakpoint-mobile) {
+            width: 280px;
+            height: 180px;
+            padding: 24px;
+        }
+    }
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    &__category {
+        font-family: 'lores-12', sans-serif;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    &__index {
+        font-family: 'lores-12', sans-serif;
+        font-size: 10px;
+        color: rgba(255, 255, 255, 0.15);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    &__title {
+        font-family: 'lores-12', sans-serif;
+        font-size: 10px;
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: rgba(255, 255, 255, 0.35);
+        margin: 0;
+        transition: color 0.3s ease;
+    }
+}
+
+@keyframes carouselReveal {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes carouselFadeAway {
+    from {
+        transform: scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: scale(0.7);
+        opacity: 0;
+    }
 }
 
 .cinder {
@@ -212,10 +399,15 @@
     opacity: 0;
     transition: opacity 0.3s ease;
     display: inline-flex;
+    z-index: 1;
 
-    &:hover .cinder-spark {
-        transform: scale(1.5);
-        backdrop-filter: blur(12px);
+    &:hover {
+        z-index: 10;
+
+        .cinder-spark {
+            transform: scale(1.5);
+            backdrop-filter: blur(12px);
+        }
     }
 }
 
@@ -228,6 +420,18 @@
     transition: transform 0.3s ease, opacity 0.3s ease, backdrop-filter 0.3s ease;
     position: relative;
     backdrop-filter: blur(8px);
+
+    // Larger invisible hit area for easier clicking
+    &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
 }
 
 // Cinder colors

@@ -15,8 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     { text: 'Award winning UI Designer', dots: true },
     { text: 'UI Engineer', dots: true },
     { text: 'People Leader', dots: true },
-    { text: 'hello@crbntyp.com', dots: true, isEmail: true },
-    { text: 'loaded', dots: true, final: true }
+    { text: 'hello@crbntyp.com', dots: true, isEmail: true, final: true }
   ];
 
   const TYPING_SPEED = 150;

@@ -2,8 +2,12 @@
 require_once 'portfolio/includes/init.php';
 
 // Query for all projects (shown as cinders on homepage)
-$cindersQuery = "SELECT projectID, projectHeading, url FROM projects ORDER BY sort_order ASC";
+$cindersQuery = "SELECT projectID, projectHeading, url, category FROM projects ORDER BY sort_order ASC";
 $cindersResult = $mysqli->query($cindersQuery);
+
+// Query for featured work carousel (non-classic portfolio items)
+$carouselQuery = "SELECT projectID, projectHeading, url, category FROM projects WHERE category != 'classic-portfolio' ORDER BY sort_order ASC";
+$carouselResult = $mysqli->query($carouselQuery);
 
 // Set page variables
 $pageTitle = 'Jonny Pyper | Carbontype | Software Engineering Manager @R7 | Award Winning UI Designer | Crayon Enthusiast';
@@ -97,13 +101,15 @@ $pathPrefix = 'portfolio/';
         <?php $colors = ['cyan', 'white']; $i = 0; ?>
         <?php while ($cinder = $cindersResult->fetch_assoc()): ?>
           <?php
-            $isClassicPortfolio = $cinder['url'] && strpos($cinder['url'], 'carbontype.co/archive') !== false;
+            $category = $cinder['category'] ?? 'classic-portfolio';
+            $isClassicPortfolio = $category === 'classic-portfolio';
             $href = ($cinder['url'] && !$isClassicPortfolio) ? htmlspecialchars($cinder['url']) : 'javascript:void(0)';
           ?>
           <a href="<?php echo $href; ?>"
              class="cinder"
              <?php if ($cinder['url'] && !$isClassicPortfolio): ?>target="_blank"<?php endif; ?>
              data-color="<?php echo $colors[$i % 2]; ?>"
+             data-category="<?php echo htmlspecialchars($category); ?>"
              data-tooltip="<?php echo htmlspecialchars($cinder['projectHeading']); ?>"
              data-tooltip-position="top">
             <span class="cinder-spark"></span>
@@ -111,6 +117,25 @@ $pathPrefix = 'portfolio/';
           <?php $i++; ?>
         <?php endwhile; ?>
       <?php endif; ?>
+    </div>
+
+    <!-- Featured Work Carousel -->
+    <div id="work-carousel" class="work-carousel">
+      <div class="work-carousel__track">
+        <?php if ($carouselResult && $carouselResult->num_rows > 0): ?>
+          <?php $index = 1; ?>
+          <?php while ($item = $carouselResult->fetch_assoc()): ?>
+            <a href="<?php echo htmlspecialchars($item['url']); ?>" class="work-carousel__card" target="_blank">
+              <div class="work-carousel__header">
+                <h3 class="work-carousel__title"><?php echo htmlspecialchars($item['projectHeading']); ?></h3>
+                <span class="work-carousel__index"><?php echo str_pad($index, 2, '0', STR_PAD_LEFT); ?></span>
+              </div>
+              <span class="work-carousel__category"><?php echo htmlspecialchars(str_replace('-', ' ', $item['category'])); ?></span>
+            </a>
+            <?php $index++; ?>
+          <?php endwhile; ?>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- Audio disabled

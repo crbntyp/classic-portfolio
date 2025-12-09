@@ -87,11 +87,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.top-nav__link, .mobile-nav__link, .mobile-cta').forEach(link => {
     const href = link.getAttribute('href');
 
-    // Featured Work - under construction
+    // Featured Work - show work carousel
     if (href === '#work') {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('Under construction');
+        if (typeof window.showWorkCarousel === 'function') {
+          window.showWorkCarousel();
+        }
       });
     }
     // Modal links
