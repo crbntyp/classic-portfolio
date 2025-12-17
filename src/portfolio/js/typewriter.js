@@ -124,11 +124,16 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Play ambient sound on first user interaction (browsers block autoplay)
+  let ambientSound = null;
   function playAmbientSound() {
-    const alienSound = new Audio('/sounds/alien-onload.mp3');
-    alienSound.volume = 0.1;
-    alienSound.loop = true;
-    alienSound.play().catch(() => {});
+    ambientSound = new Audio('/sounds/alien-onload.mp3');
+    ambientSound.volume = 0.1;
+    ambientSound.loop = true;
+    // Register with sound manager
+    if (window.SoundManager) {
+      window.SoundManager.register(ambientSound);
+    }
+    ambientSound.play().catch(() => {});
     // Remove listeners after first play
     document.removeEventListener('click', playAmbientSound);
     document.removeEventListener('mousemove', playAmbientSound);
@@ -210,10 +215,14 @@ document.addEventListener('DOMContentLoaded', function() {
         await new Promise(r => setTimeout(r, 1200));
 
         // Play alien onload sound after fade (loop indefinitely)
-        const alienSound = new Audio('/sounds/alien-onload.mp3');
-        alienSound.volume = 0.1;
-        alienSound.loop = true;
-        alienSound.play().catch(err => console.log('Audio error:', err));
+        ambientSound = new Audio('/sounds/alien-onload.mp3');
+        ambientSound.volume = 0.1;
+        ambientSound.loop = true;
+        // Register with sound manager
+        if (window.SoundManager) {
+          window.SoundManager.register(ambientSound);
+        }
+        ambientSound.play().catch(err => console.log('Audio error:', err));
 
         // Intensify blob colors
         if (typeof window.intensifyBlob === 'function') {

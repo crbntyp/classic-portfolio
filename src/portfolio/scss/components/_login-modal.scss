@@ -136,4 +136,15 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  // Success state - button transforms to show success
+  &.is-success {
+    background: #00ff88;
+    color: $color-darkest;
+    pointer-events: none;
+
+    &:hover {
+      background: #00ff88;
+    }
+  }
 }

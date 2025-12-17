@@ -91,22 +91,35 @@
   }
 }
 
-// Masonry Grid Container - full width
+// CSS Columns Grid Container - masonry-like effect without JS
 .shrug-entries {
   width: 100%;
+  column-count: 4;
+  column-gap: 20px;
+
+  @media (max-width: 1400px) {
+    column-count: 3;
+  }
+
+  @media (max-width: 1024px) {
+    column-count: 2;
+  }
+
+  @media (max-width: 767px) {
+    column-count: 1;
+  }
 }
 
-// Individual Entry - Masonry item
+// Individual Entry - CSS columns item
 .shrug-entry {
   position: relative;
-  width: calc(25% - 15px); // 4 columns with gap
+  width: 100%;
   margin-bottom: $spacing-sm;
   padding: $spacing-sm;
-  //background: $color-bg-white-05;
-  //border: 1px solid $color-border-white-10;
   border-radius: 0;
   cursor: pointer;
   transition: all $transition-fast;
+  break-inside: avoid; // Prevent column breaks within entries
 
   &:hover:not(.is-expanded) {
     background: $color-bg-white-05;
@@ -116,17 +129,9 @@
     display: none;
   }
 
-
-  @media (max-width: $breakpoint-tablet) {
-    width: calc(50% - 10px); // 2 columns on tablet
-  }
-
-  @media (max-width: $breakpoint-mobile) {
-    width: 100%; // 1 column on mobile
-  }
-
   &__header {
     display: flex;
+    flex-direction: row-reverse;
     align-items: flex-start;
     gap: $spacing-xs;
     margin-bottom: $spacing-xs;
@@ -206,8 +211,6 @@
   font-size: $font-size-md;
 }
 
-// Navigation removed - using masonry grid instead of carousel
-
 // Left side - shrinks when reader opens
 .shrug-list {
   width: 100%;
@@ -220,8 +223,8 @@
     width: 50%;
 
     // Reduce to 2 columns when reader is open
-    .shrug-entry {
-      width: calc(50% - 10px);
+    .shrug-entries {
+      column-count: 2;
     }
 
     @media (max-width: $breakpoint-tablet) {
@@ -341,7 +344,7 @@
 
   p {
     margin: 0 0 $spacing-sm;
-    font-size: 14px;
+    font-size: 16px;
 
     &:last-child {
       margin-bottom: 0;

@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const popup = document.querySelector('.main-nav__popup');
   const items = document.querySelectorAll('.main-nav__item');
 
-  console.log('Menu initialized', { trigger, popup });
+  // Exit early if main-nav elements don't exist (e.g., on admin pages)
+  if (!trigger || !popup) return;
 
   function setRandomPositions() {
     const triggerRect = trigger.getBoundingClientRect();

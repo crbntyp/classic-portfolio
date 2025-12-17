@@ -139,7 +139,7 @@
 
   // Featured card (middle tier)
   &--featured {
-    
+
 
     @media (max-width: $breakpoint-tablet) {
       order: -1; // Show first on mobile
@@ -155,6 +155,22 @@
 
       &:hover {
         background: $color-white;
+      }
+    }
+  }
+
+  // Disabled card (WIP)
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+
+    .pricing-card__cta {
+      background: rgba(255, 255, 255, 0.3);
+      color: $color-text-white-50;
+      cursor: not-allowed;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
       }
     }
   }

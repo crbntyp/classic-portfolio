@@ -19,6 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
   let audioContext = null;
 
   function playBlip() {
+    // Check if sound is muted
+    if (window.SoundManager && window.SoundManager.isMuted) {
+      return;
+    }
+
     // Initialize audio context on first interaction (browser requirement)
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();

@@ -631,9 +631,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Form submission
-  const shrugSuccessMessage = document.getElementById('shrugSuccessMessage');
-  const shrugSuccessText = document.getElementById('shrugSuccessText');
-
   if (shrugForm) {
     shrugForm.addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -652,11 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (shrugSubmitBtn) {
         shrugSubmitBtn.disabled = true;
         shrugSubmitBtn.textContent = 'Saving...';
-      }
-
-      // Hide any previous success message
-      if (shrugSuccessMessage) {
-        shrugSuccessMessage.style.display = 'none';
+        shrugSubmitBtn.classList.remove('is-success');
       }
 
       try {
@@ -673,6 +666,10 @@ document.addEventListener('DOMContentLoaded', function() {
           const published = shrugPublishedInput.checked;
           const newId = data.id;
 
+          // Store original button text for later
+          const originalBtnText = isEditing ? 'Update Shrug' : 'Save Shrug';
+          const successText = isEditing ? 'Shrug Updated!' : 'Shrug Created!';
+
           if (isEditing) {
             // Update existing list item in DOM
             const listItem = document.querySelector(`.shrug-list-item[data-id="${editingId}"]`);
@@ -688,9 +685,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 metaSpan.insertAdjacentHTML('beforeend', '<span class="shrug-list-item__draft">Draft</span>');
               }
             }
-
-            // Show success message
-            if (shrugSuccessText) shrugSuccessText.textContent = 'Shrug updated successfully!';
           } else {
             // Add new list item to DOM
             const shrugListAdmin = document.querySelector('.shrug-list-admin');
@@ -729,25 +723,21 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update count in list title and tab
             updateShrugCount(1);
 
-            // Show success message
-            if (shrugSuccessText) shrugSuccessText.textContent = 'Shrug created successfully!';
-
             // Reset form for new entry
             resetShrugForm();
           }
 
-          // Show success message
-          if (shrugSuccessMessage) {
-            shrugSuccessMessage.style.display = 'flex';
-            setTimeout(() => {
-              shrugSuccessMessage.style.display = 'none';
-            }, 3000);
-          }
-
-          // Re-enable button
+          // Transform button to success state
           if (shrugSubmitBtn) {
             shrugSubmitBtn.disabled = false;
-            shrugSubmitBtn.textContent = isEditing ? 'Update Shrug' : 'Save Shrug';
+            shrugSubmitBtn.textContent = successText;
+            shrugSubmitBtn.classList.add('is-success');
+
+            // Revert button after 2.5 seconds
+            setTimeout(() => {
+              shrugSubmitBtn.classList.remove('is-success');
+              shrugSubmitBtn.textContent = isEditing ? 'Update Shrug' : 'Save Shrug';
+            }, 2500);
           }
 
         } else {
@@ -893,6 +883,23 @@ document.addEventListener('DOMContentLoaded', function() {
           .replace(/^-|-$/g, '');
         shrugSlugInput.value = slug;
       }
+    });
+  }
+
+  // Shrug month filter
+  const shrugMonthFilter = document.getElementById('shrugMonthFilter');
+  if (shrugMonthFilter) {
+    shrugMonthFilter.addEventListener('change', function() {
+      const selectedMonth = this.value;
+      const shrugItems = document.querySelectorAll('.shrug-list-item');
+
+      shrugItems.forEach(item => {
+        if (selectedMonth === 'all' || item.dataset.month === selectedMonth) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     });
   }
 

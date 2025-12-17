@@ -1,6 +1,6 @@
 <?php
 // Fetch shrug entries
-$shrugQuery = "SELECT id, title, slug, content, tags, created_at FROM shrug_entries WHERE published = 1 ORDER BY sort_order ASC, created_at DESC";
+$shrugQuery = "SELECT id, title, slug, content, tags, created_at FROM shrug_entries WHERE published = 1 ORDER BY created_at DESC";
 $shrugResult = $mysqli->query($shrugQuery);
 $shrugEntries = [];
 $shrugMonths = []; // Track unique months
@@ -49,7 +49,7 @@ krsort($shrugMonths);
           </div>
         </div>
 
-        <!-- Masonry Grid -->
+        <!-- CSS Columns Grid -->
         <div class="shrug-entries" id="shrugEntries">
           <?php if ($shrugCount > 0): ?>
             <?php foreach ($shrugEntries as $entry): ?>

@@ -28,7 +28,8 @@ const SKIP_FILES = [
 // JS files to bundle - priority order (these load first)
 // Any other .js files in src/js/ will be bundled after these
 const JS_FILES_PRIORITY = [
-    'color-extractor.js',  // Must load first (used by carousel)
+    'sound-manager.js',    // Must load first (global sound state)
+    'color-extractor.js',  // Must load before carousel
     'color-namer.js',      // Must load before carousel (used by carousel)
     'carousel.js',
     'particles.js',

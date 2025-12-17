@@ -38,6 +38,18 @@ $pathPrefix = 'portfolio/';
       <?php else: ?>
         <a href="#" class="top-nav__link top-nav__link--icon" id="loginTrigger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
       <?php endif; ?>
+      <button class="top-nav__link top-nav__link--icon sound-toggle" id="soundToggle" aria-label="Toggle sound">
+        <svg class="sound-toggle__on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+        <svg class="sound-toggle__off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      </button>
     </nav>
 
     <!-- Mobile Navigation -->
@@ -47,6 +59,18 @@ $pathPrefix = 'portfolio/';
       <?php else: ?>
         <a href="#" class="mobile-header__lock" id="mobileLoginTrigger"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></a>
       <?php endif; ?>
+      <button class="mobile-header__sound sound-toggle" id="mobileSoundToggle" aria-label="Toggle sound">
+        <svg class="sound-toggle__on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        </svg>
+        <svg class="sound-toggle__off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <line x1="23" y1="9" x2="17" y2="15"/>
+          <line x1="17" y1="9" x2="23" y2="15"/>
+        </svg>
+      </button>
       <button class="burger-menu" id="burger-menu" aria-label="Toggle menu">
         <span class="burger-menu__line"></span>
         <span class="burger-menu__line"></span>

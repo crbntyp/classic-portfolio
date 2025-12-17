@@ -74,7 +74,7 @@
         </div>
 
         <!-- Tier 4: AI Strategy -->
-        <div class="pricing-card">
+        <div class="pricing-card pricing-card--disabled">
           <div class="pricing-card__header">
             <h3 class="pricing-card__tier">Agency AI Strategy Consultation</h3>
             <p class="pricing-card__desc">Transform how your team works</p>
@@ -87,7 +87,7 @@
             <li>Team training session</li>
             <li>Optional monthly retainer</li>
           </ul>
-          <button class="pricing-card__cta" data-tier="ai-strategy">Get Started</button>
+          <button class="pricing-card__cta" data-tier="ai-strategy" disabled>WIP</button>
         </div>
       </div>
     </div>

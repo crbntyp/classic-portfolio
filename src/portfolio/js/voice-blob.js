@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let pulseDecay = 0.85; // Even slower decay for more impactful pulse
 
     function playPulseSound(intensity) {
+        // Check if sound is muted
+        if (window.SoundManager && window.SoundManager.isMuted) {
+            return;
+        }
+
         const soundFile = alienSounds[Math.floor(Math.random() * alienSounds.length)];
         const audio = new Audio(soundFile);
         audio.volume = 0.12 + intensity * 0.08;

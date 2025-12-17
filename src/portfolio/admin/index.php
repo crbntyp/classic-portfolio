@@ -30,15 +30,24 @@ if ($categoryCheck->num_rows == 0) {
 $projectsCount = $mysqli->query("SELECT COUNT(*) as count FROM projects")->fetch_assoc()['count'];
 $shrugCount = $mysqli->query("SELECT COUNT(*) as count FROM shrug_entries")->fetch_assoc()['count'];
 
-// Fetch all shrug entries for admin
-$shrugQuery = "SELECT id, title, slug, content, tags, published, sort_order, created_at FROM shrug_entries ORDER BY sort_order ASC, created_at DESC";
+// Fetch all shrug entries for admin (newest first)
+$shrugQuery = "SELECT id, title, slug, content, tags, published, sort_order, created_at FROM shrug_entries ORDER BY created_at DESC";
 $shrugResult = $mysqli->query($shrugQuery);
 $shrugEntries = [];
+$shrugMonths = []; // Track unique months for filter
 if ($shrugResult) {
     while ($row = $shrugResult->fetch_assoc()) {
         $shrugEntries[] = $row;
+        // Build unique months list
+        $monthKey = date('Y-m', strtotime($row['created_at']));
+        $monthDisplay = date('M Y', strtotime($row['created_at']));
+        if (!isset($shrugMonths[$monthKey])) {
+            $shrugMonths[$monthKey] = $monthDisplay;
+        }
     }
 }
+// Sort months descending (newest first)
+krsort($shrugMonths);
 
 // Fetch all projects ordered by sort_order (user-defined drag order)
 $projectsQuery = "SELECT projectID, projectHeading, projectTeaser, category FROM projects ORDER BY sort_order ASC";
@@ -202,19 +211,27 @@ $pathPrefix = '../';
                             <div class="shrug-form__actions">
                                 <button type="submit" class="btn-login" id="shrugSubmitBtn">Save Shrug</button>
                             </div>
-                            <div class="shrug-success-message" id="shrugSuccessMessage" style="display: none;">
-                                <i class="lni lni-checkmark-circle"></i>
-                                <span id="shrugSuccessText">Saved successfully!</span>
-                            </div>
                         </form>
                     </div>
 
                     <!-- Right: List -->
                     <div class="shrug-admin__list">
-                        <span class="shrug-admin__list-title">All Shrugs (<?php echo count($shrugEntries); ?>)</span>
+                        <div class="shrug-admin__list-header">
+                            <span class="shrug-admin__list-title">All Shrugs (<?php echo count($shrugEntries); ?>)</span>
+                            <?php if (count($shrugMonths) > 0): ?>
+                            <div class="shrug-admin__filter">
+                                <select id="shrugMonthFilter" class="shrug-admin__filter-select">
+                                    <option value="all">All Months</option>
+                                    <?php foreach ($shrugMonths as $key => $display): ?>
+                                    <option value="<?php echo $key; ?>"><?php echo $display; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <?php endif; ?>
+                        </div>
                         <div class="shrug-list-admin">
                             <?php foreach ($shrugEntries as $shrug): ?>
-                            <div class="shrug-list-item" data-id="<?php echo $shrug['id']; ?>">
+                            <div class="shrug-list-item" data-id="<?php echo $shrug['id']; ?>" data-month="<?php echo date('Y-m', strtotime($shrug['created_at'])); ?>">
                                 <div class="shrug-list-item__info">
                                     <span class="shrug-list-item__title"><?php echo htmlspecialchars($shrug['title']); ?></span>
                                     <span class="shrug-list-item__meta">

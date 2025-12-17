@@ -791,6 +791,47 @@
     }
 }
 
+// Sound Toggle Button
+.sound-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        color: white;
+    }
+
+    svg {
+        display: block;
+    }
+
+    // Show on icon, hide off icon by default (sound on)
+    .sound-toggle__on {
+        display: block;
+    }
+
+    .sound-toggle__off {
+        display: none;
+    }
+
+    // When muted, show off icon, hide on icon
+    &.is-muted {
+        .sound-toggle__on {
+            display: none;
+        }
+
+        .sound-toggle__off {
+            display: block;
+        }
+    }
+}
+
 // Site Socials - fixed bottom left, stacked
 .site-socials {
     position: fixed;
@@ -854,6 +895,22 @@
     }
 
     &__lock {
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:hover {
+            color: white;
+        }
+
+        svg {
+            display: block;
+        }
+    }
+
+    &__sound {
         color: rgba(255, 255, 255, 0.6);
         transition: color 0.2s ease;
         display: flex;

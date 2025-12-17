@@ -1,9 +1,9 @@
 /**
- * Shrug Masonry
- * Masonry grid layout for shrug entries with date filtering
+ * Shrug Grid
+ * CSS columns grid layout for shrug entries with date and tag filtering
  */
 
-class ShrugMasonry {
+class ShrugGrid {
   constructor() {
     this.container = document.getElementById('shrugEntries');
     this.overlayContent = document.querySelector('.shrug-overlay-content');
@@ -22,7 +22,6 @@ class ShrugMasonry {
     this.readerContent = document.getElementById('shrugReaderContent');
     this.readerTags = document.getElementById('shrugReaderTags');
 
-    this.masonry = null;
     this.expandedEntry = null;
     this.activeTag = null;
 
@@ -31,24 +30,10 @@ class ShrugMasonry {
     this.entries = this.container.querySelectorAll('.shrug-entry');
     if (this.entries.length === 0) return;
 
-    this.init();
     this.initFilter();
     this.initTagFilter();
     this.initExpansion();
     this.handleDeepLink();
-  }
-
-  init() {
-    // Initialize Masonry
-    if (typeof Masonry !== 'undefined') {
-      this.masonry = new Masonry(this.container, {
-        itemSelector: '.shrug-entry:not(.is-hidden)',
-        columnWidth: '.shrug-entry:not(.is-hidden)',
-        percentPosition: true,
-        gutter: 20,
-        transitionDuration: '0.3s'
-      });
-    }
   }
 
   initFilter() {
@@ -85,9 +70,6 @@ class ShrugMasonry {
         entry.classList.add('is-hidden');
       }
     });
-
-    // Refresh masonry layout
-    this.refresh();
   }
 
   // Initialize tag filtering
@@ -155,9 +137,6 @@ class ShrugMasonry {
         }
       });
     }
-
-    // Refresh masonry layout
-    this.refresh();
   }
 
   // Clear tag filter
@@ -177,17 +156,6 @@ class ShrugMasonry {
     // Hide tag filter indicator
     if (this.tagFilterContainer) {
       this.tagFilterContainer.classList.remove('is-active');
-    }
-
-    // Refresh masonry layout
-    this.refresh();
-  }
-
-  // Reinitialize masonry (useful after content changes)
-  refresh() {
-    if (this.masonry) {
-      this.masonry.reloadItems();
-      this.masonry.layout();
     }
   }
 
@@ -251,11 +219,6 @@ class ShrugMasonry {
     if (this.overlayContent) this.overlayContent.classList.add('has-reader');
     this.reader.classList.add('is-open');
 
-    // Relayout masonry after transition
-    setTimeout(() => {
-      this.refresh();
-    }, 350);
-
     // Update URL
     history.pushState({ shrug: slug }, '', `#shrug/${slug}`);
   }
@@ -273,11 +236,6 @@ class ShrugMasonry {
     }
 
     this.expandedEntry = null;
-
-    // Relayout masonry after transition
-    setTimeout(() => {
-      this.refresh();
-    }, 350);
 
     // Update URL - remove the hash
     history.pushState({}, '', window.location.pathname);
@@ -322,7 +280,7 @@ class ShrugMasonry {
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize immediately if modal is already in DOM
-  let shrugMasonry = new ShrugMasonry();
+  let shrugGrid = new ShrugGrid();
 
   // Also reinitialize when shrug modal opens
   const shrugModal = document.getElementById('shrugModal');
@@ -332,10 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (mutation.attributeName === 'class' && shrugModal.classList.contains('active')) {
           // Small delay to ensure DOM is ready
           setTimeout(() => {
-            shrugMasonry = new ShrugMasonry();
-            if (shrugMasonry.masonry) {
-              shrugMasonry.refresh();
-            }
+            shrugGrid = new ShrugGrid();
           }, 100);
         }
       });
