@@ -1,0 +1,21 @@
+.gallery {
+  width: 100%;
+  overflow: hidden;
+  padding: 0 0 80px;
+}
+
+.gallery__track {
+  display: flex;
+  gap: 16px;
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  .gallery {
+    padding: 0 0 60px;
+  }
+
+  .gallery__track {
+    gap: 12px;
+  }
+}

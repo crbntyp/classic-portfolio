@@ -1,0 +1,9 @@
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "config\.php">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

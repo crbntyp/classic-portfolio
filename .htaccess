@@ -1,0 +1,31 @@
+DirectoryIndex index.html
+
+# Protect sensitive files
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(sql|log|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# SPA fallback - serve index.html for all non-file routes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /portfolio/
+
+    # Don't rewrite API requests
+    RewriteRule ^api/ - [L]
+
+    # Don't rewrite uploads
+    RewriteRule ^uploads/ - [L]
+
+    # Don't rewrite existing files or directories
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Send everything else to index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
