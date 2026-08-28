@@ -1,0 +1,2477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>crbntyp — work admin</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Azeret+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  @font-face {
+    font-family: "Britanica";
+    src: url("/fonts/britanica-extra-bold.woff2") format("woff2"),
+         url("/fonts/britanica-extra-bold.woff") format("woff");
+    font-weight: 800;
+    font-display: swap;
+  }
+
+  :root {
+    --ink: #0e0f12; --panel: #16181c; --panel-hi: #1c1f24;
+    --paper: #ecedea; --dim: #7b828d;
+    --line: rgba(236,237,234,.1); --line-strong: rgba(236,237,234,.22);
+    --good: #8fd39a; --bad: #f0a79d;
+    --font: "Archivo","Helvetica Neue",Arial,sans-serif;
+    --mono: "Azeret Mono",ui-monospace,"SF Mono",Menlo,monospace;
+    --scroll: #00e5ff;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--ink); color: var(--paper); font-family: var(--font); padding: 34px 30px 90px; -webkit-font-smoothing: antialiased; }
+  .stencil { font-family: var(--mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); }
+  h1 { font-size: 26px; font-weight: 700; letter-spacing: -.04em; margin: 8px 0 0; }
+  .wrap { max-width: 1500px; margin: 0 auto; }
+
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 20px; }
+  .spacer { flex: 1; }
+
+  /*
+   * Every control in a card is the same height and sits on the same border, so
+   * a row of them reads as one row. They were each their own size before, which
+   * is what made the card look like a pile of parts.
+   */
+  :root { --control: 30px; }
+
+  .btn {
+    height: var(--control);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 2px;
+    background: transparent; color: var(--paper); cursor: pointer; white-space: nowrap;
+    /* Some of these are anchors, and an anchor underlines by default. */
+    text-decoration: none;
+  }
+  .btn:hover { border-color: var(--paper); background: rgba(236,237,234,.06); }
+  .icon { flex: none; display: block; }
+  .btn.is-on { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+  .btn:disabled { opacity: .45; cursor: default; }
+
+  /* ---------- search ---------- */
+
+  .search {
+    flex: 0 1 260px; height: var(--control);
+    font-family: var(--mono); font-size: 11px; color: var(--paper);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 2px;
+    padding: 0 11px;
+  }
+  .search:focus { outline: none; border-color: var(--line-strong); }
+
+  /* ---------- two columns: the work, and the things that describe it ---------- */
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 250px;
+    gap: 30px;
+    align-items: start;
+  }
+  /*
+   * The editor is capped at 900px, but its column was taking everything left
+   * over — so the form stopped and the list carried on sitting at the far right
+   * with a quarter of the screen of nothing between them. The column is the
+   * form's width now, and the pair sits left with the room to spare on the
+   * right, the way the site does it.
+   */
+  .layout.is-editor {
+    grid-template-columns: minmax(0, 900px) 250px;
+    justify-content: start;
+  }
+  .layout.is-editor .editor { max-width: none; }
+
+  @media (max-width: 1080px) {
+    .layout,
+    .layout.is-editor { grid-template-columns: 1fr; }
+  }
+
+  .side {
+    /*
+     * Pinned to the top-right cell explicitly. The pager is inserted after the
+     * grid, which makes it this element's DOM sibling *before* it — and auto
+     * placement then dropped the sidebar into row two beside the pager.
+     */
+    grid-column: 2;
+    grid-row: 1;
+    position: sticky; top: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  @media (max-width: 1080px) { .side { grid-column: 1; grid-row: auto; position: static; } }
+  .side-panel { border: 1px solid var(--line); border-radius: 3px; padding: 14px; background: var(--panel); }
+  .side-head { display: block; margin-bottom: 12px; }
+
+  /* ---------- grid ---------- */
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+    gap: 18px;
+  }
+
+  .item {
+    position: relative;
+    display: flex; flex-direction: column;
+    border: 1px solid var(--line); border-radius: 3px;
+    background: var(--panel);
+    /* No clipping here: the category list opens out of the bottom of the card,
+       and overflow:hidden cut it off. The cover clips itself instead. */
+  }
+  .item.is-hidden { opacity: .5; }
+  .item.is-hidden:hover { opacity: .8; }
+
+  .item-cover {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--panel-hi);
+    border-bottom: 1px solid var(--line);
+    border-radius: 2px 2px 0 0;
+    overflow: hidden;
+  }
+  /*
+   * Taken out of flow so the image cannot set the box's height. In flow, a
+   * percentage height resolves against an auto height and the picture's own
+   * proportions win — which is why a card with a cover was taller than one
+   * without.
+   */
+  .item-cover img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  .item-cover .none {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--dim);
+  }
+
+  .item-flags {
+    position: absolute; top: 8px; left: 8px; right: 8px;
+    display: flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 8px; letter-spacing: .12em; text-transform: uppercase;
+  }
+  .flag {
+    padding: 3px 6px; border-radius: 2px;
+    background: rgba(14,15,18,.8); color: var(--paper);
+    backdrop-filter: blur(4px);
+  }
+
+  .item-body { display: flex; flex-direction: column; gap: 11px; padding: 13px; }
+
+  /*
+   * The two things done in bulk stay on the card — showing something and
+   * filing it — because opening a window to tick one box forty times is not an
+   * improvement. Everything that needs writing rather than choosing is a click
+   * away in the editor.
+   */
+  .item-foot { display: flex; align-items: center; gap: 6px; }
+  .item-foot .btn { flex: 1; }
+  .item-foot .btn[data-toggle] { flex: 0 0 auto; min-width: 62px; }
+  .item-body .note:empty { display: none; }
+  .item-title {
+    font-size: 13px; font-weight: 600; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .item-sub { font-family: var(--mono); font-size: 9px; color: var(--dim); margin-top: 3px; }
+
+  /* A labelled control. The label is what stops a row of inputs being a guess. */
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .field > .stencil { font-size: 8px; letter-spacing: .14em; }
+
+  .field-pair { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: end; }
+  .field-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+  .field input[type=text] {
+    width: 100%; height: var(--control);
+    font-family: var(--mono); font-size: 11px; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px; padding: 0 9px;
+  }
+  .field input[type=text]::placeholder,
+  .field textarea::placeholder { color: var(--dim); opacity: .75; }
+
+  .intro {
+    width: 100%; min-height: 62px; resize: vertical; padding: 8px 9px;
+    font-family: var(--font); font-size: 12px; line-height: 1.55; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px;
+  }
+  .intro:focus { outline: none; border-color: var(--line-strong); }
+  /* A list, not a paragraph: monospaced so the lines you are counting look
+     like lines, and never wrapped into looking like two of them. */
+  .intro.is-lines {
+    font-family: var(--mono); font-size: 11px; line-height: 1.8;
+    white-space: pre; overflow-x: auto;
+  }
+
+  /* ---------- modal ---------- */
+
+  /*
+   * One overlay, two jobs: editing an item and picking an image for it. The
+   * picker was here first and this is its markup, widened — a second overlay
+   * built alongside it would have been the same box with a different name.
+   */
+  .modal {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(8, 9, 11, .82);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 30px;
+  }
+  /* The picker is opened from inside the editor, so it has to sit over it. */
+  .modal.is-over { z-index: 70; }
+  .modal-panel {
+    width: min(620px, 100%); max-height: 100%;
+    display: flex; flex-direction: column;
+    background: var(--panel); border: 1px solid var(--line-strong); border-radius: 3px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6);
+  }
+  /* A wall of thumbnails needs the room; a form does not. */
+  .modal.is-wide .modal-panel { width: min(1100px, 100%); }
+
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 14px 16px; border-bottom: 1px solid var(--line);
+  }
+  .modal-title { font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .modal-body {
+    padding: 16px; overflow: auto;
+    display: flex; flex-direction: column; gap: 15px;
+  }
+  .modal-foot {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-top: 1px solid var(--line);
+  }
+  .modal-foot .spacer { flex: 1; }
+
+  /* The banner as it will be seen, at the shape the cards use. */
+  .modal-banner {
+    position: relative; aspect-ratio: 16 / 10;
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px;
+    overflow: hidden;
+  }
+  .modal-banner img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .modal-banner .none {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--dim);
+  }
+
+  /* ---------- image picker ---------- */
+
+  .picker-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px; padding: 16px; overflow: auto;
+  }
+  .picker-item {
+    position: relative; padding: 0; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 2px; overflow: hidden;
+    background: var(--panel-hi); aspect-ratio: 16 / 10;
+  }
+  .picker-item:hover { border-color: var(--paper); }
+  .picker-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .picker-item.is-used { opacity: .55; }
+  .picker-flag {
+    position: absolute; top: 6px; left: 6px; padding: 2px 6px; border-radius: 2px;
+    background: rgba(14,15,18,.85); color: var(--paper);
+    font-family: var(--mono); font-size: 8px; letter-spacing: .12em; text-transform: uppercase;
+  }
+
+  /* A heading and its intro belong together, and there are three pairs —
+     without the grouping it reads as six unrelated fields in a column. */
+  /* One page's pair of fields, under its name — three of these read as three
+     pages rather than as six fields in a column. */
+  .head-row {
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 22px 0 26px;
+    border-top: 1px solid var(--line);
+  }
+  .head-row:first-of-type { border-top: 0; padding-top: 0; }
+  .head-row-label { color: var(--paper); }
+  /* The form is .editor, and .editor textarea floors every box at 420px for the
+     writing. These are two sentences, and they size themselves. */
+  .head-row .intro { min-height: 0; }
+  .head-row input[type=text] {
+    width: 100%; height: var(--control);
+    font-family: var(--font); font-size: 13px; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px; padding: 0 9px;
+  }
+
+  .social-row { display: grid; grid-template-columns: 180px minmax(0,1fr) auto; gap: 8px; margin-bottom: 6px; }
+  .social-row .tag-input { height: var(--control); font-size: 11px; }
+  .history-input {
+    width: 100%; min-height: 240px; resize: vertical; padding: 12px;
+    font-family: var(--mono); font-size: 11px; line-height: 1.7; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px;
+    white-space: pre;
+  }
+  .history-input:focus { outline: none; border-color: var(--line-strong); }
+
+  /* ---------- tags ---------- */
+
+  .tag-rows { display: flex; flex-direction: column; gap: 5px; }
+  .tag-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 6px; align-items: center; }
+  .tag-row.is-off .tag-input { opacity: .45; text-decoration: line-through; }
+  .tag-input {
+    width: 100%; height: 26px; padding: 0 8px;
+    font-family: var(--mono); font-size: 10px; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px;
+  }
+  .tag-used {
+    font-family: var(--mono); font-size: 9px; color: var(--dim);
+    min-width: 16px; text-align: right;
+  }
+
+  /* ---------- jumping between posts while editing one ---------- */
+
+  .post-jump { margin: 0; padding: 0; list-style: none; }
+  .post-jump li { border-top: 1px solid var(--line); }
+  .post-jump li:first-child { border-top: 0; }
+  .post-jump a {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 9px 0;
+    text-decoration: none; color: var(--dim);
+  }
+  .post-jump a:hover .jump-title { color: var(--paper); }
+  .jump-title { font-size: 12px; line-height: 1.35; color: rgba(236,237,234,.8); }
+  .jump-when {
+    font-family: var(--mono); font-size: 8px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--dim);
+  }
+  /* The one you are editing is not a link anywhere. */
+  .post-jump a.is-here { cursor: default; }
+  .post-jump a.is-here .jump-title { color: var(--paper); }
+  .post-jump a.is-here .jump-when { color: var(--paper); opacity: .6; }
+
+  /* ---------- pagination ---------- */
+
+  .pager {
+    /* Inserted as a child of .layout, so it is pinned to the work column —
+       spanning to -1 would run it under the sticky sidebar. */
+    grid-column: 1;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+    margin-top: 22px; padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .pager-count {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .1em; color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .pager-buttons { display: flex; flex-wrap: wrap; gap: 5px; }
+  .pager-buttons .btn { min-width: 32px; padding: 0 9px; }
+
+  /* ---------- categories ---------- */
+
+  .side-foot {
+    font-family: var(--mono); font-size: 9px; line-height: 1.6;
+    color: var(--dim); margin-top: 10px;
+  }
+
+  /* ---------- dropdown ---------- */
+
+  .dd { position: relative; display: inline-block; }
+
+  .dd { display: block; }
+  .dd-btn {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    width: 100%; height: var(--control); padding: 0 9px;
+    font-family: var(--mono); font-size: 11px; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px;
+    cursor: pointer; text-align: left;
+  }
+  .dd-btn:hover, .dd.is-open .dd-btn { border-color: var(--line-strong); }
+  .dd-btn::after {
+    content: ''; width: 5px; height: 5px; flex: none;
+    border-right: 1px solid var(--dim); border-bottom: 1px solid var(--dim);
+    transform: rotate(45deg) translate(-2px, -2px);
+    transition: transform .15s ease;
+  }
+  .dd.is-open .dd-btn::after { transform: rotate(225deg) translate(-1px, -1px); }
+
+  .dd-list {
+    position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; min-width: 100%;
+    margin: 0; padding: 4px; list-style: none;
+    background: var(--panel-hi); border: 1px solid var(--line-strong); border-radius: 2px;
+    box-shadow: 0 14px 32px rgba(0,0,0,.55);
+    display: none;
+  }
+  .dd.is-open .dd-list { display: block; }
+
+  .dd-option {
+    padding: 7px 9px; border-radius: 2px; cursor: pointer;
+    font-family: var(--mono); font-size: 11px; color: var(--dim); white-space: nowrap;
+  }
+  .dd-option:hover, .dd-option.is-active { background: rgba(236,237,234,.08); color: var(--paper); }
+  .dd-option[aria-selected="true"] { color: var(--paper); }
+  .dd-option[aria-selected="true"]::before { content: '/ '; color: var(--dim); }
+
+  /* ---------- drag to order ---------- */
+
+  .grip {
+    width: 22px; height: 26px; cursor: grab;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--dim); border-radius: 2px;
+  }
+  .grip:hover { color: var(--paper); background: rgba(236,237,234,.06); }
+  .grip::before {
+    content: ''; width: 9px; height: 11px;
+    /* Two columns of dots — the universal "pick me up". */
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
+    background-size: 4px 4px;
+  }
+  .item.is-dragging { opacity: .3; }
+  .item.is-over { box-shadow: inset -3px 0 0 var(--paper); }
+  .item.is-over-above { box-shadow: inset 3px 0 0 var(--paper); }
+  .grid.is-sorting .grip { cursor: grabbing; }
+
+  .item .grip {
+    position: absolute; top: 8px; right: 8px; z-index: 2;
+    background: rgba(14,15,18,.8); backdrop-filter: blur(4px);
+  }
+
+  .row-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  /* No display of its own: it is a .btn first, and inline-block was undoing
+     the flex that centres the label inside it. */
+  .file-btn { position: relative; overflow: hidden; }
+  .file-btn input {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    opacity: 0; cursor: pointer;
+    /* Firefox sizes a file input by its own text otherwise, which stretched
+       the button it lives in. */
+    font-size: 0;
+  }
+
+  /* Inline beside a button most of the time, so spacing comes from the flex
+     gap around it rather than a margin that also indents it in a panel. */
+  .note { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+
+  /* In a sidebar panel it is a paragraph, and lines up with the fields above. */
+  .side-panel .note {
+    display: block;
+    margin-top: 10px;
+    line-height: 1.55;
+  }
+  .side-panel .note:empty { display: none; margin-top: 0; }
+  .note.is-good { color: var(--good); }
+  .note.is-bad { color: var(--bad); }
+
+  /* ---------- signing in ---------- */
+
+  /*
+   * Nothing but the form. The heading, the sentence under it and a nav of four
+   * sections you cannot reach were all still on screen behind the sign-in box,
+   * which read as a page that had lost its content rather than a door.
+   */
+  body.is-signed-out .admin-head,
+  body.is-signed-out #lede { display: none; }
+  body.is-signed-out { padding: 0; }
+  body.is-signed-out .wrap { max-width: none; }
+  body.is-signed-out #view {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .signin { width: 100%; max-width: 290px; }
+  /* The house mark, cut the way the site cuts it: half the word, and the space
+     the cut leaves reclaimed. Both in em, so the size is the only number. */
+  .signin .mark {
+    display: block;
+    font-family: "Britanica", Arial, sans-serif;
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+    clip-path: inset(0 0 50% 0);
+    margin-bottom: calc(-0.5em + 26px);
+    color: var(--paper);
+    text-decoration: none;
+  }
+
+  form.login { display: flex; flex-direction: column; gap: 10px; }
+  form.login input {
+    font-family: var(--font); font-size: 14px; padding: 11px 12px;
+    background: var(--panel-hi); color: var(--paper);
+    border: 1px solid var(--line); border-radius: 2px;
+  }
+  form.login input:focus { outline: none; border-color: var(--line-strong); }
+  form.login .btn { width: 100%; height: 38px; margin-top: 4px; }
+  form.login .note { min-height: 14px; }
+
+  .lede { color: var(--dim); font-size: 13px; line-height: 1.6; max-width: 74ch; margin-top: 12px; }
+  /*
+   * One gap under the intro, wherever you are. It used to come from whatever
+   * the section's first element happened to carry — 22px on the work bar and
+   * nothing at all on the forms, so About opened with its first field jammed
+   * under the sentence explaining it.
+   */
+  #view { margin-top: 30px; }
+
+  /* ---------- shell ---------- */
+
+  .admin-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .admin-nav { display: flex; gap: 4px; }
+  .nav-link {
+    height: var(--control); display: inline-flex; align-items: center;
+    padding: 0 13px; border-radius: 2px; text-decoration: none;
+    font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--dim);
+  }
+  .nav-link:hover { color: var(--paper); background: rgba(236,237,234,.05); }
+  .nav-link.is-on { color: var(--paper); background: rgba(236,237,234,.09); }
+  /* A nav item, but not a section — the rule sets it apart from the three that
+     are. Hidden while the sign-in form is up: there is nothing to log out of. */
+  .nav-out {
+    font-family: var(--mono);
+    border: 0;
+    background: none;
+    cursor: pointer;
+    margin-left: 8px;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+  }
+  body.is-signed-out .nav-out { display: none; }
+
+  /* ---------- writing ---------- */
+
+  /* ---------- the uploads folder ---------- */
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .tile {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 8px;
+    border: 1px solid var(--line); border-radius: 3px;
+    background: var(--panel);
+    cursor: pointer;
+    transition: border-color .15s ease;
+  }
+  .tile:hover { border-color: var(--line-strong); }
+  .tile-shot {
+    position: relative; aspect-ratio: 4 / 3;
+    background: var(--panel-hi); border-radius: 2px; overflow: hidden;
+  }
+  .tile-shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .tile-name {
+    font-family: var(--mono); font-size: 9px; color: rgba(236,237,234,.8);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .tile-meta { font-family: var(--mono); font-size: 8px; letter-spacing: .1em; color: var(--dim); }
+  /*
+   * No dimming. Nearly every file is in use, so fading those faded the whole
+   * page — the word in the line below says it, and says it without making the
+   * picture harder to look at.
+   */
+  .tile-bin {
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; line-height: 1;
+    color: var(--paper);
+    background: rgba(14,15,18,.8); backdrop-filter: blur(4px);
+    border: 1px solid var(--line-strong); border-radius: 2px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .12s ease, background .12s ease, border-color .12s ease;
+  }
+  .tile:hover .tile-bin, .tile-bin:focus-visible { opacity: 1; }
+  .tile-bin:hover { background: var(--bad); border-color: var(--bad); color: var(--ink); }
+
+  /* what an inserted picture looks like while you are writing */
+  .rich figure { margin: 20px 0; }
+  .rich figure img { width: 100%; height: auto; display: block; border-radius: 2px; }
+  .rich figcaption {
+    font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 6px;
+  }
+
+  /* ---------- the writing, listed ---------- */
+
+  /*
+   * Cards rather than a table. A table gave five columns of near-empty cells to
+   * five posts and put the title — the only thing anyone scans for — in the
+   * same weight as the slug beside it.
+   */
+  .post-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--panel);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .post-card:hover { border-color: var(--line-strong); background: var(--panel-hi); }
+  .post-card.is-draft { opacity: .62; }
+  .post-card.is-draft:hover { opacity: 1; }
+
+  .post-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .post-state {
+    font-family: var(--mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 2px;
+    background: rgba(143,211,154,.14); color: var(--good);
+  }
+  .post-state.is-draft { background: rgba(236,237,234,.08); color: var(--dim); }
+  .post-meta {
+    font-family: var(--mono); font-size: 9px; letter-spacing: .1em; color: var(--dim);
+  }
+  .post-card-title {
+    font-size: 15px; font-weight: 600; line-height: 1.3; letter-spacing: -.01em;
+    margin: 2px 0 0;
+  }
+  .post-card-slug { font-family: var(--mono); font-size: 10px; color: var(--dim); }
+  .post-card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+  .tag-pill {
+    font-family: var(--mono); font-size: 9px; color: var(--dim);
+    border: 1px solid var(--line); border-radius: 2px; padding: 2px 6px;
+  }
+
+  .posts-table { width: 100%; border-collapse: collapse; }
+  .posts-table th {
+    text-align: left; padding: 0 10px 10px; border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--dim); font-weight: 500;
+  }
+  .posts-table td { padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .posts-table tr.is-draft td { opacity: .55; }
+  .post-name { font-size: 14px; font-weight: 600; }
+  .post-slug { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 3px; }
+
+  .editor { display: flex; flex-direction: column; gap: 22px; max-width: 900px; }
+  .editor-toolbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+    padding: 6px; border: 1px solid var(--line); border-bottom: 0;
+    border-radius: 2px 2px 0 0; background: var(--panel);
+  }
+  .tool {
+    min-width: 28px; height: 26px; padding: 0 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 11px; color: var(--dim);
+    background: none; border: 1px solid transparent; border-radius: 2px; cursor: pointer;
+  }
+  .tool:hover { color: var(--paper); background: rgba(236,237,234,.07); }
+  .tool.is-on { color: var(--paper); border-color: var(--line-strong); }
+  .tool b { font-weight: 700; }
+  .tool i { font-style: italic; }
+  .tool-sep { width: 1px; height: 16px; background: var(--line); margin: 0 4px; }
+
+  /* The written page, as close to how it reads on the site as an editor gets. */
+  .rich {
+    min-height: 420px; padding: 16px 18px;
+    border: 1px solid var(--line); border-radius: 0 0 2px 2px;
+    background: var(--panel-hi);
+    font-family: var(--font); font-size: 15px; line-height: 1.7;
+    color: rgba(236,237,234,.9);
+    overflow-wrap: break-word;
+  }
+  .rich:focus { outline: none; border-color: var(--line-strong); }
+  .rich p { margin: 0 0 16px; }
+  .rich h2 { font-size: 19px; font-weight: 600; margin: 26px 0 10px; color: var(--paper); }
+  .rich h3 { font-size: 16px; font-weight: 600; margin: 22px 0 8px; color: var(--paper); }
+  .rich h4 { font-size: 14px; font-weight: 600; margin: 20px 0 8px; color: var(--paper); }
+  .rich ul, .rich ol { margin: 0 0 16px; padding-left: 22px; }
+  .rich code {
+    font-family: var(--mono); font-size: .88em;
+    background: rgba(236,237,234,.08); padding: 1px 5px; border-radius: 2px;
+  }
+  .rich hr { border: 0; border-top: 1px solid var(--line-strong); margin: 24px 0; }
+  .rich li { margin-bottom: 6px; }
+  .rich blockquote {
+    margin: 18px 0; padding-left: 16px;
+    border-left: 2px solid var(--line-strong); color: var(--dim);
+  }
+  .rich a { color: var(--paper); }
+  .rich:empty::before {
+    content: 'Write something…'; color: var(--dim);
+  }
+
+  .editor textarea {
+    width: 100%; min-height: 420px; resize: vertical;
+    border-radius: 0 0 2px 2px;
+    font-family: var(--mono); font-size: 12px; line-height: 1.65; color: var(--paper);
+    background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px; padding: 12px;
+  }
+  .editor textarea:focus { outline: none; border-color: var(--line-strong); }
+  .editor-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .editor-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .danger { border-color: rgba(232,119,107,.4); color: var(--bad); }
+  .danger:hover { border-color: var(--bad); background: rgba(232,119,107,.08); }
+  /* Armed: filled rather than outlined, so the second click is plainly not the
+     same button as the first. */
+  .danger.is-armed {
+    background: var(--bad); color: var(--ink); border-color: var(--bad);
+  }
+  .danger.is-armed:hover { background: var(--bad); }
+
+  .preview {
+    border: 1px solid var(--line); border-radius: 2px; padding: 16px;
+    background: var(--panel); font-size: 15px; line-height: 1.7; color: rgba(236,237,234,.88);
+  }
+  .preview p { margin-bottom: 16px; }
+  .preview h2, .preview h3 { color: var(--paper); font-size: 17px; margin: 22px 0 10px; }
+
+  /* ---------- scrollbars ---------- */
+
+  /*
+   * A hairline of cyan and nothing else — no track, no buttons, no gutter you
+   * can see when there is nothing to scroll.
+   *
+   * Firefox has no 1px option: scrollbar-width takes auto | thin | none, so it
+   * gets `thin` (about 8px there) with the same colours. Naming a width at all
+   * also opts WebKit out of overlay scrollbars, which is why the track is set
+   * transparent rather than left alone — otherwise it would draw a permanent
+   * pale strip down the side of every page.
+   */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll) transparent;
+  }
+  ::-webkit-scrollbar { width: 1px; height: 1px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 0; }
+  ::-webkit-scrollbar-corner { background: transparent; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="admin-head">
+    <div>
+      <span class="stencil">crbntyp / admin</span>
+      <h1 id="heading">Work</h1>
+    </div>
+    <nav class="admin-nav" id="nav">
+      <a class="nav-link" href="#/work" data-section="work">Work</a>
+      <a class="nav-link" href="#/writing" data-section="writing">Undo Stack</a>
+      <a class="nav-link" href="#/about" data-section="about">About</a>
+      <a class="nav-link" href="#/pages" data-section="pages">Pages</a>
+      <a class="nav-link" href="#/media" data-section="media">Media</a>
+      <button class="nav-link nav-out" type="button" id="logout">Log out</button>
+    </nav>
+  </header>
+  <p class="lede" id="lede"></p>
+  <div id="view"></div>
+</div>
+
+<script>
+/*
+ * The same icon set the site uses — inline, stroke based, currentColor. Drawn
+ * on a 24 grid at stroke 2 so they survive being rendered at 12px.
+ */
+const svg = (paths, size = 12) =>
+  `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        aria-hidden="true">${paths}</svg>`;
+
+const icons = {
+  left: svg('<path d="m14 6-6 6 6 6"/>'),
+  external: svg('<path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/><path d="M15 4h5v5"/><path d="M11 13 20 4"/>'),
+};
+
+const API = '/portfolio/api/work-admin.php';
+const escape = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
+  ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+const view = document.getElementById('view');
+
+/*
+ * Sessions here last 24 minutes, so an admin left open goes stale while you
+ * are still looking at it — and every action then failed with a bare
+ * "Unauthorized" note beside a button. Any 401 now puts the sign-in form back
+ * so you can carry on, rather than telling you off in the margin.
+ */
+async function adminFetch(url, options = {}) {
+  const res = await fetch(url, { credentials: 'same-origin', ...options });
+  if (res.status === 401) {
+    renderLogin('That session expired — sign in again.');
+    throw new Error('signed out');
+  }
+  // Anything that was not refused proves there is a session to log out of.
+  document.body.classList.remove('is-signed-out');
+  return res;
+}
+let items = [];
+let categories = [];
+/*
+ * Behance rather than everything: it is the live work, and the 38 archive
+ * entries outnumber it three to one — so "all" opened on a wall of client work
+ * with the current projects somewhere below the fold.
+ */
+let filter = 'behance';
+let search = '';
+let page = 1;
+
+const PER_PAGE = 20;
+
+function say(el, message, good) {
+  el.className = `note ${good ? 'is-good' : 'is-bad'}`;
+  el.textContent = message;
+  if (good) setTimeout(() => { el.textContent = ''; el.className = 'note'; }, 2600);
+}
+
+let loaded = false;
+
+async function load() {
+  const res = await fetch(API, { credentials: 'same-origin' });
+  if (res.status === 401) return renderLogin();
+  document.body.classList.remove('is-signed-out');
+  const data = await res.json();
+  items = data.items ?? [];
+  categories = data.categories ?? [];
+  // Flagged rather than inferred from items.length: an empty list is a real
+  // answer, and the router would otherwise reload for ever on it.
+  loaded = true;
+  renderWork();
+}
+
+function renderLogin(message) {
+  document.body.classList.add('is-signed-out');
+  view.innerHTML = `
+    <div class="signin">
+      <span class="mark">crbntyp</span>
+      <form class="login" id="login">
+        <input name="username" placeholder="Username" autocomplete="username" required autofocus>
+        <input name="password" type="password" placeholder="Password" autocomplete="current-password" required>
+        <button class="btn is-on" type="submit">Sign in</button>
+        <span class="note is-bad">${escape(message ?? '')}</span>
+      </form>
+    </div>`;
+
+  document.getElementById('login').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const body = Object.fromEntries(new FormData(event.target));
+    const res = await fetch('/portfolio/api/login.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.success) load();
+    else renderLogin(data.message || 'That did not work.');
+  });
+}
+
+/*
+ * A dropdown, because a native <select> cannot be styled to match anything.
+ * Rendered as markup and driven by delegation, so a table of fifty rows costs
+ * fifty elements rather than fifty listeners. Keyboard and screen readers are
+ * handled by the listbox roles rather than by faking a native control badly.
+ */
+function dropdown(field, value, options) {
+  // Options are {value, label} or plain strings. What is stored and what is
+  // read are not the same thing — a category is stored as "app" and read as
+  // "Web Application", and showing the stored form here was the whole reason
+  // one thing appeared under three names.
+  const list = options.map((option) =>
+    typeof option === 'string' ? { value: option, label: option } : option);
+  const current = list.find((option) => option.value === value);
+
+  return `
+    <div class="dd" data-dd="${field}" data-value="${escape(value)}">
+      <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false">
+        <span data-dd-label>${escape(current?.label ?? value)}</span>
+      </button>
+      <ul class="dd-list" role="listbox" tabindex="-1">
+        ${list.map((option) => `
+          <li class="dd-option" role="option" data-dd-value="${escape(option.value)}"
+              aria-selected="${option.value === value}">${escape(option.label)}</li>`).join('')}
+      </ul>
+    </div>`;
+}
+
+function closeDropdowns(except) {
+  document.querySelectorAll('.dd.is-open').forEach((dd) => {
+    if (dd === except) return;
+    dd.classList.remove('is-open');
+    dd.querySelector('.dd-btn').setAttribute('aria-expanded', 'false');
+  });
+}
+
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.dd-btn');
+  const option = event.target.closest('.dd-option');
+
+  if (button) {
+    const dd = button.closest('.dd');
+    const opening = !dd.classList.contains('is-open');
+    closeDropdowns(dd);
+    dd.classList.toggle('is-open', opening);
+    button.setAttribute('aria-expanded', String(opening));
+    return;
+  }
+
+  if (option) {
+    const dd = option.closest('.dd');
+    const value = option.dataset.ddValue;
+    dd.dataset.value = value;
+    dd.querySelector('[data-dd-label]').textContent = option.textContent.trim();
+    dd.querySelectorAll('.dd-option').forEach((o) =>
+      o.setAttribute('aria-selected', String(o === option)));
+    closeDropdowns();
+    dd.dispatchEvent(new CustomEvent('dd:change', { bubbles: true, detail: { field: dd.dataset.dd, value } }));
+    return;
+  }
+
+  closeDropdowns();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeDropdowns();
+});
+
+/*
+ * Search matches the title, the source and the category — the three things you
+ * would actually type looking for something. Case and spacing are ignored so
+ * "definitive leagues" finds "Defintive Leagues", typo and all.
+ */
+const matches = (item) => {
+  if (!search) return true;
+  const haystack = `${item.title} ${item.source} ${item.kind}`.toLowerCase();
+  return search.toLowerCase().split(/\s+/).every((word) => haystack.includes(word));
+};
+
+/*
+ * Paging sits on top of the filter, not the other way round: "page 2 of the
+ * hidden ones" is the useful thing, not page 2 of everything with the hidden
+ * ones missing from it.
+ */
+const pageCount = () => Math.max(1, Math.ceil(shown().length / PER_PAGE));
+
+function paged() {
+  // A filter that shrinks the list can strand you past the end of it.
+  page = Math.min(Math.max(1, page), pageCount());
+  const start = (page - 1) * PER_PAGE;
+  return shown().slice(start, start + PER_PAGE);
+}
+
+const shown = () => items.filter((item) =>
+  matches(item) && (
+    filter === 'all' ? true
+    : filter === 'hidden' ? !item.visible
+    : filter === 'nobanner' ? !item.image
+    : item.source === filter));
+
+function renderWork() {
+  const counts = {
+    all: items.length,
+    behance: items.filter((i) => i.source === 'behance').length,
+    client: items.filter((i) => i.source === 'client').length,
+    hidden: items.filter((i) => !i.visible).length,
+    nobanner: items.filter((i) => !i.image).length,
+  };
+  const slugs = categories.map((c) => ({ value: c.slug, label: c.label }));
+  const total = shown().length;
+  const list = paged();
+  const pages = pageCount();
+  const from = total ? (page - 1) * PER_PAGE + 1 : 0;
+  const to = Math.min(page * PER_PAGE, total);
+
+  view.innerHTML = `
+    <div class="bar">
+      <input class="search" id="search" type="search" placeholder="Search work…"
+             value="${escape(search)}" autocomplete="off">
+      ${['behance', 'all', 'client', 'hidden', 'nobanner'].map((key) => `
+        <button class="btn ${filter === key ? 'is-on' : ''}" data-filter="${key}">
+          ${key === 'nobanner' ? 'no image' : key} ${counts[key]}
+        </button>`).join('')}
+    </div>
+
+    <div class="layout">
+      <div class="grid" id="grid">
+        ${list.map((item) => `
+          <article class="item ${item.visible ? '' : 'is-hidden'}" data-id="${item.id}" draggable="true">
+            <div class="item-cover">
+              ${item.image
+                ? `<img src="${escape(item.image)}" alt="" loading="lazy">`
+                : '<span class="none">No image</span>'}
+              <div class="item-flags">
+                <span class="flag">${escape(item.source)}</span>
+                ${item.banner_url ? '<span class="flag">own banner</span>' : ''}
+                ${item.intro ? '<span class="flag">intro</span>' : ''}
+                ${item.features ? '<span class="flag">features</span>' : ''}
+              </div>
+              <div class="grip" title="Drag to reorder"></div>
+            </div>
+
+            <div class="item-body">
+              <div>
+                <div class="item-title">${escape(item.title)}</div>
+                <div class="item-sub">${item.published_at ? item.published_at.slice(0, 10) : 'no date'}</div>
+              </div>
+
+              ${dropdown('kind', item.kind, slugs)}
+
+              <div class="item-foot">
+                <button class="btn" type="button" data-edit>Edit</button>
+                <button class="btn ${item.visible ? 'is-on' : ''}" data-toggle
+                        title="${item.visible ? 'Shown on the site' : 'Hidden from the site'}">
+                  ${item.visible ? 'Shown' : 'Hidden'}
+                </button>
+              </div>
+              <span class="note" data-note></span>
+            </div>
+          </article>`).join('')}
+      </div>
+
+      <aside class="side">
+        <div class="side-panel">
+          <span class="stencil side-head">Categories</span>
+          <div class="tag-rows">
+            ${categories.map((cat) => {
+              const used = items.filter((i) => i.kind === cat.slug).length;
+              return `
+                <div class="tag-row" data-cat="${escape(cat.slug)}">
+                  <input class="tag-input" value="${escape(cat.label)}"
+                         title="Stored as “${escape(cat.slug)}”">
+                  <span class="tag-used">${used}</span>
+                  <button class="tool" type="button" data-cat-delete="${escape(cat.slug)}"
+                          title="${used ? `${used} item${used === 1 ? '' : 's'} still in it` : 'Remove'}">&times;</button>
+                </div>`;
+            }).join('')}
+          </div>
+          <form id="cat-add" class="field" style="margin-top:12px">
+            <input class="search" style="flex:none" name="label" placeholder="New category" required>
+            <button class="btn" type="submit">Add category</button>
+          </form>
+          <span class="note" id="cat-note"></span>
+        </div>
+
+        <div class="side-panel">
+          <span class="stencil side-head">Behance</span>
+          <form id="add-project" class="field">
+            <input class="search" style="flex:none" name="url" required
+                   placeholder="behance.net/gallery/…" autocomplete="off">
+            <button class="btn" type="submit">Pull it</button>
+          </form>
+          <p class="side-foot">
+            Paste any project link. One that is already here is pulled again on
+            the spot; one that is not is added. Your banner, intro, features,
+            category and position are never touched by it.
+          </p>
+          <p class="side-foot">
+            One project at a time, on purpose — nothing else on the page can
+            change while you are fixing the one you meant to fix.
+          </p>
+          <span class="note" id="add-note"></span>
+        </div>
+      </aside>
+    </div>
+    ${list.length ? '' : '<p class="lede">Nothing matches that.</p>'}`;
+
+  if (total > PER_PAGE) {
+    document.getElementById('grid').insertAdjacentHTML('afterend', `
+      <div class="pager">
+        <span class="pager-count">${from}–${to} of ${total}</span>
+        <div class="pager-buttons">
+          <button class="btn" data-page="${page - 1}" ${page === 1 ? 'disabled' : ''}>Prev</button>
+          ${Array.from({ length: pages }, (_, i) => i + 1).map((n) => `
+            <button class="btn ${n === page ? 'is-on' : ''}" data-page="${n}">${n}</button>`).join('')}
+          <button class="btn" data-page="${page + 1}" ${page === pages ? 'disabled' : ''}>Next</button>
+        </div>
+      </div>`);
+  }
+
+  wireWork();
+}
+
+/*
+ * Dragging reorders the whole list, not just the rows on screen. The table can
+ * be filtered, so a dropped row is spliced into the *global* order relative to
+ * the row it landed on — otherwise reordering inside a filter would scramble
+ * everything hidden by it.
+ */
+let dragId = null;
+
+function wireDragging() {
+  const body = document.getElementById('grid');
+  if (!body) return;
+
+  body.addEventListener('dragstart', (event) => {
+    const row = event.target.closest('.item[data-id]');
+    if (!row) return;
+    dragId = row.dataset.id;
+    row.classList.add('is-dragging');
+    body.classList.add('is-sorting');
+    event.dataTransfer.effectAllowed = 'move';
+    // Firefox refuses to start a drag without something on the transfer.
+    event.dataTransfer.setData('text/plain', dragId);
+  });
+
+  body.addEventListener('dragover', (event) => {
+    const row = event.target.closest('.item[data-id]');
+    if (!row || row.dataset.id === dragId) return;
+    event.preventDefault();
+    // A grid flows across, so the half that matters is left/right, not top/bottom.
+    const box = row.getBoundingClientRect();
+    const before = event.clientX < box.left + box.width / 2;
+    body.querySelectorAll('.is-over, .is-over-above')
+      .forEach((r) => r.classList.remove('is-over', 'is-over-above'));
+    row.classList.add(before ? 'is-over-above' : 'is-over');
+  });
+
+  body.addEventListener('dragleave', (event) => {
+    const row = event.target.closest('.item[data-id]');
+    row?.classList.remove('is-over', 'is-over-above');
+  });
+
+  body.addEventListener('drop', async (event) => {
+    const row = event.target.closest('.item[data-id]');
+    if (!row || !dragId || row.dataset.id === dragId) return;
+    event.preventDefault();
+
+    const box = row.getBoundingClientRect();
+    const before = event.clientX < box.left + box.width / 2;
+    moveItem(dragId, row.dataset.id, !before);
+    await persistOrder();
+    renderWork();
+  });
+
+  body.addEventListener('dragend', () => {
+    dragId = null;
+    body.classList.remove('is-sorting');
+    body.querySelectorAll('.is-dragging, .is-over, .is-over-above')
+      .forEach((r) => r.classList.remove('is-dragging', 'is-over', 'is-over-above'));
+  });
+}
+
+function moveItem(fromId, toId, after) {
+  const from = items.findIndex((i) => String(i.id) === String(fromId));
+  if (from < 0) return;
+  const [moved] = items.splice(from, 1);
+  const to = items.findIndex((i) => String(i.id) === String(toId));
+  items.splice(to + (after ? 1 : 0), 0, moved);
+  items.forEach((item, index) => { item.sort_order = index; });
+}
+
+async function persistOrder() {
+  const body = new URLSearchParams();
+  items.forEach((item) => body.append('ids[]', item.id));
+  const res = await adminFetch(`${API}?do=reorder`, { method: 'POST', body });
+  return (await res.json().catch(() => ({}))).success;
+}
+
+async function save(id, field, value, note) {
+  const body = new URLSearchParams({ id, [field]: value });
+  const res = await adminFetch(`${API}?do=update`, { method: 'POST', body });
+  const data = await res.json().catch(() => ({}));
+  if (note) say(note, data.success ? 'Saved' : (data.message || 'Failed'), data.success);
+  return data.success;
+}
+
+function wireWork() {
+  view.querySelectorAll('[data-filter]').forEach((button) => {
+    button.addEventListener('click', () => {
+      filter = button.dataset.filter;
+      page = 1;
+      renderWork();
+    });
+  });
+
+  view.querySelectorAll('[data-page]').forEach((button) => {
+    button.addEventListener('click', () => {
+      page = Number(button.dataset.page);
+      renderWork();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  view.querySelectorAll('.item[data-id]').forEach((row) => {
+    const id = row.dataset.id;
+    const note = row.querySelector('[data-note]');
+    const item = items.find((i) => String(i.id) === id);
+
+    row.addEventListener('dd:change', async (event) => {
+      const { field, value } = event.detail;
+      if (await save(id, field, value, note)) item[field] = value;
+    });
+
+    row.querySelector('[data-toggle]').addEventListener('click', async () => {
+      const next = item.visible ? '0' : '1';
+      if (await save(id, 'visible', next, note)) {
+        item.visible = next === '1';
+        renderWork();
+      }
+    });
+
+    row.querySelector('[data-edit]').addEventListener('click', () => openEditor(id));
+  });
+
+  wireDragging();
+
+  /*
+   * Re-rendering on every keystroke throws away focus, so the input is put
+   * back where it was afterwards. Cheap, and it keeps typing continuous.
+   */
+  const searchBox = document.getElementById('search');
+  searchBox?.addEventListener('input', () => {
+    search = searchBox.value;
+    page = 1;
+    const at = searchBox.selectionStart;
+    renderWork();
+    const again = document.getElementById('search');
+    again.focus();
+    again.setSelectionRange(at, at);
+  });
+
+  const addForm = document.getElementById('add-project');
+  const addNote = document.getElementById('add-note');
+  addForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = addForm.querySelector('button');
+    button.disabled = true;
+    say(addNote, 'Fetching…', true);
+    const res = await adminFetch(`${API}?do=add-project`, {
+      method: 'POST',
+      body: new URLSearchParams({ url: new FormData(addForm).get('url') }),
+    });
+    const data = await res.json().catch(() => ({}));
+    button.disabled = false;
+    say(addNote, data.message || (data.success ? 'Added.' : 'That did not work.'), data.success);
+    if (data.success) {
+      addForm.reset();
+      load();
+    }
+  });
+
+  document.getElementById('cat-add')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const label = new FormData(event.target).get('label');
+    const res = await adminFetch(`${API}?do=category-add`, {
+      method: 'POST', body: new URLSearchParams({ label }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (data.success) load();
+    else say(catNote, data.message || 'Could not add that.', false);
+  });
+
+  const catNote = document.getElementById('cat-note');
+
+  view.querySelectorAll('.tag-row[data-cat]').forEach((row) => {
+    const slug = row.dataset.cat;
+    const input = row.querySelector('.tag-input');
+    const cat = categories.find((c) => c.slug === slug);
+
+    input.addEventListener('change', async () => {
+      const label = input.value.trim();
+      if (!label) {
+        input.value = cat.label;
+        return;
+      }
+      const res = await adminFetch(`${API}?do=category-rename`, {
+        method: 'POST',
+        body: new URLSearchParams({ slug, label }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.success) {
+        cat.label = data.label;
+        // The slug moves with the label, and every item in it moved too.
+        if (data.slug !== cat.slug) {
+          items.forEach((item) => {
+            if (item.kind === cat.slug) item.kind = data.slug;
+          });
+          cat.slug = data.slug;
+          renderWork();
+        }
+        say(catNote, data.moved ? `Saved, ${data.moved} item${data.moved === 1 ? '' : 's'} moved` : 'Saved', true);
+      } else {
+        input.value = cat.label;
+        say(catNote, data.message || 'Did not save.', false);
+      }
+    });
+  });
+
+  view.querySelectorAll('[data-cat-delete]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const res = await adminFetch(`${API}?do=category-delete`, {
+        method: 'POST',
+        body: new URLSearchParams({ slug: button.dataset.catDelete }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.success) load();
+      else say(catNote, data.message || 'Could not remove that.', false);
+    });
+  });
+
+}
+
+
+/* ---------- editing one item ---------- */
+
+/*
+ * Everything about an item that needs writing rather than choosing. It moved
+ * off the card because the card was becoming a form with a picture on top —
+ * five stacked fields on a 272px column, times twenty on screen.
+ *
+ * There is no Save: each field writes as you leave it, exactly as it did on the
+ * card. A modal with a Save button implies a Cancel that puts it all back, and
+ * nothing here can be put back once the next field has written.
+ */
+function editorFields(item, slugs) {
+  return `
+    <div class="modal-banner">
+      ${item.image
+        ? `<img src="${escape(item.image)}" alt="">`
+        : '<span class="none">No image</span>'}
+    </div>
+    <div class="field-actions">
+      <span class="btn file-btn">${item.banner_url ? 'Replace banner' : 'Upload banner'}<input type="file" accept="image/*" data-banner></span>
+      <button class="btn" type="button" data-pick>Pick from uploads</button>
+      ${item.banner_url ? '<button class="btn" type="button" data-clear>Clear</button>' : ''}
+    </div>
+
+    <div class="field-pair">
+      <div class="field">
+        <span class="stencil">Category</span>
+        ${dropdown('kind', item.kind, slugs)}
+      </div>
+      <div class="field">
+        <span class="stencil">Shown</span>
+        <button class="btn ${item.visible ? 'is-on' : ''}" type="button" data-toggle>
+          ${item.visible ? 'Shown' : 'Hidden'}
+        </button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="stencil">Live URL</span>
+      <input type="text" data-field="live_url"
+             value="${escape(item.live_url ?? '')}" placeholder="/tng/">
+    </div>
+
+    <div class="field">
+      <span class="stencil">Intro — what the work was, in your words</span>
+      <textarea class="intro" data-field="intro" data-grow="300" rows="4"
+                placeholder="A line or two about the job, the brief, what you did.">${escape(item.intro ?? '')}</textarea>
+    </div>
+
+    <div class="field">
+      <span class="stencil">Features — one per line</span>
+      <textarea class="intro is-lines" data-field="features" data-grow="240" rows="3"
+                placeholder="Waveform scrubber that works across every source&#10;Queue survives a refresh&#10;Detachable mini player">${escape(item.features ?? '')}</textarea>
+      <span class="note">Shown down the right of the project page. Leave it empty and the panel is not there.</span>
+    </div>`;
+}
+
+function openEditor(id) {
+  const item = items.find((i) => String(i.id) === String(id));
+  if (!item) return;
+  const slugs = categories.map((c) => ({ value: c.slug, label: c.label }));
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal';
+  overlay.innerHTML = `
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <span class="stencil">${escape(item.source)} / ${item.published_at ? item.published_at.slice(0, 10) : 'no date'}</span>
+          <div class="modal-title">${escape(item.title)}</div>
+        </div>
+        <button class="btn" type="button" data-close>Close</button>
+      </div>
+      <div class="modal-body" data-fields>${editorFields(item, slugs)}</div>
+      <div class="modal-foot">
+        <button class="btn danger" type="button" data-delete>Delete</button>
+        <span class="note" data-note></span>
+        <span class="spacer"></span>
+        ${item.url ? `<a class="btn" href="${escape(item.url)}" target="_blank" rel="noopener">On Behance ${icons.external}</a>` : ''}
+        <button class="btn is-on" type="button" data-close>Done</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  const fields = overlay.querySelector('[data-fields]');
+  const note = overlay.querySelector('[data-note]');
+
+  /*
+   * Only ever called after a click — never a keystroke — so it cannot take the
+   * caret out of a half-typed sentence. Changing the banner is the one thing in
+   * here that changes what the rest of the panel should say.
+   */
+  const repaint = () => {
+    fields.innerHTML = editorFields(item, slugs);
+    wireFields();
+    renderWork();   // the card behind it is showing the old image
+  };
+
+  /*
+   * A textarea's rows are a guess made before anyone has typed. The intro is
+   * usually a paragraph and the features usually three lines, so a fixed height
+   * gets one of them wrong either way — this sizes each to what is actually in
+   * it, up to a cap, and lets the panel scroll past that.
+   */
+  const grow = (box) => {
+    box.style.height = 'auto';
+    box.style.height = Math.min(box.scrollHeight + 2, Number(box.dataset.grow)) + 'px';
+  };
+
+  function wireFields() {
+    fields.querySelectorAll('[data-grow]').forEach((box) => {
+      grow(box);
+      box.addEventListener('input', () => grow(box));
+    });
+
+    fields.querySelectorAll('[data-field]').forEach((input) => {
+      input.addEventListener('change', async () => {
+        if (await save(id, input.dataset.field, input.value, note)) {
+          item[input.dataset.field] = input.value;
+          renderWork();   // the flags on the card track what has been written
+        }
+      });
+    });
+
+    fields.querySelector('[data-toggle]').addEventListener('click', async (event) => {
+      const next = item.visible ? '0' : '1';
+      if (await save(id, 'visible', next, note)) {
+        item.visible = next === '1';
+        event.currentTarget.classList.toggle('is-on', item.visible);
+        event.currentTarget.textContent = item.visible ? 'Shown' : 'Hidden';
+        renderWork();
+      }
+    });
+
+    fields.querySelector('[data-banner]').addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      say(note, 'Uploading…', true);
+      const body = new FormData();
+      body.append('id', id);
+      body.append('banner', file);
+      const res = await adminFetch(`${API}?do=banner`, { method: 'POST', body });
+      const data = await res.json().catch(() => ({}));
+      if (!data.success) return say(note, data.message || 'Upload failed', false);
+      item.banner_url = data.banner_url;
+      item.image = data.banner_url;
+      repaint();
+    });
+
+    fields.querySelector('[data-clear]')?.addEventListener('click', async () => {
+      const res = await adminFetch(`${API}?do=clear-banner`, {
+        method: 'POST', body: new URLSearchParams({ id }),
+      });
+      if (!(await res.json().catch(() => ({}))).success) return;
+      item.banner_url = null;
+      item.image = item.cover_url;
+      repaint();
+    });
+
+    // The picker opens over this panel and hands back what was chosen, rather
+    // than closing the editor to do it.
+    fields.querySelector('[data-pick]').addEventListener('click', () => openPicker(id, repaint));
+  }
+
+  fields.addEventListener('dd:change', async (event) => {
+    const { field, value } = event.detail;
+    if (await save(id, field, value, note)) {
+      item[field] = value;
+      renderWork();
+    }
+  });
+
+  /*
+   * Two clicks, not a confirm() — a browser dialog blocks everything and reads
+   * like an error. The button says what it is about to do and waits; walk away
+   * and it forgets after four seconds.
+   */
+  const del = overlay.querySelector('[data-delete]');
+  let armed = null;
+  del.addEventListener('click', async () => {
+    if (!armed) {
+      // Deleting something Behance still lists only postpones it, so say so
+      // rather than letting it look like the delete failed next pull.
+      const returns = item.source === 'behance' && !item.gone_at;
+      del.textContent = returns ? 'Delete — it will come back on the next pull' : 'Really delete?';
+      del.classList.add('is-armed');
+      armed = setTimeout(() => {
+        armed = null;
+        del.textContent = 'Delete';
+        del.classList.remove('is-armed');
+      }, 4000);
+      return;
+    }
+
+    clearTimeout(armed);
+    armed = null;
+    del.disabled = true;
+    const res = await adminFetch(`${API}?do=delete`, {
+      method: 'POST', body: new URLSearchParams({ id }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!data.success) {
+      del.disabled = false;
+      del.textContent = 'Delete';
+      del.classList.remove('is-armed');
+      return say(note, data.message || 'Could not delete that.', false);
+    }
+    closeLayer(overlay);
+    load();
+  });
+
+  wireFields();
+  overlay.addEventListener('click', (event) => {
+    // Not on any click inside the panel: a dropdown option is a click too.
+    if (event.target === overlay || event.target.closest('[data-close]')) closeLayer(overlay);
+  });
+  onEscape(overlay);
+}
+
+/*
+ * Layers stack — the picker opens over the editor — so Escape has to close the
+ * top one only, rather than taking the editor down with it. The listener is
+ * kept on the element so closing by any route takes it off the document again.
+ */
+function closeLayer(overlay) {
+  document.removeEventListener('keydown', overlay.escapeHandler);
+  overlay.remove();
+}
+
+function onEscape(overlay) {
+  overlay.escapeHandler = (event) => {
+    if (event.key !== 'Escape') return;
+    // An open dropdown inside the layer spends the first Escape closing itself.
+    if (overlay.querySelector('.dd.is-open')) return;
+    if ([...document.querySelectorAll('.modal')].pop() !== overlay) return;
+    closeLayer(overlay);
+  };
+  document.addEventListener('keydown', overlay.escapeHandler);
+}
+
+/* ---------- picking an image already on the server ---------- */
+
+/*
+ * uploads/ holds files left behind by artwork rows that were deleted, and the
+ * client work has no imagery of its own. Assigning one of those beats
+ * uploading a second copy of a file already sitting on the server.
+ */
+async function openPicker(id, onChosen) {
+  const res = await adminFetch(`${API}?do=uploads`);
+  const files = await res.json().catch(() => []);
+
+  const overlay = document.createElement('div');
+  // Wide, and above whatever opened it.
+  overlay.className = 'modal is-wide is-over';
+  overlay.innerHTML = `
+    <div class="modal-panel">
+      <div class="modal-head">
+        <span class="stencil">Choose an image — ${files.length} in uploads</span>
+        <button class="btn" data-close>Close</button>
+      </div>
+      <div class="picker-grid">
+        ${files.map((file) => `
+          <button class="picker-item ${file.used ? 'is-used' : ''}" data-file="${escape(file.file)}"
+                  title="${escape(file.file)}${file.used ? ' — already used' : ''}">
+            <img src="${escape(file.url)}" alt="" loading="lazy">
+            ${file.used ? '<span class="picker-flag">in use</span>' : ''}
+          </button>`).join('')}
+      </div>
+      ${files.length ? '' : '<p class="side-foot" style="padding:16px">Nothing in uploads yet.</p>'}
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', async (event) => {
+    if (event.target === overlay || event.target.closest('[data-close]')) return closeLayer(overlay);
+
+    const choice = event.target.closest('[data-file]');
+    if (!choice) return;
+
+    const saved = await adminFetch(`${API}?do=banner-existing`, {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: new URLSearchParams({ id, file: choice.dataset.file }),
+    }).then((r) => r.json()).catch(() => ({}));
+
+    if (saved.success) {
+      const item = items.find((i) => String(i.id) === String(id));
+      item.banner_url = saved.banner_url;
+      item.image = saved.banner_url;
+      closeLayer(overlay);
+      // Back to the editor if that is where this came from; otherwise just the
+      // grid, which is the only thing showing the image.
+      if (onChosen) onChosen(); else renderWork();
+    }
+  });
+
+  onEscape(overlay);
+}
+
+/* ---------- writing ---------- */
+
+const BLOG_API = '/portfolio/api/blog-admin.php';
+let posts = [];
+
+async function renderWriting() {
+  const res = await adminFetch(BLOG_API);
+  if (res.status === 401) return renderLogin();
+  posts = await res.json();
+  const drafts = posts.filter((p) => !p.published).length;
+
+  const words = posts.reduce((n, p) => n + (p.words ?? 0), 0);
+
+  view.innerHTML = `
+    <div class="bar">
+      <a class="btn is-on" href="#/writing/new">New post</a>
+      <span class="spacer"></span>
+      <span class="note">${posts.length} post${posts.length === 1 ? '' : 's'}${drafts ? ` / ${drafts} draft${drafts === 1 ? '' : 's'}` : ''} / ${words.toLocaleString()} words</span>
+    </div>
+
+    <div class="post-list">
+      ${posts.map((post) => `
+        <a class="post-card ${post.published ? '' : 'is-draft'}" href="#/writing/${post.id}">
+          <div class="post-card-head">
+            <span class="post-state ${post.published ? '' : 'is-draft'}">${post.published ? 'Published' : 'Draft'}</span>
+            <span class="post-meta">${(post.created_at || '').slice(0, 10)} / ${post.words ?? 0} words</span>
+          </div>
+          <h2 class="post-card-title">${escape(post.title)}</h2>
+          <div class="post-card-slug">/${escape(post.slug ?? '')}</div>
+          ${post.tags ? `<div class="post-card-tags">${post.tags.split(',').map((t) =>
+            `<span class="tag-pill">${escape(t.trim())}</span>`).join('')}</div>` : ''}
+        </a>`).join('')}
+    </div>
+    ${posts.length ? '' : '<p class="lede">Nothing written yet.</p>'}`;
+}
+
+async function renderPost(id) {
+  const isNew = id === 'new';
+  let post = { id: '', title: '', slug: '', content: '', tags: '', published: false };
+
+  /*
+   * The sidebar needs the other posts, and coming straight to an edit URL —
+   * a bookmark, a reload, a jump from another post — never went through the
+   * list, so it would have been empty.
+   */
+  if (!posts.length) {
+    const list = await adminFetch(BLOG_API);
+    if (list.status === 401) return renderLogin();
+    posts = await list.json().catch(() => []);
+  }
+
+  if (!isNew) {
+    const res = await adminFetch(`${BLOG_API}?id=${encodeURIComponent(id)}`);
+    if (res.status === 401) return renderLogin();
+    if (!res.ok) {
+      view.innerHTML = '<p class="lede">No post with that id.</p>';
+      return;
+    }
+    post = await res.json();
+  }
+
+  const others = posts.filter((p) => String(p.id) !== String(id));
+
+  view.innerHTML = `
+    <div class="bar"><a class="btn" href="#/writing">${icons.left} All posts</a></div>
+    <div class="layout is-editor">
+    <form class="editor" id="editor">
+      <div class="field">
+        <span class="stencil">Title</span>
+        <input type="text" name="title" value="${escape(post.title)}" required style="font-size:15px;height:38px">
+      </div>
+
+      <div class="editor-row">
+        <div class="field">
+          <span class="stencil">Slug</span>
+          <input type="text" name="slug" value="${escape(post.slug ?? '')}" placeholder="made from the title">
+        </div>
+        <div class="field">
+          <span class="stencil">Tags, comma separated</span>
+          <input type="text" name="tags" value="${escape(post.tags ?? '')}" placeholder="AI, design">
+        </div>
+        <div class="field">
+          <span class="stencil">State</span>
+          <button type="button" class="btn ${post.published ? 'is-on' : ''}" id="published"
+                  data-value="${post.published ? '1' : '0'}">
+            ${post.published ? 'Published' : 'Draft'}
+          </button>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="stencil">Body</span>
+        <div class="editor-toolbar">
+          <button class="tool" type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+          <button class="tool" type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+          <button class="tool" type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+          <button class="tool" type="button" data-wrap="code" title="Inline code">&lt;/&gt;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-block="h2" title="Heading">H2</button>
+          <button class="tool" type="button" data-block="h3" title="Subheading">H3</button>
+          <button class="tool" type="button" data-block="h4" title="Small heading">H4</button>
+          <button class="tool" type="button" data-block="p" title="Paragraph">¶</button>
+          <button class="tool" type="button" data-block="blockquote" title="Quote">&rdquo;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-cmd="insertUnorderedList" title="Bullets">&bull;</button>
+          <button class="tool" type="button" data-cmd="insertOrderedList" title="Numbered">1.</button>
+          <button class="tool" type="button" data-cmd="outdent" title="Outdent">&lsaquo;</button>
+          <button class="tool" type="button" data-cmd="indent" title="Indent">&rsaquo;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" id="link" title="Link">Link</button>
+          <button class="tool" type="button" data-media title="Insert an image">Image</button>
+          <button class="tool" type="button" data-cmd="unlink" title="Remove link">Unlink</button>
+          <button class="tool" type="button" data-cmd="insertHorizontalRule" title="Divider">&mdash;</button>
+          <button class="tool" type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-cmd="undo" title="Undo">&#8630;</button>
+          <button class="tool" type="button" data-cmd="redo" title="Redo">&#8631;</button>
+          <span style="flex:1"></span>
+          <button class="tool" type="button" id="mode" title="Edit the HTML directly">HTML</button>
+        </div>
+        <div class="rich" id="rich" contenteditable="true" spellcheck="true"></div>
+        <textarea name="content" spellcheck="false" hidden></textarea>
+      </div>
+
+      <div class="editor-actions">
+        <button class="btn is-on" type="submit">Save</button>
+        ${isNew ? '' : '<button class="btn danger" type="button" id="delete">Delete</button>'}
+        <span class="note" id="editor-note"></span>
+      </div>
+    </form>
+
+    <aside class="side">
+      <div class="side-panel">
+        <span class="stencil side-head">The Undo Stack</span>
+        <ul class="post-jump">
+          ${posts.map((p) => `
+            <li>
+              <a href="#/writing/${p.id}" class="${String(p.id) === String(id) ? 'is-here' : ''}"
+                 data-jump="${p.id}">
+                <span class="jump-title">${escape(p.title)}</span>
+                <span class="jump-when">${p.published ? 'Published' : 'Draft'} / ${String(p.created_at).slice(0, 10)}</span>
+              </a>
+            </li>`).join('')}
+        </ul>
+        ${others.length ? '' : '<p class="side-foot">Nothing else written yet.</p>'}
+        <a class="btn" href="#/writing/new" style="width:100%;margin-top:12px">New post</a>
+      </div>
+    </aside>
+    </div>`;
+
+  const form = document.getElementById('editor');
+  const note = document.getElementById('editor-note');
+  const publishedBtn = document.getElementById('published');
+
+  /*
+   * A sidebar that jumps straight to another post is also a sidebar that can
+   * throw away what you have just written. Same two-click shape as the delete
+   * button: the first click says what will happen, the second does it.
+   */
+  let dirty = false;
+  const touch = () => { dirty = true; };
+  form.addEventListener('input', touch);
+  form.addEventListener('change', touch);
+
+  let armedJump = null;
+  view.querySelector('.side').addEventListener('click', (event) => {
+    const link = event.target.closest('a[href^="#/writing"]');
+    if (!link || link.classList.contains('is-here')) {
+      if (link) event.preventDefault();   // already here
+      return;
+    }
+    if (!dirty || armedJump === link) return;   // let it through
+
+    event.preventDefault();
+    clearTimeout(armedJump?.timer);
+    armedJump = link;
+    say(note, 'Unsaved changes — click again to leave them behind.', false);
+    link.timer = setTimeout(() => {
+      if (armedJump === link) armedJump = null;
+      note.textContent = '';
+    }, 4000);
+  });
+
+  publishedBtn.addEventListener('click', () => {
+    const next = publishedBtn.dataset.value === '1' ? '0' : '1';
+    publishedBtn.dataset.value = next;
+    publishedBtn.textContent = next === '1' ? 'Published' : 'Draft';
+    publishedBtn.classList.toggle('is-on', next === '1');
+  });
+
+  wireEditor(form, post.content ?? '');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    syncBody(form);
+    const body = new URLSearchParams(new FormData(form));
+    body.set('published', publishedBtn.dataset.value);
+    if (!isNew) body.set('id', post.id);
+
+    say(note, 'Saving…', true);
+    const res = await adminFetch(`${BLOG_API}?do=save`, { method: 'POST', body });
+    const data = await res.json().catch(() => ({}));
+    if (!data.success) return say(note, data.message || 'Did not save.', false);
+
+    say(note, `Saved as /${data.slug}`, true);
+    if (isNew) location.hash = `#/writing/${data.id}`;
+  });
+
+  document.getElementById('delete')?.addEventListener('click', async () => {
+    if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
+    const res = await adminFetch(`${BLOG_API}?do=delete`, {
+      method: 'POST', body: new URLSearchParams({ id: post.id }),
+    });
+    if ((await res.json()).success) location.hash = '#/writing';
+  });
+}
+
+/* ---------- the body editor ---------- */
+
+/*
+ * A written page, edited as a written page. The alternative was a textarea of
+ * raw HTML, which is fine for me and miserable for anyone writing in it.
+ *
+ * Built on contenteditable and execCommand. execCommand is deprecated and
+ * every browser still implements it; the replacement is to hand-roll Range
+ * surgery, which is a great deal of code to arrive at the same paragraphs.
+ * What it produces is tidied on the way out, because left alone it emits
+ * styled spans and stray divs.
+ */
+
+const BLOCK_TAGS = new Set(['P', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'UL', 'OL', 'LI']);
+const KEEP_TAGS = new Set([
+  'P', 'BR', 'STRONG', 'B', 'EM', 'I', 'U', 'A',
+  'UL', 'OL', 'LI', 'H2', 'H3', 'H4', 'BLOCKQUOTE', 'CODE', 'HR',
+  'IMG', 'FIGURE', 'FIGCAPTION',
+]);
+
+/** Strip the editor's leftovers: attributes, styling, tags nobody asked for. */
+function tidyHtml(html) {
+  const box = document.createElement('div');
+  box.innerHTML = html;
+
+  // Gone entirely, contents and all — unwrapping a <script> would leave its
+  // code sitting in the post as text.
+  box.querySelectorAll('script, style, iframe, object, embed, noscript, link, meta')
+    .forEach((el) => el.remove());
+
+  // A div is what contenteditable reaches for when it means a paragraph. The
+  // children are moved rather than copied, so the same nodes carry on through
+  // the passes below — copying innerHTML makes new ones that never get cleaned.
+  box.querySelectorAll('div').forEach((el) => {
+    const p = document.createElement('p');
+    while (el.firstChild) p.appendChild(el.firstChild);
+    el.replaceWith(p);
+  });
+
+  // Unwrapping can expose more of the same, so this repeats until it is quiet.
+  for (let pass = 0; pass < 5; pass++) {
+    const strays = [...box.querySelectorAll('*')].filter((el) => !KEEP_TAGS.has(el.tagName));
+    if (!strays.length) break;
+    strays.forEach((el) => el.replaceWith(...el.childNodes));
+  }
+
+  box.querySelectorAll('*').forEach((el) => {
+    [...el.attributes].forEach((attr) => {
+      const keep = (el.tagName === 'A' && attr.name === 'href')
+        // An image without its src is not an image. alt is how it reads when
+        // it does not load, so it is worth as much as the address.
+        || (el.tagName === 'IMG' && (attr.name === 'src' || attr.name === 'alt'));
+      if (!keep) el.removeAttribute(attr.name);
+    });
+  });
+
+  // Nested divs become nested paragraphs, which is invalid. Parsing the result
+  // once more lets the browser close them where they should have closed.
+  const settled = document.createElement('div');
+  settled.innerHTML = box.innerHTML;
+
+  // Empty blocks are how a stray Enter shows up in the saved copy — including
+  // the ones the reparse above just created. Spacing is the stylesheet's job.
+  settled.querySelectorAll('p, h2, h3, h4, blockquote, li, figure').forEach((el) => {
+    if (!el.textContent.trim() && !el.querySelector('img, br')) el.remove();
+  });
+
+  // Only the ends are trimmed. Collapsing whitespace around tags eats the
+  // space in "Hello <em>there</em>".
+  return settled.innerHTML.trim();
+}
+
+/** Whichever editor is showing is the one the form saves. */
+function syncBody(form) {
+  const rich = form.querySelector('#rich');
+  const area = form.querySelector('textarea[name=content]');
+  if (!rich.hidden) area.value = tidyHtml(rich.innerHTML);
+  return area.value;
+}
+
+function wireEditor(form, initial) {
+  const rich = form.querySelector('#rich');
+  const area = form.querySelector('textarea[name=content]');
+  const toolbar = form.querySelector('.editor-toolbar');
+
+  area.value = initial;
+  rich.innerHTML = initial;
+
+  // Enter makes a paragraph rather than a div, which is the single biggest
+  // source of junk markup out of contenteditable.
+  try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch { /* older browsers */ }
+
+  const run = (command, value) => {
+    rich.focus();
+    document.execCommand(command, false, value);
+    refresh();
+  };
+
+  // Which buttons are lit for wherever the caret is.
+  function refresh() {
+    toolbar.querySelectorAll('[data-cmd]').forEach((button) => {
+      let on = false;
+      try { on = document.queryCommandState(button.dataset.cmd); } catch { /* not queryable */ }
+      button.classList.toggle('is-on', on);
+    });
+
+    let node = document.getSelection()?.anchorNode;
+    let block = '';
+    while (node && node !== rich) {
+      if (node.nodeType === 1 && BLOCK_TAGS.has(node.tagName)) { block = node.tagName.toLowerCase(); break; }
+      node = node.parentNode;
+    }
+    toolbar.querySelectorAll('[data-block]').forEach((button) =>
+      button.classList.toggle('is-on', button.dataset.block === block));
+
+    let inCode = false;
+    let n = document.getSelection()?.anchorNode;
+    while (n && n !== rich) {
+      if (n.nodeType === 1 && n.tagName === 'CODE') { inCode = true; break; }
+      n = n.parentNode;
+    }
+    toolbar.querySelector('[data-wrap="code"]')?.classList.toggle('is-on', inCode);
+  }
+
+  /*
+   * Inline code has no execCommand of its own, so the selection is wrapped by
+   * hand — and unwrapped again when it is already inside one, so the button
+   * toggles like the rest of them rather than nesting <code> in <code>.
+   */
+  function toggleCode() {
+    const selection = document.getSelection();
+    if (!selection || !selection.rangeCount) return;
+
+    let node = selection.anchorNode;
+    while (node && node !== rich) {
+      if (node.nodeType === 1 && node.tagName === 'CODE') {
+        node.replaceWith(...node.childNodes);
+        refresh();
+        return;
+      }
+      node = node.parentNode;
+    }
+
+    if (selection.isCollapsed) return;
+    const range = selection.getRangeAt(0);
+    const code = document.createElement('code');
+    try {
+      range.surroundContents(code);
+    } catch {
+      // The selection crossed a tag boundary; extracting first is the way in.
+      code.appendChild(range.extractContents());
+      range.insertNode(code);
+    }
+    refresh();
+  }
+
+  toolbar.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-cmd], [data-block], [data-wrap]');
+    if (!button) return;
+    rich.focus();
+    if (button.dataset.wrap === 'code') toggleCode();
+    else if (button.dataset.cmd) run(button.dataset.cmd);
+    else run('formatBlock', `<${button.dataset.block}>`);
+  });
+
+  form.querySelector('[data-media]')?.addEventListener('click', () => {
+    // The caret moves the moment the modal takes focus, so where to put the
+    // picture is remembered before it opens.
+    rich.focus();
+    const selection = document.getSelection();
+    const at = selection && selection.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+
+    pickMedia((url) => {
+      rich.focus();
+      if (at) {
+        const s2 = document.getSelection();
+        s2.removeAllRanges();
+        s2.addRange(at);
+      }
+      // A figure, so a caption has somewhere to go — click the line under the
+      // picture and type.
+      run('insertHTML',
+        `<figure><img src="${url}" alt=""><figcaption>Caption</figcaption></figure><p><br></p>`);
+    });
+  });
+
+  form.querySelector('#link').addEventListener('click', () => {
+    const selection = document.getSelection();
+    if (!selection || selection.isCollapsed) {
+      alert('Select the words you want to link first.');
+      return;
+    }
+    const href = prompt('Link to:', 'https://');
+    if (href) run('createLink', href);
+  });
+
+  document.addEventListener('selectionchange', () => {
+    if (document.activeElement === rich) refresh();
+  });
+
+  // Pasting from anywhere else brings that place's markup with it.
+  rich.addEventListener('paste', (event) => {
+    event.preventDefault();
+    const html = event.clipboardData.getData('text/html');
+    const text = event.clipboardData.getData('text/plain');
+    document.execCommand('insertHTML', false, html ? tidyHtml(html) : text.replace(/</g, '&lt;'));
+  });
+
+  form.querySelector('#mode').addEventListener('click', (event) => {
+    const toHtml = !rich.hidden;
+    if (toHtml) {
+      area.value = tidyHtml(rich.innerHTML);
+    } else {
+      rich.innerHTML = area.value;
+    }
+    rich.hidden = toHtml;
+    area.hidden = !toHtml;
+    toolbar.querySelectorAll('.tool').forEach((tool) => {
+      if (tool.id !== 'mode') tool.disabled = toHtml;
+      tool.style.opacity = tool.id !== 'mode' && toHtml ? '.4' : '';
+    });
+    event.target.classList.toggle('is-on', toHtml);
+    event.target.textContent = toHtml ? 'Rich text' : 'HTML';
+  });
+
+  refresh();
+}
+
+/* ---------- about ---------- */
+
+const SITE_API = '/portfolio/api/site-admin.php';
+
+/** One editable social row. Kept as markup so adding one is just another row. */
+const socialRow = (link = { name: '', url: '' }) => `
+  <div class="social-row">
+    <input class="tag-input" data-social-name placeholder="LinkedIn" value="${escape(link.name)}">
+    <input class="tag-input" data-social-url placeholder="https://…" value="${escape(link.url)}">
+    <button class="tool" type="button" data-social-remove title="Remove">&times;</button>
+  </div>`;
+
+/* ---------- media ---------- */
+
+const MEDIA_API = '/portfolio/api/media.php';
+let media = [];
+
+/** Everything in uploads/, with the ones nothing points at marked as free. */
+async function loadMedia() {
+  const res = await adminFetch(MEDIA_API);
+  if (res.status === 401) { renderLogin(); return null; }
+  const data = await res.json().catch(() => ({ files: [] }));
+  media = data.files ?? [];
+  return data;
+}
+
+const mediaTile = (file) => `
+  <div class="tile ${file.used ? 'is-used' : ''}" data-file="${escape(file.file)}"
+       data-url="${escape(file.url)}">
+    <div class="tile-shot">
+      <img src="${escape(file.url)}" alt="" loading="lazy">
+      ${file.used ? '' : `
+        <button class="tile-bin" type="button" data-bin title="Delete this file">&times;</button>`}
+    </div>
+    <div class="tile-name" title="${escape(file.file)}">${escape(file.file)}</div>
+    <div class="tile-meta">
+      ${file.width ? `${file.width}&times;${file.height} / ` : ''}${escape(file.size)}
+      ${file.used ? ' / in use' : ' / unused'}
+    </div>
+  </div>`;
+
+async function renderMedia() {
+  const data = await loadMedia();
+  if (!data) return;
+  const free = media.filter((f) => !f.used).length;
+
+  view.innerHTML = `
+    <div class="bar">
+      <span class="btn file-btn is-on">Upload<input type="file" accept="image/*" multiple id="media-add"></span>
+      <span class="spacer"></span>
+      <span class="note" id="media-note">${media.length} file${media.length === 1 ? '' : 's'}, ${free} unused / up to ${escape(data.limit)} each</span>
+    </div>
+
+    <div class="tiles" id="tiles">
+      ${media.map(mediaTile).join('')}
+    </div>
+    ${media.length ? '' : '<p class="lede">Nothing here yet.</p>'}`;
+
+  const note = document.getElementById('media-note');
+
+  document.getElementById('media-add').addEventListener('change', async (event) => {
+    const files = [...event.target.files];
+    if (!files.length) return;
+    say(note, `Uploading ${files.length}…`, true);
+    const body = new FormData();
+    files.forEach((f) => body.append('files[]', f));
+    const res = await adminFetch(`${MEDIA_API}?do=upload`, { method: 'POST', body });
+    const out = await res.json().catch(() => ({}));
+    say(note, out.message || 'Upload failed', Boolean(out.success));
+    if (out.success) renderMedia();
+  });
+
+  /*
+   * Clicking a tile copies its address — the thing you actually want a picture
+   * for. Deleting is its own button, only on the files nothing points at, and
+   * it asks properly. Arming the tile itself made the ordinary gesture the
+   * destructive one, which is a trap however many clicks it takes.
+   */
+  document.getElementById('tiles').addEventListener('click', async (event) => {
+    const tile = event.target.closest('.tile');
+    if (!tile) return;
+
+    if (event.target.closest('[data-bin]')) {
+      confirmDelete(tile.dataset.file, note);
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(tile.dataset.url);
+      say(note, `Copied ${tile.dataset.file}`, true);
+    } catch {
+      say(note, tile.dataset.url, true);   // no clipboard permission; show it instead
+    }
+  });
+}
+
+/** A real confirmation, in the site's own modal rather than a browser dialog. */
+function confirmDelete(file, note) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal is-over';
+  overlay.innerHTML = `
+    <div class="modal-panel" style="width:min(420px,100%)">
+      <div class="modal-head">
+        <div>
+          <span class="stencil">Delete for good</span>
+          <div class="modal-title">${escape(file)}</div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <p class="side-foot" style="margin:0">
+          Nothing points at this file, so removing it breaks nothing. It cannot be
+          undone — there is no copy of it anywhere else.
+        </p>
+      </div>
+      <div class="modal-foot">
+        <span class="spacer"></span>
+        <button class="btn" type="button" data-close>Keep it</button>
+        <button class="btn danger" type="button" data-go>Delete</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', async (event) => {
+    if (event.target === overlay || event.target.closest('[data-close]')) return closeLayer(overlay);
+    if (!event.target.closest('[data-go]')) return;
+
+    const res = await adminFetch(`${MEDIA_API}?do=delete`, {
+      method: 'POST', body: new URLSearchParams({ file }),
+    });
+    const out = await res.json().catch(() => ({}));
+    closeLayer(overlay);
+    say(note, out.message || 'Could not delete that.', Boolean(out.success));
+    if (out.success) renderMedia();
+  });
+
+  onEscape(overlay);
+}
+
+/*
+ * The same library, as a way of putting a picture into what you are writing.
+ * It is the picker the work editor uses, pointed at a different job — one grid
+ * of what is on the server, one click to choose.
+ */
+async function pickMedia(onChoose) {
+  const data = await loadMedia();
+  if (!data) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal is-wide is-over';
+  overlay.innerHTML = `
+    <div class="modal-panel">
+      <div class="modal-head">
+        <span class="stencil">Insert an image — ${media.length} in uploads</span>
+        <div style="display:flex;gap:8px">
+          <span class="btn file-btn">Upload<input type="file" accept="image/*" multiple data-add></span>
+          <button class="btn" data-close>Close</button>
+        </div>
+      </div>
+      <div class="picker-grid" data-grid>
+        ${media.map((file) => `
+          <button class="picker-item" type="button" data-url="${escape(file.url)}" title="${escape(file.file)}">
+            <img src="${escape(file.url)}" alt="" loading="lazy">
+          </button>`).join('')}
+      </div>
+      ${media.length ? '' : '<p class="side-foot" style="padding:16px">Nothing in uploads yet — add one above.</p>'}
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('[data-add]').addEventListener('change', async (event) => {
+    const files = [...event.target.files];
+    if (!files.length) return;
+    const body = new FormData();
+    files.forEach((f) => body.append('files[]', f));
+    const res = await adminFetch(`${MEDIA_API}?do=upload`, { method: 'POST', body });
+    const out = await res.json().catch(() => ({}));
+    if (out.success && out.added?.length) {
+      closeLayer(overlay);
+      onChoose(out.added[0].url);   // straight in, since that is why it was added
+    }
+  });
+
+  overlay.addEventListener('click', (event) => {
+    if (event.target === overlay || event.target.closest('[data-close]')) return closeLayer(overlay);
+    const choice = event.target.closest('[data-url]');
+    if (!choice) return;
+    closeLayer(overlay);
+    onChoose(choice.dataset.url);
+  });
+
+  onEscape(overlay);
+}
+
+/* ---------- page intros ---------- */
+
+/*
+ * The heading and the sentence under it, for each page that has one. They were
+ * written into the markup, which made them the only copy on the site needing a
+ * deploy to change — and they are about the pages rather than about you, which
+ * is why they are not on the About tab with the writing.
+ */
+const HEAD_PAGES = [
+  ['work', 'Work'],
+  ['writing', 'The Undo Stack'],
+  ['about', 'About'],
+];
+
+async function renderPages() {
+  const res = await adminFetch(SITE_API);
+  if (res.status === 401) return renderLogin();
+  const data = await res.json();
+
+  view.innerHTML = `
+    <form class="editor" id="pages-form">
+      ${HEAD_PAGES.map(([page, label]) => `
+        <div class="head-row">
+          <span class="stencil head-row-label">${label}</span>
+          <div class="field">
+            <span class="stencil">Heading</span>
+            <input type="text" name="head_${page}_title"
+                   value="${escape(data.heads?.[page]?.title ?? '')}">
+          </div>
+          <div class="field">
+            <span class="stencil">Intro</span>
+            <textarea class="intro" name="head_${page}_lede" rows="3"
+                      data-grow="200">${escape(data.heads?.[page]?.lede ?? '')}</textarea>
+          </div>
+        </div>`).join('')}
+
+      <div class="editor-actions">
+        <button class="btn is-on" type="submit">Save</button>
+        <span class="note" id="pages-note"></span>
+      </div>
+    </form>`;
+
+  const form = document.getElementById('pages-form');
+  const note = document.getElementById('pages-note');
+
+  // Same as the work editor: the box is the size of what is in it.
+  form.querySelectorAll('[data-grow]').forEach((box) => {
+    const grow = () => {
+      box.style.height = 'auto';
+      box.style.height = Math.min(box.scrollHeight + 2, Number(box.dataset.grow)) + 'px';
+    };
+    grow();
+    box.addEventListener('input', grow);
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const body = new URLSearchParams();
+    form.querySelectorAll('[name^="head_"]').forEach((field) => body.set(field.name, field.value));
+
+    say(note, 'Saving…', true);
+    const saved = await adminFetch(`${SITE_API}?do=save`, { method: 'POST', body })
+      .then((r) => r.json()).catch(() => ({}));
+    say(note, saved.success ? 'Saved' : (saved.message || 'Did not save.'), Boolean(saved.success));
+  });
+}
+
+async function renderAbout() {
+  const res = await adminFetch(SITE_API);
+  if (res.status === 401) return renderLogin();
+  const data = await res.json();
+
+  let socials = [];
+  try { socials = JSON.parse(data.socials) || []; } catch { socials = []; }
+
+  view.innerHTML = `
+    <form class="editor" id="about-form">
+      <div class="field">
+        <span class="stencil">About</span>
+        <div class="editor-toolbar">
+          <button class="tool" type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+          <button class="tool" type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+          <button class="tool" type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+          <button class="tool" type="button" data-wrap="code" title="Inline code">&lt;/&gt;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-block="h2" title="Heading">H2</button>
+          <button class="tool" type="button" data-block="h3" title="Subheading">H3</button>
+          <button class="tool" type="button" data-block="h4" title="Small heading">H4</button>
+          <button class="tool" type="button" data-block="p" title="Paragraph">¶</button>
+          <button class="tool" type="button" data-block="blockquote" title="Quote">&rdquo;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-cmd="insertUnorderedList" title="Bullets">&bull;</button>
+          <button class="tool" type="button" data-cmd="insertOrderedList" title="Numbered">1.</button>
+          <button class="tool" type="button" data-cmd="outdent" title="Outdent">&lsaquo;</button>
+          <button class="tool" type="button" data-cmd="indent" title="Indent">&rsaquo;</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" id="link" title="Link">Link</button>
+          <button class="tool" type="button" data-media title="Insert an image">Image</button>
+          <button class="tool" type="button" data-cmd="unlink" title="Remove link">Unlink</button>
+          <button class="tool" type="button" data-cmd="insertHorizontalRule" title="Divider">&mdash;</button>
+          <button class="tool" type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+          <span class="tool-sep"></span>
+          <button class="tool" type="button" data-cmd="undo" title="Undo">&#8630;</button>
+          <button class="tool" type="button" data-cmd="redo" title="Redo">&#8631;</button>
+          <span style="flex:1"></span>
+          <button class="tool" type="button" id="mode" title="Edit the HTML directly">HTML</button>
+        </div>
+        <div class="rich" id="rich" contenteditable="true" spellcheck="true"></div>
+        <textarea name="content" spellcheck="false" hidden></textarea>
+      </div>
+
+      <div class="field">
+        <span class="stencil">Elsewhere</span>
+        <div id="socials">${socials.map(socialRow).join('') || socialRow()}</div>
+        <div><button class="btn" type="button" id="add-social">Add a link</button></div>
+      </div>
+
+      <div class="field">
+        <span class="stencil">Worked on — one per line, year and name separated by a tab</span>
+        <textarea name="history" class="history-input" spellcheck="false">${escape(data.history)}</textarea>
+      </div>
+
+      <div class="editor-actions">
+        <button class="btn is-on" type="submit">Save</button>
+        <span class="note" id="about-note"></span>
+      </div>
+    </form>`;
+
+  const form = document.getElementById('about-form');
+  const note = document.getElementById('about-note');
+  wireEditor(form, data.about);
+
+
+  const rows = document.getElementById('socials');
+  document.getElementById('add-social').addEventListener('click', () => {
+    rows.insertAdjacentHTML('beforeend', socialRow());
+  });
+  rows.addEventListener('click', (event) => {
+    if (event.target.closest('[data-social-remove]')) event.target.closest('.social-row').remove();
+  });
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    syncBody(form);
+
+    const links = [...rows.querySelectorAll('.social-row')]
+      .map((row) => ({
+        name: row.querySelector('[data-social-name]').value.trim(),
+        url: row.querySelector('[data-social-url]').value.trim(),
+      }))
+      .filter((link) => link.name && link.url);
+
+    const body = new URLSearchParams({
+      about: form.content.value,
+      history: form.history.value,
+      socials: JSON.stringify(links),
+    });
+
+
+    say(note, 'Saving…', true);
+    const saved = await adminFetch(`${SITE_API}?do=save`, { method: 'POST', body })
+      .then((r) => r.json()).catch(() => ({}));
+    say(note, saved.success ? 'Saved' : (saved.message || 'Did not save.'), Boolean(saved.success));
+  });
+}
+
+/* ---------- routing ---------- */
+
+const SECTIONS = {
+  work: ['Work', 'What the site shows, in what order, under what banner. Behance is the source of truth for titles, covers and dates — a pull overwrites those and leaves everything here alone.'],
+  writing: ['The Undo Stack', 'The writing, from the other side. This is written here rather than pulled from anywhere, so this is where it is edited.'],
+  about: ['About', 'Who you are, what you have worked on, and where else to find you. None of this is synced from anywhere — it is the one part of the site that is purely yours.'],
+  media: ['Media', 'Everything in the uploads folder. Drop files here and use them as banners or in a post. Anything already pointed at cannot be deleted from here.'],
+  pages: ['Pages', 'The heading and the line under it on each page. Plain text — leave an intro empty and the page shows its heading on its own.'],
+};
+
+async function route() {
+  const [section = 'work', param] = location.hash.replace(/^#\/?/, '').split('/');
+  const known = SECTIONS[section] ? section : 'work';
+
+  document.getElementById('heading').textContent = SECTIONS[known][0];
+  document.getElementById('lede').textContent = param ? '' : SECTIONS[known][1];
+  document.querySelectorAll('.nav-link').forEach((link) =>
+    link.classList.toggle('is-on', link.dataset.section === known));
+
+  if (known === 'media') {
+    await renderMedia();
+    return;
+  }
+
+  if (known === 'pages') {
+    await renderPages();
+    return;
+  }
+
+  if (known === 'about') {
+    await renderAbout();
+    return;
+  }
+
+  if (known === 'writing') {
+    if (param) await renderPost(param);
+    else await renderWriting();
+    return;
+  }
+
+  if (!loaded) await load();
+  else renderWork();
+}
+
+document.getElementById('logout').addEventListener('click', async () => {
+  await fetch('/portfolio/api/login.php?logout', { credentials: 'same-origin' }).catch(() => {});
+  // Whatever was on screen was for a session that no longer exists.
+  loaded = false;
+  items = [];
+  renderLogin('Signed out.');
+});
+
+window.addEventListener('hashchange', route);
+
+route();
+</script>
+</body>
+</html>
