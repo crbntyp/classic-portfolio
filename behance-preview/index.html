@@ -1684,11 +1684,22 @@ function pageHead(heads, page, fallback) {
     </div>`;
 }
 
+/*
+ * Caches the promise, not the resolved value.
+ *
+ * Storing the result meant every caller that arrived before the first
+ * response still saw an empty cache and started its own request — the page
+ * was fetching site.php three times on load once the player began asking for
+ * it too. Holding the in-flight promise makes concurrent callers share one
+ * request, which is what a cache was meant to do.
+ */
+const FALLBACK_SITE = { about: null, history: [], socials: [], now_playing: {} };
 let siteCache = null;
-async function site() {
+function site() {
   if (!siteCache) {
-    const res = await fetch('/portfolio/api/site.php');
-    siteCache = res.ok ? await res.json() : { about: null, history: [], socials: [] };
+    siteCache = fetch('/portfolio/api/site.php')
+      .then((res) => (res.ok ? res.json() : FALLBACK_SITE))
+      .catch(() => FALLBACK_SITE);
   }
   return siteCache;
 }
