@@ -120,14 +120,10 @@
    * A progress read-out, not a transport. There is no scrubbing: the bar
    * reports where the track is and nothing else, so it is a span rather than
    * a range input — an input you cannot drag is a lie about what it does.
-   *
-   * The play control only appears on hover, but its space is always reserved
-   * (opacity, not display), or the nav would jump every time the pointer
-   * crossed it.
    */
   .np {
     display: flex;
-    align-items: center;
+    align-items: stretch;   /* the button matches the stack, not its own text */
     gap: 9px;
     margin-left: 18px;
     --np-fill: #22d3ee;
@@ -141,35 +137,49 @@
    */
   .np[hidden] { display: none; }
 
+  /*
+   * Built like a tag chip, because that is what a small bordered control
+   * looks like on this site: one hairline, 2px corners, mono, dim until you
+   * touch it. Squared rather than round so it belongs with the filters
+   * rather than looking like a media player dropped in.
+   *
+   * No fixed height — align-items: stretch takes it from the meta column, so
+   * the button runs from the top of the progress bar to the bottom of the
+   * artist line however that stack is sized.
+   */
   .np-toggle {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 18px; height: 18px; padding: 0; flex: 0 0 18px;
-    background: none; border: 0; cursor: pointer;
-    color: var(--paper);
+    width: 26px; padding: 0; flex: 0 0 26px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
     opacity: 0;
-    transition: opacity 0.2s ease, color 0.2s ease;
+    transition: opacity 0.2s ease, color 0.15s ease, border-color 0.15s ease;
   }
-  /* Revealed by hovering the group, not just the button itself — an 18px
-     target you must find before it appears would be a puzzle. */
+  /* Revealed by hovering the group, not the button itself — a target you must
+     find before it appears would be a puzzle. */
   .np:hover .np-toggle,
   .np-toggle:focus-visible,
   .np.is-playing .np-toggle { opacity: 1; }
 
-  .np-toggle:focus-visible { outline: 1px solid var(--paper); outline-offset: 3px; }
+  .np-toggle:hover { color: var(--paper); border-color: var(--line-strong); }
+  .np-toggle:focus-visible { outline: 1px solid var(--paper); outline-offset: 2px; }
   .np-toggle[aria-disabled="true"] { cursor: default; }
+  .np-toggle[aria-disabled="true"]:hover { color: var(--dim); border-color: var(--line); }
 
-  .np-icon { width: 13px; height: 13px; fill: currentColor; display: block; }
+  .np-icon { width: 11px; height: 11px; fill: currentColor; display: block; }
   .np-icon--pause { display: none; }
   .np.is-playing .np-icon--play { display: none; }
   .np.is-playing .np-icon--pause { display: block; }
 
-  /* Bar and artist stack: the name sits directly under the progress it
-     belongs to, so the two read as one object. */
-  .np-meta { display: flex; flex-direction: column; gap: 4px; }
+  /* Bar, title, artist: one object, read top to bottom. */
+  .np-meta { display: flex; flex-direction: column; gap: 4px; width: 104px; }
 
   .np-bar {
     display: block;
-    width: 86px; height: 2px;
+    width: 100%; height: 2px;
     border-radius: 1px;
     background: rgba(255, 255, 255, 0.14);
     overflow: hidden;
@@ -183,26 +193,45 @@
     transition: width 0.25s linear;
   }
 
-  .np-artist {
-    font-family: var(--mono, "Azeret Mono", monospace);
+  .np-title, .np-artist {
+    font-family: var(--mono);
     font-size: 9px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--dim);
     line-height: 1;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 86px;
   }
 
-  /* No hover on touch, so the control would be unreachable. Show it. */
-  @media (hover: none) {
-    .np-toggle { opacity: 1; }
+  .np-title {
+    display: block;
+    overflow: hidden;      /* the runway the title slides along */
+    color: var(--paper);
   }
+  .np-title-run { display: inline-block; }
+
+  /*
+   * Only titles that do not fit move. The distance is measured in JS and
+   * handed over as --np-shift, so the animation travels exactly the overflow
+   * and no further — a fixed percentage would either stop short on a long
+   * name or overshoot on a short one.
+   */
+  .np-title.is-scrolling .np-title-run {
+    animation: np-marquee 9s ease-in-out infinite alternate;
+  }
+  @keyframes np-marquee {
+    0%, 12%   { transform: translateX(0); }
+    88%, 100% { transform: translateX(var(--np-shift, 0px)); }
+  }
+
+  .np-artist { color: var(--dim); overflow: hidden; text-overflow: ellipsis; }
+
+  /* No hover on touch, so the control would be unreachable. Show it. */
+  @media (hover: none) { .np-toggle { opacity: 1; } }
 
   @media (prefers-reduced-motion: reduce) {
     .np-toggle, .np-bar-fill { transition: none; }
+    /* A name that will not sit still is worse than one that is cut off. */
+    .np-title.is-scrolling .np-title-run { animation: none; }
   }
 
   .nav-links { display: flex; gap: 4px; }
@@ -991,9 +1020,10 @@
     /* Size only. The clip and the margin are in em, so they follow. */
     .mark { width: 97px; }
     .nav-links { gap: 1px; }
-    /* Tighter, but the bar and the name stay — they are the readout. */
+    /* Tighter, but the readout stays — it is the point. */
     .np { margin-left: 10px; gap: 7px; }
-    .np-bar, .np-artist { width: 64px; max-width: 64px; }
+    .np-meta { width: 78px; }
+    .np-toggle { width: 22px; flex-basis: 22px; }
     .nav-link {
       font-size: 9px;
       letter-spacing: 0.1em;
@@ -1052,6 +1082,7 @@
       </button>
       <span class="np-meta">
         <span class="np-bar"><span class="np-bar-fill" id="np-fill"></span></span>
+        <span class="np-title" id="np-title"><span class="np-title-run" id="np-title-run"></span></span>
         <span class="np-artist" id="np-artist"></span>
       </span>
     </div>
@@ -1085,6 +1116,8 @@
   var np = document.getElementById('np');
   var toggle = document.getElementById('np-toggle');
   var fill = document.getElementById('np-fill');
+  var titleEl = document.getElementById('np-title');
+  var titleRun = document.getElementById('np-title-run');
   var artistEl = document.getElementById('np-artist');
   if (!np || !toggle || !fill) return;
 
@@ -1163,9 +1196,44 @@
    * temporal dead zone. Waiting also means the player shares the one
    * site.php response rather than making a second.
    */
+  /*
+   * Scroll the title only if it actually overflows, and only by the amount it
+   * overflows: the distance goes to CSS as --np-shift so the animation travels
+   * exactly the hidden remainder. A fixed percentage would stop short on a
+   * long name and overshoot on a short one.
+   *
+   * Measured after a frame, because a title set in the same tick has not been
+   * laid out yet and scrollWidth would read as clientWidth.
+   */
+  function fitTitle() {
+    if (!titleEl || !titleRun) return;
+    titleEl.classList.remove('is-scrolling');
+    titleEl.style.removeProperty('--np-shift');
+
+    // Measured synchronously on purpose. This deferred to
+    // requestAnimationFrame, which does not fire in a throttled tab — so a
+    // page opened in the background (a cmd-click, a restored session) would
+    // never measure, and the title would sit still afterwards even once the
+    // tab was looked at. Reading scrollWidth forces layout by itself, so the
+    // frame was never needed.
+    var overflow = titleRun.scrollWidth - titleEl.clientWidth;
+    if (overflow > 1) {
+      titleEl.style.setProperty('--np-shift', '-' + overflow + 'px');
+      titleEl.classList.add('is-scrolling');
+    }
+  }
+
+  // The runway narrows at the mobile breakpoint, so what fitted may not.
+  var fitPending;
+  window.addEventListener('resize', function () {
+    clearTimeout(fitPending);
+    fitPending = setTimeout(fitTitle, 150);
+  });
+
   function boot() {
     site().then(function (cfg) {
       var np_ = (cfg && cfg.now_playing) || {};
+      if (titleRun) { titleRun.textContent = np_.title || ''; fitTitle(); }
       if (artistEl) artistEl.textContent = np_.artist || '';
       if (!np_.src) {
         // Nothing chosen. The control stays drawn but inert.

@@ -89,6 +89,10 @@ if (array_key_exists('now_playing_src', $_POST)) {
     writeSetting($mysqli, 'now_playing_src', $src);
 }
 
+if (array_key_exists('now_playing_title', $_POST)) {
+    writeSetting($mysqli, 'now_playing_title', trim((string) $_POST['now_playing_title']));
+}
+
 if (array_key_exists('now_playing_artist', $_POST)) {
     writeSetting($mysqli, 'now_playing_artist', trim((string) $_POST['now_playing_artist']));
 }

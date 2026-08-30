@@ -63,6 +63,7 @@ jsonResponse([
      */
     'now_playing' => [
         'src' => setting($mysqli, 'now_playing_src') ?: null,
+        'title' => setting($mysqli, 'now_playing_title') ?: null,
         'artist' => setting($mysqli, 'now_playing_artist') ?: null,
     ],
 ]);
