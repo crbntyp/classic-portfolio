@@ -737,17 +737,7 @@
   /*
    * A hairline of cyan and nothing else — no track, no buttons, no gutter you
    * can see when there is nothing to scroll.
-   *
-   * Firefox has no 1px option: scrollbar-width takes auto | thin | none, so it
-   * gets `thin` (about 8px there) with the same colours. Naming a width at all
-   * also opts WebKit out of overlay scrollbars, which is why the track is set
-   * transparent rather than left alone — otherwise it would draw a permanent
-   * pale strip down the side of every page.
    */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scroll) transparent;
-  }
   ::-webkit-scrollbar { width: 1px; height: 1px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 0; }
@@ -766,6 +756,26 @@
     display: none;
     width: 0;
     height: 0;
+  }
+
+  /*
+   * Scoped to browsers without the pseudo-elements — i.e. Firefox.
+   *
+   * This was an unguarded `* { scrollbar-width: thin; scrollbar-color: ... }`,
+   * and that is why the bar here was merely tinted while tng's is an actual
+   * hairline: Chrome discards every ::-webkit-scrollbar rule the moment it
+   * sees scrollbar-width or scrollbar-color, so the 1px above was never
+   * applied and the browser drew its own `thin` bar in cyan instead.
+   *
+   * Firefox has no 1px option — scrollbar-width takes auto | thin | none — so
+   * `thin` with matching colours is the closest it can come, and it only
+   * needs saying where WebKit's pseudo-elements do not exist.
+   */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scroll) transparent;
+    }
   }
 </style>
 </head>
