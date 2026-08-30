@@ -104,6 +104,13 @@
    */
   .mark {
     display: block;
+    /*
+     * Never shrink. As a flex child it defaulted to flex-shrink: 1, so once
+     * the now-playing control made the nav over-full on a phone the mark was
+     * the thing that gave — crushed from 123px to about 50. The logo is not
+     * the slack in this row.
+     */
+    flex: 0 0 auto;
     width: 123px;
     color: var(--paper);
     text-decoration: none;
@@ -234,7 +241,9 @@
     .np-title.is-scrolling .np-title-run { animation: none; }
   }
 
-  .nav-links { display: flex; gap: 4px; }
+  .nav-links { display: flex; gap: 4px; flex: 0 0 auto; }
+  /* "Undo Stack" broke over two lines once the row tightened. */
+  .nav-link { white-space: nowrap; }
 
   .nav-link {
     font-family: var(--mono);
@@ -1004,6 +1013,21 @@
   ::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 0; }
   ::-webkit-scrollbar-corner { background: transparent; }
 
+  /*
+   * The stepper buttons at each end. The comment above claimed "no buttons"
+   * while nothing actually removed them — they were still drawn, and still
+   * reserving their own square at the top and bottom of the rail, which is
+   * what broke the hairline into segments.
+   *
+   * display: none is the only thing that reclaims that space; opacity or a
+   * transparent background leaves the box behind. Same rule tng uses.
+   */
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
   /* ---------- small screens ---------- */
 
   /*
@@ -1020,9 +1044,17 @@
     /* Size only. The clip and the margin are in em, so they follow. */
     .mark { width: 97px; }
     .nav-links { gap: 1px; }
-    /* Tighter, but the readout stays — it is the point. */
-    .np { margin-left: 10px; gap: 7px; }
-    .np-meta { width: 78px; }
+    /*
+     * The readout goes; the button stays.
+     *
+     * At 375px the row is already spoken for — mark 97, links 178, gutters
+     * 40 — and the title/artist stack wanted another 85. Something had to
+     * give, and it was not going to be the logo or the navigation. The
+     * button alone is 22px and the whole row then fits with room to spare
+     * (measured: 351 of 371).
+     */
+    .np { margin-left: 10px; gap: 0; }
+    .np-meta { display: none; }
     .np-toggle { width: 22px; flex-basis: 22px; }
     .nav-link {
       font-size: 9px;
