@@ -117,75 +117,92 @@
 
   /* ---------- now playing ---------- */
   /*
-   * A play control and a hairline, sat at the end of the nav. Deliberately
-   * quiet: dim until you touch it, and the seek thumb only appears on hover
-   * or focus, so at rest it reads as a rule rather than a widget.
+   * A progress read-out, not a transport. There is no scrubbing: the bar
+   * reports where the track is and nothing else, so it is a span rather than
+   * a range input — an input you cannot drag is a lie about what it does.
+   *
+   * The play control only appears on hover, but its space is always reserved
+   * (opacity, not display), or the nav would jump every time the pointer
+   * crossed it.
    */
-  .np { display: flex; align-items: center; gap: 10px; margin-left: 18px; }
+  .np {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-left: 18px;
+    --np-fill: #22d3ee;
+  }
 
   /*
    * `display: flex` on .np outranks the user-agent's [hidden] { display: none }
    * — one class beats an attribute selector in the UA sheet — so setting the
    * attribute alone would not hide it. Kept so `hidden` behaves if it is ever
-   * used again, even though the control now stays visible by default.
+   * used again, even though the control stays visible by default.
    */
   .np[hidden] { display: none; }
 
-  /* Nothing behind it yet: still drawn, but not offering a pointer. */
-  .np-toggle[aria-disabled="true"] { cursor: default; }
-  .np-toggle[aria-disabled="true"]:hover { color: var(--dim); }
-
   .np-toggle {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; padding: 0;
+    width: 18px; height: 18px; padding: 0; flex: 0 0 18px;
     background: none; border: 0; cursor: pointer;
-    color: var(--dim);
-    transition: color 0.2s ease;
+    color: var(--paper);
+    opacity: 0;
+    transition: opacity 0.2s ease, color 0.2s ease;
   }
-  .np-toggle:hover { color: var(--paper); }
-  .np-toggle:focus-visible { outline: 1px solid var(--paper); outline-offset: 3px; color: var(--paper); }
+  /* Revealed by hovering the group, not just the button itself — an 18px
+     target you must find before it appears would be a puzzle. */
+  .np:hover .np-toggle,
+  .np-toggle:focus-visible,
+  .np.is-playing .np-toggle { opacity: 1; }
 
-  .np-icon { width: 15px; height: 15px; fill: currentColor; display: block; }
+  .np-toggle:focus-visible { outline: 1px solid var(--paper); outline-offset: 3px; }
+  .np-toggle[aria-disabled="true"] { cursor: default; }
+
+  .np-icon { width: 13px; height: 13px; fill: currentColor; display: block; }
   .np-icon--pause { display: none; }
   .np.is-playing .np-icon--play { display: none; }
   .np.is-playing .np-icon--pause { display: block; }
-  .np.is-playing .np-toggle { color: var(--paper); }
 
-  /*
-   * A range input rather than a div, so seeking works from the keyboard for
-   * free. Styled down to a 2px rule; the fill is painted with a gradient
-   * driven by --np-progress, which the script updates.
-   */
-  .np-seek {
-    -webkit-appearance: none; appearance: none;
-    width: 72px; height: 2px; margin: 0; padding: 0;
-    border-radius: 1px; cursor: pointer; outline: none;
-    --np-progress: 0%;
-    background: linear-gradient(to right,
-      var(--paper) 0%, var(--paper) var(--np-progress),
-      rgba(255,255,255,0.16) var(--np-progress), rgba(255,255,255,0.16) 100%);
-    transition: width 0.2s ease;
-  }
-  .np-seek:focus-visible { outline: 1px solid var(--paper); outline-offset: 4px; }
+  /* Bar and artist stack: the name sits directly under the progress it
+     belongs to, so the two read as one object. */
+  .np-meta { display: flex; flex-direction: column; gap: 4px; }
 
-  .np-seek::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--paper); border: 0; cursor: pointer;
-    opacity: 0; transition: opacity 0.2s ease;
+  .np-bar {
+    display: block;
+    width: 86px; height: 2px;
+    border-radius: 1px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
   }
-  .np-seek::-moz-range-thumb {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--paper); border: 0; cursor: pointer;
-    opacity: 0; transition: opacity 0.2s ease;
+
+  .np-bar-fill {
+    display: block;
+    width: 0%; height: 100%;
+    background: var(--np-fill);
+    border-radius: inherit;
+    transition: width 0.25s linear;
   }
-  .np:hover .np-seek::-webkit-slider-thumb,
-  .np-seek:focus-visible::-webkit-slider-thumb { opacity: 1; }
-  .np:hover .np-seek::-moz-range-thumb,
-  .np-seek:focus-visible::-moz-range-thumb { opacity: 1; }
+
+  .np-artist {
+    font-family: var(--mono, "Azeret Mono", monospace);
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 86px;
+  }
+
+  /* No hover on touch, so the control would be unreachable. Show it. */
+  @media (hover: none) {
+    .np-toggle { opacity: 1; }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .np-toggle, .np-seek, .np-seek::-webkit-slider-thumb { transition: none; }
+    .np-toggle, .np-bar-fill { transition: none; }
   }
 
   .nav-links { display: flex; gap: 4px; }
@@ -974,9 +991,9 @@
     /* Size only. The clip and the margin are in em, so they follow. */
     .mark { width: 97px; }
     .nav-links { gap: 1px; }
-    /* No room for the hairline once the links tighten up; the button stays. */
-    .np { margin-left: 10px; }
-    .np-seek { display: none; }
+    /* Tighter, but the bar and the name stay — they are the readout. */
+    .np { margin-left: 10px; gap: 7px; }
+    .np-bar, .np-artist { width: 64px; max-width: 64px; }
     .nav-link {
       font-size: 9px;
       letter-spacing: 0.1em;
@@ -1033,8 +1050,10 @@
         <svg class="np-icon np-icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         <svg class="np-icon np-icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
       </button>
-      <input class="np-seek" id="np-seek" type="range" min="0" max="1000" value="0" step="1"
-             aria-label="Seek" title="Seek">
+      <span class="np-meta">
+        <span class="np-bar"><span class="np-bar-fill" id="np-fill"></span></span>
+        <span class="np-artist" id="np-artist"></span>
+      </span>
     </div>
   </div>
 </nav>
@@ -1066,8 +1085,9 @@
 
   var np = document.getElementById('np');
   var toggle = document.getElementById('np-toggle');
-  var seek = document.getElementById('np-seek');
-  if (!np || !toggle || !seek) return;
+  var fill = document.getElementById('np-fill');
+  var artistEl = document.getElementById('np-artist');
+  if (!np || !toggle || !fill) return;
 
   var audio = new Audio();
   audio.preload = 'metadata';   // enough to size the bar, not the whole file
@@ -1079,7 +1099,6 @@
     if (!isFinite(audio.duration) || audio.duration <= 0) return;
     ready = true;
     toggle.removeAttribute('aria-disabled');
-    seek.removeAttribute('aria-disabled');
 
     // Pick up where this visitor left off, but never start playing on its own.
     var saved = parseFloat(localStorage.getItem(POS_KEY) || '0');
@@ -1095,14 +1114,11 @@
   audio.addEventListener('error', function () {
     ready = false;
     toggle.setAttribute('aria-disabled', 'true');
-    seek.setAttribute('aria-disabled', 'true');
   });
 
   function paint() {
     if (!isFinite(audio.duration) || audio.duration <= 0) return;
-    var ratio = audio.currentTime / audio.duration;
-    seek.value = Math.round(ratio * 1000);
-    seek.style.setProperty('--np-progress', (ratio * 100).toFixed(2) + '%');
+    fill.style.width = ((audio.currentTime / audio.duration) * 100).toFixed(2) + '%';
   }
 
   audio.addEventListener('timeupdate', function () {
@@ -1113,36 +1129,39 @@
   });
 
   audio.addEventListener('ended', function () {
-    np.classList.remove('is-playing');
-    toggle.setAttribute('aria-pressed', 'false');
-    toggle.setAttribute('aria-label', 'Play music');
+    setPlaying(false);
+    fill.style.width = '0%';
     try { localStorage.removeItem(POS_KEY); } catch (e) {}
   });
+
+  function setPlaying(on) {
+    np.classList.toggle('is-playing', on);
+    toggle.setAttribute('aria-pressed', String(on));
+    toggle.setAttribute('aria-label', on ? 'Pause music' : 'Play music');
+  }
 
   toggle.addEventListener('click', function () {
     if (!ready) return;   // nothing behind it yet
     if (audio.paused) {
-      audio.play().then(function () {
-        np.classList.add('is-playing');
-        toggle.setAttribute('aria-pressed', 'true');
-        toggle.setAttribute('aria-label', 'Pause music');
-      }).catch(function () {
+      audio.play().then(function () { setPlaying(true); }).catch(function () {
         // Autoplay policy or a decode failure. Nothing useful to say on a
         // portfolio — leave the button in its resting state.
       });
     } else {
       audio.pause();
-      np.classList.remove('is-playing');
-      toggle.setAttribute('aria-pressed', 'false');
-      toggle.setAttribute('aria-label', 'Play music');
+      setPlaying(false);
     }
   });
 
-  seek.addEventListener('input', function () {
-    if (!isFinite(audio.duration)) return;
-    audio.currentTime = (seek.value / 1000) * audio.duration;
-    seek.style.setProperty('--np-progress', (seek.value / 10).toFixed(2) + '%');
-  });
+  /*
+   * The artist under the bar comes from site settings, alongside the track
+   * itself, so it can be changed without a deploy. Until the admin writes
+   * one the line stays empty rather than showing a guess — a wrong credit is
+   * worse than none.
+   */
+  window.npSetArtist = function (name) {
+    if (artistEl) artistEl.textContent = name || '';
+  };
 })();
 
 /*
