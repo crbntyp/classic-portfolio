@@ -660,7 +660,11 @@
   .post-slug { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 3px; }
 
   .editor { display: flex; flex-direction: column; gap: 22px; max-width: 900px; }
+  /* Stays put while the prose scrolls beneath it. */
   .editor-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
     display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
     padding: 6px; border: 1px solid var(--line); border-bottom: 0;
     border-radius: 2px 2px 0 0; background: var(--panel);
@@ -677,9 +681,34 @@
   .tool i { font-style: italic; }
   .tool-sep { width: 1px; height: 16px; background: var(--line); margin: 0 4px; }
 
-  /* The written page, as close to how it reads on the site as an editor gets. */
+  /*
+   * The written page, as close to how it reads on the site as an editor gets.
+   *
+   * Capped rather than left to grow. It had only a min-height, so a long post
+   * pushed the page down as far as the prose went — the toolbar and Save
+   * scrolled off the top and you were editing with no controls in sight. The
+   * box now holds its place and the writing scrolls inside it.
+   *
+   * min() so it is never taller than the viewport can show, and never so
+   * short on a laptop that it stops being a page you can write on.
+   */
   .rich {
-    min-height: 420px; padding: 16px 18px;
+    /*
+     * Sized from what is left of the viewport, not from a share of it.
+     *
+     * 62vh looked reasonable and still pushed Save off the bottom, because
+     * the box is not the only thing on the page: roughly 200px of page header,
+     * title, slug/tags/state and toolbar sit above it, and the buttons and
+     * their margin sit below. The subtraction accounts for those, so the
+     * editor and its controls land inside the window together.
+     *
+     * The floor is deliberately low. On a short screen a small writing area
+     * that keeps Save in reach beats a taller one that hides it.
+     */
+    min-height: 240px;
+    max-height: calc(100vh - 470px);
+    overflow-y: auto;
+    padding: 16px 18px;
     border: 1px solid var(--line); border-radius: 0 0 2px 2px;
     background: var(--panel-hi);
     font-family: var(--font); font-size: 15px; line-height: 1.7;
@@ -715,7 +744,16 @@
   }
   .editor textarea:focus { outline: none; border-color: var(--line-strong); }
   .editor-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
-  .editor-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  /*
+   * Room above the buttons. The editor body now ends at a hard edge — it is a
+   * capped box that scrolls — and Save sat straight underneath it with only
+   * the form's own gap, so the two read as one block and the button looked
+   * like part of the field.
+   */
+  .editor-actions {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    margin-top: 10px;
+  }
   .danger { border-color: rgba(232,119,107,.4); color: var(--bad); }
   .danger:hover { border-color: var(--bad); background: rgba(232,119,107,.08); }
   /* Armed: filled rather than outlined, so the second click is plainly not the
@@ -731,6 +769,23 @@
   }
   .preview p { margin-bottom: 16px; }
   .preview h2, .preview h3 { color: var(--paper); font-size: 17px; margin: 22px 0 10px; }
+
+  /* The music panel on the Media screen. Its own block, above the images. */
+  .music {
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 16px;
+    margin-bottom: 28px;
+  }
+  .music-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .music-head .dd { min-width: 320px; }
+  .music-actions { margin-top: 14px; }
+  .media-head { display: block; margin-bottom: 10px; }
 
   /* One row per audio file: name, then its two credit fields. */
   .np-lib-row {
@@ -1790,23 +1845,6 @@ async function renderPost(id) {
         <textarea name="content" spellcheck="false" hidden></textarea>
       </div>
 
-      <div class="head-row">
-        <span class="stencil head-row-label">Music</span>
-        <div class="field">
-          <span class="stencil">Track</span>
-          <select name="now_playing_src" id="np-src">
-            <option value="">None</option>
-            <option value="*">Random — a different one each visit</option>
-          </select>
-          <p class="hint">mp3, m4a or mp4. Files are added to /audio on the server by hand — this only chooses between them.</p>
-        </div>
-        <div class="field">
-          <span class="stencil">Credits</span>
-          <div id="np-library"></div>
-          <p class="hint">What the site shows under the bar. Filled in from each file's tags, which usually need fixing — these come off YouTube as "Mogwai - Topic".</p>
-        </div>
-      </div>
-
       <div class="editor-actions">
         <button class="btn is-on" type="submit">Save</button>
         ${isNew ? '' : '<button class="btn danger" type="button" id="delete">Delete</button>'}
@@ -2181,10 +2219,34 @@ async function renderMedia() {
       <span class="note" id="media-note">${media.length} file${media.length === 1 ? '' : 's'}, ${free} unused / up to ${escape(data.limit)} each</span>
     </div>
 
+    <!--
+      Audio lives here because it is media. It was under Pages, next to page
+      headings, which is where it landed rather than where it belonged.
+
+      Images and audio do not share a shelf though: images are uploaded and
+      deleted from this screen, audio is copied to /audio by hand and only
+      chosen here. Two different things, so two panels rather than one grid
+      pretending they are the same.
+    -->
+    <section class="music">
+      <div class="music-head">
+        <span class="stencil">Music</span>
+        <div id="music-pick"></div>
+      </div>
+      <div id="np-library"></div>
+      <div class="editor-actions music-actions">
+        <button class="btn is-on" type="button" id="music-save">Save music</button>
+        <span class="note" id="music-note"></span>
+      </div>
+    </section>
+
+    <span class="stencil media-head">Images</span>
     <div class="tiles" id="tiles">
       ${media.map(mediaTile).join('')}
     </div>
     ${media.length ? '' : '<p class="lede">Nothing here yet.</p>'}`;
+
+  mountMusic();
 
   const note = document.getElementById('media-note');
 
@@ -2336,6 +2398,90 @@ const HEAD_PAGES = [
   ['about', 'About'],
 ];
 
+/*
+ * The music panel on the Media screen: which track the site plays, and the
+ * credit each file carries.
+ *
+ * The picker is the same dropdown() the work cards use, not a native select —
+ * one control styled one way, rather than a second thing that nearly matches.
+ *
+ * Credits are per file because playback can be shuffled: a single stored
+ * title would caption whichever track came up. They are seeded from each
+ * file's own tags, which come off YouTube as "Mogwai - Topic" and are wrong
+ * more often than not, so they are offered rather than trusted.
+ */
+async function mountMusic() {
+  const pick = document.getElementById('music-pick');
+  const wrap = document.getElementById('np-library');
+  const note = document.getElementById('music-note');
+  if (!pick || !wrap) return;
+
+  let settings = {};
+  let files = [];
+  try {
+    const [s, a] = await Promise.all([
+      adminFetch(SITE_API).then((r) => r.json()),
+      adminFetch('/portfolio/api/audio-list.php').then((r) => r.json()),
+    ]);
+    settings = s || {};
+    files = a.files || [];
+  } catch {
+    wrap.innerHTML = '<p class="hint">Could not read the audio folder.</p>';
+    return;
+  }
+
+  const chosen = settings.now_playing?.src ?? '';
+  const library = settings.now_playing_library || {};
+
+  /*
+   * "None" and "Random" read as settings rather than as answers to "what is
+   * playing?". These say what the site will do.
+   */
+  const options = [
+    { value: '', label: 'Nothing — the player stays silent' },
+    { value: '*', label: 'Shuffle — a different track each visit' },
+    ...files.map((f) => ({
+      value: f.name,
+      label: `${f.title || f.name} — ${(f.size / 1024 / 1024).toFixed(1)}MB`,
+    })),
+  ];
+  // A chosen file that has since gone stays selectable and says so, rather
+  // than the setting silently reverting to nothing on the next save.
+  if (chosen && chosen !== '*' && !files.some((f) => f.name === chosen)) {
+    options.push({ value: chosen, label: `${chosen} — missing from /audio` });
+  }
+
+  pick.innerHTML = dropdown('now_playing_src', chosen, options);
+
+  wrap.innerHTML = files.length ? files.map((f) => {
+    const saved = library[f.name] || {};
+    return `
+      <div class="np-lib-row" data-file="${escape(f.name)}">
+        <span class="np-lib-name">${escape(f.name)}</span>
+        <input type="text" data-lib-title value="${escape(saved.title || f.title || '')}" placeholder="Title">
+        <input type="text" data-lib-artist value="${escape(saved.artist || f.artist || '')}" placeholder="Artist">
+      </div>`;
+  }).join('') : '<p class="hint">Nothing in /audio yet. Files are copied there on the server.</p>';
+
+  document.getElementById('music-save').addEventListener('click', async () => {
+    const library = {};
+    for (const row of wrap.querySelectorAll('.np-lib-row')) {
+      library[row.dataset.file] = {
+        title: row.querySelector('[data-lib-title]').value.trim(),
+        artist: row.querySelector('[data-lib-artist]').value.trim(),
+      };
+    }
+    const body = new URLSearchParams({
+      now_playing_src: pick.querySelector('.dd').dataset.value,
+      now_playing_library: JSON.stringify(library),
+    });
+    say(note, 'Saving…', true);
+    const saved = await adminFetch(`${SITE_API}?do=save`, { method: 'POST', body })
+      .then((r) => r.json()).catch(() => ({}));
+    say(note, saved.success ? 'Saved' : (saved.message || 'Did not save.'), Boolean(saved.success));
+  });
+}
+
 async function renderPages() {
   const res = await adminFetch(SITE_API);
   if (res.status === 401) return renderLogin();
@@ -2455,58 +2601,6 @@ async function renderAbout() {
   wireEditor(form, data.about);
 
 
-  /*
-   * The track list comes from the folder rather than from anything stored, so
-   * the picker can only ever offer files that actually exist. A saved value
-   * whose file has since gone is kept as an option and marked, instead of
-   * silently reverting to None — the setting is still what it is, and losing
-   * it quietly on an unrelated save would be worse.
-   */
-  (async () => {
-    const sel = document.getElementById('np-src');
-    if (!sel) return;
-    const chosen = data.now_playing?.src ?? '';
-    let files = [];
-    try {
-      const r = await adminFetch('/portfolio/api/audio-list.php');
-      files = (await r.json()).files || [];
-    } catch { /* leave the list at None */ }
-
-    for (const f of files) {
-      const o = document.createElement('option');
-      o.value = f.name;
-      o.textContent = `${f.name}  (${(f.size / 1024 / 1024).toFixed(1)}MB)`;
-      sel.appendChild(o);
-    }
-    if (chosen && chosen !== '*' && !files.some((f) => f.name === chosen)) {
-      const o = document.createElement('option');
-      o.value = chosen;
-      o.textContent = `${chosen}  (missing from /audio)`;
-      sel.appendChild(o);
-    }
-    sel.value = chosen;
-
-    /*
-     * A credit row per file. Saved values win; anything not yet saved is
-     * seeded from the file's own tags so the fields are rarely empty, but
-     * they are always editable — the tags are wrong more often than not.
-     */
-    const lib = data.now_playing_library || {};
-    const wrap = document.getElementById('np-library');
-    if (!wrap) return;
-    wrap.innerHTML = files.map((f) => {
-      const saved = lib[f.name] || {};
-      const title = saved.title || f.title || '';
-      const artist = saved.artist || f.artist || '';
-      return `
-        <div class="np-lib-row" data-file="${escape(f.name)}">
-          <span class="np-lib-name">${escape(f.name)}</span>
-          <input type="text" data-lib-title value="${escape(title)}" placeholder="Title">
-          <input type="text" data-lib-artist value="${escape(artist)}" placeholder="Artist">
-        </div>`;
-    }).join('') || '<p class="hint">Nothing in /audio yet.</p>';
-  })();
-
   const rows = document.getElementById('socials');
   document.getElementById('add-social').addEventListener('click', () => {
     rows.insertAdjacentHTML('beforeend', socialRow());
@@ -2543,14 +2637,6 @@ async function renderAbout() {
     body.set('history', form.history.value);
     body.set('socials', JSON.stringify(links));
 
-    const library = {};
-    for (const row of document.querySelectorAll('.np-lib-row')) {
-      library[row.dataset.file] = {
-        title: row.querySelector('[data-lib-title]').value.trim(),
-        artist: row.querySelector('[data-lib-artist]').value.trim(),
-      };
-    }
-    body.set('now_playing_library', JSON.stringify(library));
 
 
     say(note, 'Saving…', true);
