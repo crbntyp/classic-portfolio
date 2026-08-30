@@ -30,13 +30,66 @@ const AUDIO_DIR = __DIR__ . '/../../audio';
  */
 const AUDIO_EXTS = ['mp3', 'm4a', 'mp4'];
 
+/*
+ * Tags read with ffprobe and then cleaned, because these files come off
+ * YouTube and their tags say so: the artist arrives as "Mogwai - Topic" and
+ * the title as "Stephan Bodzin - Lila (Official)". Good enough to seed the
+ * fields in the admin, never good enough to publish unread — which is why
+ * what the site shows is the saved library, not this.
+ */
+function tidyArtist(string $raw): string
+{
+    $a = preg_replace('/\s*-\s*Topic\s*$/i', '', trim($raw));
+    // YouTube's auto-channels shout. Title-case anything that is all caps.
+    if ($a !== '' && $a === mb_strtoupper($a, 'UTF-8')) {
+        $a = mb_convert_case(mb_strtolower($a, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+    }
+    return $a;
+}
+
+function tidyTitle(string $raw, string $artist): string
+{
+    $t = trim($raw);
+    // "Artist - Title (Official)" → "Title"
+    if ($artist !== '' && stripos($t, $artist) === 0) {
+        $t = trim(preg_replace('/^' . preg_quote($artist, '/') . '\s*[-–—]\s*/i', '', $t));
+    }
+    $t = preg_replace('/\s*\((?:official(?:\s+(?:video|audio|music\s+video))?)\)\s*$/i', '', $t);
+    return trim($t);
+}
+
+function readTags(string $path): array
+{
+    $cmd = 'ffprobe -v quiet -show_entries format_tags=title,artist -of json '
+         . escapeshellarg($path) . ' 2>/dev/null';
+    $out = @shell_exec($cmd);
+    $tags = json_decode((string) $out, true)['format']['tags'] ?? [];
+
+    // ffprobe casing varies by container.
+    $get = static function (array $t, string $key): string {
+        foreach ($t as $k => $v) {
+            if (strcasecmp($k, $key) === 0) return (string) $v;
+        }
+        return '';
+    };
+
+    $artist = tidyArtist($get($tags, 'artist'));
+    return [
+        'artist' => $artist,
+        'title' => tidyTitle($get($tags, 'title'), $artist),
+    ];
+}
+
 $files = [];
 
 foreach (glob(AUDIO_DIR . '/*.{' . implode(',', AUDIO_EXTS) . '}', GLOB_BRACE) ?: [] as $path) {
     if (!is_file($path)) continue;
+    $tags = readTags($path);
     $files[] = [
         'name' => basename($path),
         'size' => filesize($path) ?: 0,
+        'title' => $tags['title'],
+        'artist' => $tags['artist'],
     ];
 }
 

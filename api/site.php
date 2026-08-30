@@ -35,6 +35,44 @@ function pageHead(mysqli $db, string $page): array
     ];
 }
 
+/*
+ * The track behind the nav's now-playing control.
+ *
+ * now_playing_src is either a filename or '*' for random. Random is resolved
+ * here rather than in the page, so the browser is never handed a directory
+ * listing and the choice cannot be steered from the client.
+ *
+ * Credits come from now_playing_library, a filename → {title, artist} map
+ * written by the admin. They have to travel per file: with random playback a
+ * single stored title would caption whichever track happened to come up,
+ * which is worse than no caption. The old flat settings are the fallback so
+ * a library that has not been saved yet still names its one track.
+ */
+function nowPlaying(mysqli $db): array
+{
+    $src = setting($db, 'now_playing_src') ?: null;
+    $library = json_decode((string) setting($db, 'now_playing_library'), true);
+    if (!is_array($library)) $library = [];
+
+    if ($src === '*') {
+        // Only files that are actually there — a library entry whose file has
+        // been removed must never be picked.
+        $onDisk = array_map('basename', glob(__DIR__ . '/../../audio/*.{mp3,m4a,mp4}', GLOB_BRACE) ?: []);
+        $src = $onDisk ? $onDisk[random_int(0, count($onDisk) - 1)] : null;
+    }
+
+    if ($src === null) {
+        return ['src' => null, 'title' => null, 'artist' => null];
+    }
+
+    $entry = $library[$src] ?? [];
+    return [
+        'src' => $src,
+        'title' => ($entry['title'] ?? '') ?: (setting($db, 'now_playing_title') ?: null),
+        'artist' => ($entry['artist'] ?? '') ?: (setting($db, 'now_playing_artist') ?: null),
+    ];
+}
+
 $about = setting($mysqli, 'about_html');
 $history = setting($mysqli, 'work_history');
 $socials = setting($mysqli, 'social_links');
@@ -61,9 +99,5 @@ jsonResponse([
      * a path — the page prefixes /audio/ — so a stored value can never point
      * somewhere else on the server.
      */
-    'now_playing' => [
-        'src' => setting($mysqli, 'now_playing_src') ?: null,
-        'title' => setting($mysqli, 'now_playing_title') ?: null,
-        'artist' => setting($mysqli, 'now_playing_artist') ?: null,
-    ],
+    'now_playing' => nowPlaying($mysqli),
 ]);

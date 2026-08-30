@@ -732,6 +732,26 @@
   .preview p { margin-bottom: 16px; }
   .preview h2, .preview h3 { color: var(--paper); font-size: 17px; margin: 22px 0 10px; }
 
+  /* One row per audio file: name, then its two credit fields. */
+  .np-lib-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .np-lib-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  @media (max-width: 700px) {
+    .np-lib-row { grid-template-columns: 1fr; gap: 4px; margin-bottom: 14px; }
+  }
+
   /* ---------- scrollbars ---------- */
 
   /*
@@ -1776,20 +1796,14 @@ async function renderPost(id) {
           <span class="stencil">Track</span>
           <select name="now_playing_src" id="np-src">
             <option value="">None</option>
+            <option value="*">Random — a different one each visit</option>
           </select>
           <p class="hint">mp3, m4a or mp4. Files are added to /audio on the server by hand — this only chooses between them.</p>
         </div>
         <div class="field">
-          <span class="stencil">Title</span>
-          <input type="text" name="now_playing_title"
-                 value="${escape(data.now_playing?.title ?? '')}"
-                 placeholder="Scrolls if it is too long for the bar">
-        </div>
-        <div class="field">
-          <span class="stencil">Artist</span>
-          <input type="text" name="now_playing_artist" id="np-artist-field"
-                 value="${escape(data.now_playing?.artist ?? '')}"
-                 placeholder="Shown under the title">
+          <span class="stencil">Credits</span>
+          <div id="np-library"></div>
+          <p class="hint">What the site shows under the bar. Filled in from each file's tags, which usually need fixing — these come off YouTube as "Mogwai - Topic".</p>
         </div>
       </div>
 
@@ -2464,13 +2478,33 @@ async function renderAbout() {
       o.textContent = `${f.name}  (${(f.size / 1024 / 1024).toFixed(1)}MB)`;
       sel.appendChild(o);
     }
-    if (chosen && !files.some((f) => f.name === chosen)) {
+    if (chosen && chosen !== '*' && !files.some((f) => f.name === chosen)) {
       const o = document.createElement('option');
       o.value = chosen;
       o.textContent = `${chosen}  (missing from /audio)`;
       sel.appendChild(o);
     }
     sel.value = chosen;
+
+    /*
+     * A credit row per file. Saved values win; anything not yet saved is
+     * seeded from the file's own tags so the fields are rarely empty, but
+     * they are always editable — the tags are wrong more often than not.
+     */
+    const lib = data.now_playing_library || {};
+    const wrap = document.getElementById('np-library');
+    if (!wrap) return;
+    wrap.innerHTML = files.map((f) => {
+      const saved = lib[f.name] || {};
+      const title = saved.title || f.title || '';
+      const artist = saved.artist || f.artist || '';
+      return `
+        <div class="np-lib-row" data-file="${escape(f.name)}">
+          <span class="np-lib-name">${escape(f.name)}</span>
+          <input type="text" data-lib-title value="${escape(title)}" placeholder="Title">
+          <input type="text" data-lib-artist value="${escape(artist)}" placeholder="Artist">
+        </div>`;
+    }).join('') || '<p class="hint">Nothing in /audio yet.</p>';
   })();
 
   const rows = document.getElementById('socials');
@@ -2508,6 +2542,15 @@ async function renderAbout() {
     body.set('about', form.content.value);
     body.set('history', form.history.value);
     body.set('socials', JSON.stringify(links));
+
+    const library = {};
+    for (const row of document.querySelectorAll('.np-lib-row')) {
+      library[row.dataset.file] = {
+        title: row.querySelector('[data-lib-title]').value.trim(),
+        artist: row.querySelector('[data-lib-artist]').value.trim(),
+      };
+    }
+    body.set('now_playing_library', JSON.stringify(library));
 
 
     say(note, 'Saving…', true);

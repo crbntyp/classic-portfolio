@@ -45,12 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ];
     }
 
+    $library = json_decode((string) readSetting($mysqli, 'now_playing_library'), true);
+
     jsonResponse([
         'heads' => $heads,
         'about' => readSetting($mysqli, 'about_html') ?? '',
         // Tab separated, one per line: plain enough to paste into and edit.
         'history' => readSetting($mysqli, 'work_history') ?? '',
         'socials' => readSetting($mysqli, 'social_links') ?? '[]',
+        // Raw here, unlike site.php, which resolves it down to the one track
+        // it is going to play. The admin needs every entry to edit.
+        'now_playing' => [
+            'src' => readSetting($mysqli, 'now_playing_src') ?? '',
+            'title' => readSetting($mysqli, 'now_playing_title') ?? '',
+            'artist' => readSetting($mysqli, 'now_playing_artist') ?? '',
+        ],
+        'now_playing_library' => is_array($library) ? $library : (object) [],
     ]);
 }
 
@@ -83,10 +93,33 @@ if (array_key_exists('about', $_POST)) {
  */
 if (array_key_exists('now_playing_src', $_POST)) {
     $src = trim((string) $_POST['now_playing_src']);
-    if ($src !== '' && !preg_match('/^[A-Za-z0-9._-]+\.(mp3|m4a|mp4)$/i', $src)) {
+    // '*' means "pick one at random on each load" and is resolved server-side.
+    if ($src !== '' && $src !== '*' && !preg_match('/^[A-Za-z0-9._-]+\.(mp3|m4a|mp4)$/i', $src)) {
         jsonResponse(['success' => false, 'message' => 'That is not an audio file name.'], 400);
     }
     writeSetting($mysqli, 'now_playing_src', $src);
+}
+
+/*
+ * Per-file credits, as filename → {title, artist}. Stored rather than read
+ * from the files at request time: these come off YouTube with tags like
+ * "Mogwai - Topic", so what gets published is what was checked by hand.
+ */
+if (array_key_exists('now_playing_library', $_POST)) {
+    $lib = json_decode((string) $_POST['now_playing_library'], true);
+    if (!is_array($lib)) {
+        jsonResponse(['success' => false, 'message' => 'The track list is not valid JSON.'], 400);
+    }
+
+    $clean = [];
+    foreach ($lib as $file => $meta) {
+        if (!preg_match('/^[A-Za-z0-9._-]+\.(mp3|m4a|mp4)$/i', (string) $file)) continue;
+        $clean[$file] = [
+            'title' => trim((string) ($meta['title'] ?? '')),
+            'artist' => trim((string) ($meta['artist'] ?? '')),
+        ];
+    }
+    writeSetting($mysqli, 'now_playing_library', json_encode($clean));
 }
 
 if (array_key_exists('now_playing_title', $_POST)) {
