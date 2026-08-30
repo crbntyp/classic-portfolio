@@ -83,7 +83,7 @@ if (array_key_exists('about', $_POST)) {
  */
 if (array_key_exists('now_playing_src', $_POST)) {
     $src = trim((string) $_POST['now_playing_src']);
-    if ($src !== '' && !preg_match('/^[A-Za-z0-9._-]+\.mp3$/', $src)) {
+    if ($src !== '' && !preg_match('/^[A-Za-z0-9._-]+\.(mp3|m4a|mp4)$/i', $src)) {
         jsonResponse(['success' => false, 'message' => 'That is not an audio file name.'], 400);
     }
     writeSetting($mysqli, 'now_playing_src', $src);

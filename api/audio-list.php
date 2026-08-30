@@ -19,9 +19,20 @@ requireAuth();
 // api/ sits at portfolio/api, so the site root is two levels up.
 const AUDIO_DIR = __DIR__ . '/../../audio';
 
+/*
+ * mp3 and the MP4 family only. Both decode in every browser that matters,
+ * which opus and ogg do not — Safari would silently fail, and a control that
+ * works everywhere except one browser is worse than one that never appeared.
+ *
+ * An .mp4 carrying video plays fine through <audio> (the video track is
+ * simply ignored), but it ships the picture for audio-only playback. There is
+ * ffmpeg on this box if a video ever needs stripping down first.
+ */
+const AUDIO_EXTS = ['mp3', 'm4a', 'mp4'];
+
 $files = [];
 
-foreach (glob(AUDIO_DIR . '/*.mp3') ?: [] as $path) {
+foreach (glob(AUDIO_DIR . '/*.{' . implode(',', AUDIO_EXTS) . '}', GLOB_BRACE) ?: [] as $path) {
     if (!is_file($path)) continue;
     $files[] = [
         'name' => basename($path),
