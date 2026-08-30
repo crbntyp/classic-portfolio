@@ -115,6 +115,75 @@
   .mark:hover { opacity: 0.7; }
   .mark:focus-visible { opacity: 1; }
 
+  /* ---------- now playing ---------- */
+  /*
+   * A play control and a hairline, sat at the end of the nav. Deliberately
+   * quiet: dim until you touch it, and the seek thumb only appears on hover
+   * or focus, so at rest it reads as a rule rather than a widget.
+   */
+  .np { display: flex; align-items: center; gap: 10px; margin-left: 18px; }
+
+  /*
+   * `display: flex` on .np outranks the user-agent's [hidden] { display: none }
+   * — one class beats an attribute selector in the UA sheet — so the control
+   * would have rendered even with no audio to play. Scoping it to .np[hidden]
+   * wins on specificity without reaching for !important.
+   */
+  .np[hidden] { display: none; }
+
+  .np-toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; padding: 0;
+    background: none; border: 0; cursor: pointer;
+    color: var(--dim);
+    transition: color 0.2s ease;
+  }
+  .np-toggle:hover { color: var(--paper); }
+  .np-toggle:focus-visible { outline: 1px solid var(--paper); outline-offset: 3px; color: var(--paper); }
+
+  .np-icon { width: 15px; height: 15px; fill: currentColor; display: block; }
+  .np-icon--pause { display: none; }
+  .np.is-playing .np-icon--play { display: none; }
+  .np.is-playing .np-icon--pause { display: block; }
+  .np.is-playing .np-toggle { color: var(--paper); }
+
+  /*
+   * A range input rather than a div, so seeking works from the keyboard for
+   * free. Styled down to a 2px rule; the fill is painted with a gradient
+   * driven by --np-progress, which the script updates.
+   */
+  .np-seek {
+    -webkit-appearance: none; appearance: none;
+    width: 72px; height: 2px; margin: 0; padding: 0;
+    border-radius: 1px; cursor: pointer; outline: none;
+    --np-progress: 0%;
+    background: linear-gradient(to right,
+      var(--paper) 0%, var(--paper) var(--np-progress),
+      rgba(255,255,255,0.16) var(--np-progress), rgba(255,255,255,0.16) 100%);
+    transition: width 0.2s ease;
+  }
+  .np-seek:focus-visible { outline: 1px solid var(--paper); outline-offset: 4px; }
+
+  .np-seek::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--paper); border: 0; cursor: pointer;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .np-seek::-moz-range-thumb {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--paper); border: 0; cursor: pointer;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .np:hover .np-seek::-webkit-slider-thumb,
+  .np-seek:focus-visible::-webkit-slider-thumb { opacity: 1; }
+  .np:hover .np-seek::-moz-range-thumb,
+  .np-seek:focus-visible::-moz-range-thumb { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .np-toggle, .np-seek, .np-seek::-webkit-slider-thumb { transition: none; }
+  }
+
   .nav-links { display: flex; gap: 4px; }
 
   .nav-link {
@@ -901,6 +970,9 @@
     /* Size only. The clip and the margin are in em, so they follow. */
     .mark { width: 97px; }
     .nav-links { gap: 1px; }
+    /* No room for the hairline once the links tighten up; the button stays. */
+    .np { margin-left: 10px; }
+    .np-seek { display: none; }
     .nav-link {
       font-size: 9px;
       letter-spacing: 0.1em;
@@ -939,6 +1011,25 @@
       <a class="nav-link" href="#/undo-stack" data-route="undo-stack">Undo Stack</a>
       <a class="nav-link" href="#/about" data-route="about">About</a>
     </div>
+
+    <!--
+      Now playing. Hidden until the audio actually loads (see the script), so
+      the nav is unchanged if the file is missing or the browser can't play it
+      — the site never shows a control that does nothing.
+
+      It lives inside the nav because routing is on the hash: the page never
+      reloads between Work, Undo Stack and About, so the track keeps playing
+      as someone moves through the site. That continuity is the whole point;
+      a player that restarted on every route would be worse than none.
+    -->
+    <div class="np" id="np" hidden>
+      <button class="np-toggle" id="np-toggle" type="button" aria-label="Play music" aria-pressed="false">
+        <svg class="np-icon np-icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <svg class="np-icon np-icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+      </button>
+      <input class="np-seek" id="np-seek" type="range" min="0" max="1000" value="0" step="1"
+             aria-label="Seek" title="Seek">
+    </div>
   </div>
 </nav>
 
@@ -950,6 +1041,94 @@
 </div></footer>
 
 <script>
+/*
+ * Now playing.
+ *
+ * One track, self-hosted, never autoplayed. Deliberately not YouTube: their
+ * IFrame API requires the player to stay visible and at least 200x200, so a
+ * bare progress bar would be against the terms — and a visitor without
+ * Premium can be served a pre-roll advert, which on a portfolio is worse
+ * than having no music at all.
+ *
+ * The control hides itself unless the audio actually loads. A play button
+ * that does nothing is worse than no button, and this way the file can be
+ * added or removed on the server without touching the page.
+ */
+(function () {
+  var SRC = '/audio/mix.mp3';
+  var POS_KEY = 'crbntyp:np:pos';
+
+  var np = document.getElementById('np');
+  var toggle = document.getElementById('np-toggle');
+  var seek = document.getElementById('np-seek');
+  if (!np || !toggle || !seek) return;
+
+  var audio = new Audio();
+  audio.preload = 'metadata';   // enough to size the bar, not the whole file
+  audio.src = SRC;
+
+  // Only reveal the control once we know there is something to play.
+  audio.addEventListener('loadedmetadata', function () {
+    if (!isFinite(audio.duration) || audio.duration <= 0) return;
+    np.hidden = false;
+
+    // Pick up where this visitor left off, but never start playing on its own.
+    var saved = parseFloat(localStorage.getItem(POS_KEY) || '0');
+    if (saved > 0 && saved < audio.duration - 1) {
+      audio.currentTime = saved;
+      paint();
+    }
+  });
+
+  // Missing file, wrong codec, blocked request — stay hidden either way.
+  audio.addEventListener('error', function () { np.hidden = true; });
+
+  function paint() {
+    if (!isFinite(audio.duration) || audio.duration <= 0) return;
+    var ratio = audio.currentTime / audio.duration;
+    seek.value = Math.round(ratio * 1000);
+    seek.style.setProperty('--np-progress', (ratio * 100).toFixed(2) + '%');
+  }
+
+  audio.addEventListener('timeupdate', function () {
+    paint();
+    // Throttled by the browser's own timeupdate rate (~4/s), which is a fine
+    // granularity to resume from and cheap enough to write.
+    try { localStorage.setItem(POS_KEY, String(audio.currentTime)); } catch (e) {}
+  });
+
+  audio.addEventListener('ended', function () {
+    np.classList.remove('is-playing');
+    toggle.setAttribute('aria-pressed', 'false');
+    toggle.setAttribute('aria-label', 'Play music');
+    try { localStorage.removeItem(POS_KEY); } catch (e) {}
+  });
+
+  toggle.addEventListener('click', function () {
+    if (audio.paused) {
+      audio.play().then(function () {
+        np.classList.add('is-playing');
+        toggle.setAttribute('aria-pressed', 'true');
+        toggle.setAttribute('aria-label', 'Pause music');
+      }).catch(function () {
+        // Autoplay policy or a decode failure. Nothing useful to say on a
+        // portfolio — leave the button in its resting state.
+      });
+    } else {
+      audio.pause();
+      np.classList.remove('is-playing');
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.setAttribute('aria-label', 'Play music');
+    }
+  });
+
+  seek.addEventListener('input', function () {
+    if (!isFinite(audio.duration)) return;
+    audio.currentTime = (seek.value / 1000) * audio.duration;
+    seek.style.setProperty('--np-progress', (seek.value / 10).toFixed(2) + '%');
+  });
+})();
+
 /*
  * Preview of the crbntyp portfolio. Work comes from Behance via the site's own
  * cache — nothing about a project is typed here. Routing is on the hash so this
