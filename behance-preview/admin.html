@@ -182,12 +182,23 @@
   .field-pair { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: end; }
   .field-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
-  .field input[type=text] {
+  /*
+   * The music rows are listed here rather than given their own rule. They are
+   * ordinary text inputs that happen not to sit inside a .field, and they were
+   * picking up no styling at all — browser default font, default box, next to
+   * controls that share one. A second rule saying the same thing is how two
+   * input styles start.
+   */
+  .field input[type=text],
+  .np-lib-row input[type=text] {
     width: 100%; height: var(--control);
     font-family: var(--mono); font-size: 11px; color: var(--paper);
     background: var(--panel-hi); border: 1px solid var(--line); border-radius: 2px; padding: 0 9px;
   }
+  .field input[type=text]:focus,
+  .np-lib-row input[type=text]:focus { outline: none; border-color: var(--line-strong); }
   .field input[type=text]::placeholder,
+  .np-lib-row input[type=text]::placeholder,
   .field textarea::placeholder { color: var(--dim); opacity: .75; }
 
   .intro {
