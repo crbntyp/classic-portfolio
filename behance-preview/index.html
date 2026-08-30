@@ -125,11 +125,15 @@
 
   /*
    * `display: flex` on .np outranks the user-agent's [hidden] { display: none }
-   * — one class beats an attribute selector in the UA sheet — so the control
-   * would have rendered even with no audio to play. Scoping it to .np[hidden]
-   * wins on specificity without reaching for !important.
+   * — one class beats an attribute selector in the UA sheet — so setting the
+   * attribute alone would not hide it. Kept so `hidden` behaves if it is ever
+   * used again, even though the control now stays visible by default.
    */
   .np[hidden] { display: none; }
+
+  /* Nothing behind it yet: still drawn, but not offering a pointer. */
+  .np-toggle[aria-disabled="true"] { cursor: default; }
+  .np-toggle[aria-disabled="true"]:hover { color: var(--dim); }
 
   .np-toggle {
     display: inline-flex; align-items: center; justify-content: center;
@@ -1013,16 +1017,18 @@
     </div>
 
     <!--
-      Now playing. Hidden until the audio actually loads (see the script), so
-      the nav is unchanged if the file is missing or the browser can't play it
-      — the site never shows a control that does nothing.
+      Now playing. Shown whether or not there is a track behind it — the
+      control is part of the nav's composition, so it stays put while the
+      audio is still to come. If the file is missing or won't decode it goes
+      aria-disabled and clicks do nothing, rather than disappearing and
+      changing the layout under the visitor.
 
       It lives inside the nav because routing is on the hash: the page never
       reloads between Work, Undo Stack and About, so the track keeps playing
       as someone moves through the site. That continuity is the whole point;
       a player that restarted on every route would be worse than none.
     -->
-    <div class="np" id="np" hidden>
+    <div class="np" id="np">
       <button class="np-toggle" id="np-toggle" type="button" aria-label="Play music" aria-pressed="false">
         <svg class="np-icon np-icon--play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
         <svg class="np-icon np-icon--pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
@@ -1067,10 +1073,13 @@
   audio.preload = 'metadata';   // enough to size the bar, not the whole file
   audio.src = SRC;
 
-  // Only reveal the control once we know there is something to play.
+  var ready = false;
+
   audio.addEventListener('loadedmetadata', function () {
     if (!isFinite(audio.duration) || audio.duration <= 0) return;
-    np.hidden = false;
+    ready = true;
+    toggle.removeAttribute('aria-disabled');
+    seek.removeAttribute('aria-disabled');
 
     // Pick up where this visitor left off, but never start playing on its own.
     var saved = parseFloat(localStorage.getItem(POS_KEY) || '0');
@@ -1080,8 +1089,14 @@
     }
   });
 
-  // Missing file, wrong codec, blocked request — stay hidden either way.
-  audio.addEventListener('error', function () { np.hidden = true; });
+  // Missing file, wrong codec, blocked request. The control stays on screen —
+  // it is part of the nav's composition — but says so to assistive tech and
+  // does nothing when clicked, rather than pretending to play.
+  audio.addEventListener('error', function () {
+    ready = false;
+    toggle.setAttribute('aria-disabled', 'true');
+    seek.setAttribute('aria-disabled', 'true');
+  });
 
   function paint() {
     if (!isFinite(audio.duration) || audio.duration <= 0) return;
@@ -1105,6 +1120,7 @@
   });
 
   toggle.addEventListener('click', function () {
+    if (!ready) return;   // nothing behind it yet
     if (audio.paused) {
       audio.play().then(function () {
         np.classList.add('is-playing');
