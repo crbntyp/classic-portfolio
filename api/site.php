@@ -56,4 +56,13 @@ jsonResponse([
         explode("\n", (string) $history)
     ))),
     'socials' => $socials ? (json_decode($socials, true) ?: []) : [],
+    /*
+     * The track behind the nav's now-playing control. A filename rather than
+     * a path — the page prefixes /audio/ — so a stored value can never point
+     * somewhere else on the server.
+     */
+    'now_playing' => [
+        'src' => setting($mysqli, 'now_playing_src') ?: null,
+        'artist' => setting($mysqli, 'now_playing_artist') ?: null,
+    ],
 ]);

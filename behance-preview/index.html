@@ -1080,7 +1080,6 @@
  * added or removed on the server without touching the page.
  */
 (function () {
-  var SRC = '/audio/mix.mp3';
   var POS_KEY = 'crbntyp:np:pos';
 
   var np = document.getElementById('np');
@@ -1091,7 +1090,6 @@
 
   var audio = new Audio();
   audio.preload = 'metadata';   // enough to size the bar, not the whole file
-  audio.src = SRC;
 
   var ready = false;
 
@@ -1154,14 +1152,37 @@
   });
 
   /*
-   * The artist under the bar comes from site settings, alongside the track
-   * itself, so it can be changed without a deploy. Until the admin writes
-   * one the line stays empty rather than showing a guess — a wrong credit is
-   * worse than none.
+   * Which track, and who by, come from site settings — the same key/value
+   * store as the rest of the site's copy — so both change from the admin
+   * without a deploy. The stored value is a bare filename; the /audio/
+   * prefix is added here, so a setting can never point somewhere else on
+   * the server.
+   *
+   * Deferred to DOMContentLoaded because site() and its cache are declared
+   * further down this script: calling it at parse time would hit the
+   * temporal dead zone. Waiting also means the player shares the one
+   * site.php response rather than making a second.
    */
-  window.npSetArtist = function (name) {
-    if (artistEl) artistEl.textContent = name || '';
-  };
+  function boot() {
+    site().then(function (cfg) {
+      var np_ = (cfg && cfg.now_playing) || {};
+      if (artistEl) artistEl.textContent = np_.artist || '';
+      if (!np_.src) {
+        // Nothing chosen. The control stays drawn but inert.
+        toggle.setAttribute('aria-disabled', 'true');
+        return;
+      }
+      audio.src = '/audio/' + np_.src;
+    }).catch(function () {
+      toggle.setAttribute('aria-disabled', 'true');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();
 
 /*

@@ -1745,6 +1745,23 @@ async function renderPost(id) {
         <textarea name="content" spellcheck="false" hidden></textarea>
       </div>
 
+      <div class="head-row">
+        <span class="stencil head-row-label">Music</span>
+        <div class="field">
+          <span class="stencil">Track</span>
+          <select name="now_playing_src" id="np-src">
+            <option value="">None</option>
+          </select>
+          <p class="hint">Files are added to /audio on the server by hand — this only chooses between them.</p>
+        </div>
+        <div class="field">
+          <span class="stencil">Artist</span>
+          <input type="text" name="now_playing_artist" id="np-artist-field"
+                 value="${escape(data.now_playing?.artist ?? '')}"
+                 placeholder="Shown under the progress bar">
+        </div>
+      </div>
+
       <div class="editor-actions">
         <button class="btn is-on" type="submit">Save</button>
         ${isNew ? '' : '<button class="btn danger" type="button" id="delete">Delete</button>'}
@@ -2393,6 +2410,38 @@ async function renderAbout() {
   wireEditor(form, data.about);
 
 
+  /*
+   * The track list comes from the folder rather than from anything stored, so
+   * the picker can only ever offer files that actually exist. A saved value
+   * whose file has since gone is kept as an option and marked, instead of
+   * silently reverting to None — the setting is still what it is, and losing
+   * it quietly on an unrelated save would be worse.
+   */
+  (async () => {
+    const sel = document.getElementById('np-src');
+    if (!sel) return;
+    const chosen = data.now_playing?.src ?? '';
+    let files = [];
+    try {
+      const r = await adminFetch('/portfolio/api/audio-list.php');
+      files = (await r.json()).files || [];
+    } catch { /* leave the list at None */ }
+
+    for (const f of files) {
+      const o = document.createElement('option');
+      o.value = f.name;
+      o.textContent = `${f.name}  (${(f.size / 1024 / 1024).toFixed(1)}MB)`;
+      sel.appendChild(o);
+    }
+    if (chosen && !files.some((f) => f.name === chosen)) {
+      const o = document.createElement('option');
+      o.value = chosen;
+      o.textContent = `${chosen}  (missing from /audio)`;
+      sel.appendChild(o);
+    }
+    sel.value = chosen;
+  })();
+
   const rows = document.getElementById('socials');
   document.getElementById('add-social').addEventListener('click', () => {
     rows.insertAdjacentHTML('beforeend', socialRow());
@@ -2412,11 +2461,22 @@ async function renderAbout() {
       }))
       .filter((link) => link.name && link.url);
 
-    const body = new URLSearchParams({
-      about: form.content.value,
-      history: form.history.value,
-      socials: JSON.stringify(links),
-    });
+    /*
+     * Built from the form, not from a hand-listed set of fields.
+     *
+     * It used to be the latter, which meant the heading and intro inputs
+     * rendered above were never actually submitted — editing a page heading
+     * appeared to save and changed nothing. Taking the fields from the form
+     * fixes that and means a field added to the markup is submitted without
+     * anyone having to remember this line.
+     *
+     * The three below are still set explicitly: content comes from the body
+     * editor rather than a named input, and socials is assembled from rows.
+     */
+    const body = new URLSearchParams(new FormData(form));
+    body.set('about', form.content.value);
+    body.set('history', form.history.value);
+    body.set('socials', JSON.stringify(links));
 
 
     say(note, 'Saving…', true);

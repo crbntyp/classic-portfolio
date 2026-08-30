@@ -76,6 +76,23 @@ if (array_key_exists('about', $_POST)) {
     writeSetting($mysqli, 'about_html', (string) $_POST['about']);
 }
 
+/*
+ * The now-playing track. Stored as a bare filename and validated as one:
+ * this is behind a session, but a setting that the public page turns into a
+ * URL should never be able to carry a path out of the audio folder.
+ */
+if (array_key_exists('now_playing_src', $_POST)) {
+    $src = trim((string) $_POST['now_playing_src']);
+    if ($src !== '' && !preg_match('/^[A-Za-z0-9._-]+\.mp3$/', $src)) {
+        jsonResponse(['success' => false, 'message' => 'That is not an audio file name.'], 400);
+    }
+    writeSetting($mysqli, 'now_playing_src', $src);
+}
+
+if (array_key_exists('now_playing_artist', $_POST)) {
+    writeSetting($mysqli, 'now_playing_artist', trim((string) $_POST['now_playing_artist']));
+}
+
 if (array_key_exists('history', $_POST)) {
     writeSetting($mysqli, 'work_history', trim((string) $_POST['history']));
 }
