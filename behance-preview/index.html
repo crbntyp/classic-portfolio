@@ -31,6 +31,10 @@
     --mono: "Azeret Mono", ui-monospace, "SF Mono", Menlo, monospace;
     --scroll: #00e5ff;
     --gutter: 40px;
+    /* The nav's own height, named so that anything sticking beneath it can
+       clear it by arithmetic instead of by a hand-picked number. .nav-inner
+       reads this rather than setting its own. */
+    --nav-h: 66px;
     color-scheme: dark;
   }
 
@@ -77,7 +81,7 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 var(--gutter);
-    height: 66px;
+    height: var(--nav-h);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -521,7 +525,15 @@
 
   .case-side {
     position: sticky;
-    top: 28px;
+    /*
+     * Clear of the nav, not under it. At a flat 28px the column stuck inside
+     * the nav's own 66px band, so the first thing to go behind that translucent
+     * bar was the heading naming the column — you were left with a numbered
+     * list and nothing saying what it listed. The nav's height plus 20px of air
+     * puts the heading just below it, and reads the height from the token so it
+     * cannot drift out of step with the nav again.
+     */
+    top: calc(var(--nav-h) + 20px);
     display: flex;
     flex-direction: column;
     gap: 26px;
@@ -723,14 +735,43 @@
     border-radius: 3px;
     display: block;
   }
+  /*
+   * A Behance text module is never an essay. Every one of them across the whole
+   * portfolio is a line or two — a title and a subtitle, or a sentence saying
+   * what the pictures below are — so it is closer to a caption for the run than
+   * to prose, and it is set as one.
+   *
+   * Ranged left at a 68ch measure it hung off the left edge of a 1100px column
+   * of full-width pictures, in near-paper, with the last word or two orphaned on
+   * a second line. Centred on the column it reads as a caption for what follows;
+   * balanced wrapping splits it into even lines instead of a long one and a
+   * stub; and the site's grey — the one the standfirst and the headings in the
+   * writing are set in — puts it behind the images rather than in front of them.
+   */
   .module-text {
     font-size: 15px;
     line-height: 1.7;
-    color: rgba(236, 237, 234, 0.86);
-    max-width: 68ch;
+    color: var(--dim);
+    max-width: 62ch;
+    margin-inline: auto;
+    text-align: center;
+    text-wrap: balance;
+    /* The 22px module gap is right between two pictures. A line of type between
+       them needs more air than that on either side, or it reads as belonging to
+       whichever picture it happens to be nearer. */
+    padding: 12px 0;
   }
   .module-text a { color: var(--paper); }
-  .caption { font-family: var(--mono); font-size: 10px; color: var(--dim); margin-top: 7px; }
+  /* Centred under the picture it belongs to, on the same axis as the text
+     modules — a caption ranged left under a centred line read as two columns
+     that had not agreed with each other. */
+  .caption {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 7px;
+    text-align: center;
+  }
 
   /* ---------- the undo stack ---------- */
 
@@ -1053,6 +1094,9 @@
     :root { --gutter: 20px; }
 
     .nav-inner { height: 56px; gap: 10px; }
+    /* Kept in step for anything else reading the token; nothing sticks under
+       the nav at this width, but a stale value here would be a trap later. */
+    :root { --nav-h: 56px; }
     /* Size only. The clip and the margin are in em, so they follow. */
     .mark { width: 97px; }
     .nav-links { gap: 1px; }
@@ -1576,7 +1620,7 @@ async function routeProject(id) {
    */
   const features = summary.features?.length ? `
     <div class="features">
-      <span class="stencil">What it does</span>
+      <span class="stencil">Features</span>
       <ul class="feature-list">
         ${summary.features.map((f) => `<li>${escape(f)}</li>`).join('')}
       </ul>
