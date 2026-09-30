@@ -492,6 +492,18 @@
     z-index: 2;
   }
 
+  /*
+   * Everything under a project's banner sits on its own full-width sheet of
+   * page colour. With motion on, the banner holds in place for a moment as the
+   * page starts to scroll and this sheet slides up over it (motion.js, hero).
+   * Without motion it is just the page background, so nothing changes.
+   */
+  .sheet {
+    position: relative;
+    z-index: 1;
+    background: var(--ink);
+  }
+
   /* Half the page, not a text measure: the banner is full width, so a column
      of 62 characters under it read as an afterthought. */
   .project-head { max-width: 50%; }
@@ -1438,7 +1450,7 @@ function card(project) {
   const when = project.published ? monthYear.format(new Date(project.published * 1000)) : '';
   const live = liveFor(project);
   return `
-    <a class="card" href="#/project/${project.id}">
+    <a class="card" href="#/project/${project.id}" data-flip-id="p${escape(project.id)}">
       <span class="cover${project.cover ? '' : ' is-empty'}" style="--accent:${escape(project.accent || 'transparent')}">
         ${project.cover ? `<img src="${escape(project.cover)}" alt="" loading="lazy">` : ''}
         ${project.kind ? `<span class="card-kind">${escape(categoryLabel(project.kind))}</span>` : ''}
@@ -1506,7 +1518,7 @@ async function routeWork() {
   view.querySelectorAll('[data-tag]').forEach((chip) => {
     chip.addEventListener('click', () => {
       tagFilter = chip.dataset.tag || null;
-      routeWork();
+      refilter(routeWork);
     });
   });
 
@@ -1689,7 +1701,7 @@ async function routeProject(id) {
       </section>`
       : `<div class="wrap"><a class="back" href="#/work">${icons.left} All work</a>${head}</div>`}
 
-    <div class="wrap">
+    <div class="sheet"><div class="wrap">
     <div class="facts">
       <div class="fact"><span class="stencil">Published</span><span class="fact-value">${when}</span></div>
       <div class="fact"><span class="stencil">Made with</span>${chips(detail?.tools)}</div>
@@ -1705,7 +1717,7 @@ async function routeProject(id) {
     </div>
 
     ${pager}
-  </div>`;
+  </div></div>`;
 }
 
 const BLOG_API = '/portfolio/api/blog.php';
@@ -1754,7 +1766,7 @@ async function routeUndoStack() {
       </div>` : ''}
     <div class="posts">
       ${shown.map((post) => `
-        <a class="post-row" href="#/undo-stack/${encodeURIComponent(post.slug)}">
+        <a class="post-row" href="#/undo-stack/${encodeURIComponent(post.slug)}" data-flip-id="s${escape(post.slug)}">
           <span class="post-when">${postDate(post.published)} / ${readTime(post.words)}</span>
           <h2 class="post-title">${escape(post.title)}</h2>
           <p class="post-excerpt">${escape(post.excerpt)}</p>
@@ -1767,7 +1779,7 @@ async function routeUndoStack() {
   view.querySelectorAll('[data-tag]').forEach((chip) => {
     chip.addEventListener('click', () => {
       postTag = chip.dataset.tag || null;
-      routeUndoStack();
+      refilter(routeUndoStack);
     });
   });
 }
@@ -1923,9 +1935,24 @@ async function routeAbout() {
   </div>`;
 }
 
+/*
+ * Motion lives in motion.js, loaded after this script, and is optional: it is
+ * absent under reduced motion, if its files fail, or simply because it has not
+ * arrived yet on the first render. Every call goes through here so the page
+ * never has to care which.
+ */
+const motion = () => window.crbntypMotion || null;
+
+/* A tag filter: animated by motion when it is here, a plain re-render when not. */
+function refilter(rerender) {
+  const m = motion();
+  return m ? m.flip(rerender) : rerender();
+}
+
 async function render() {
   const hash = location.hash.replace(/^#\/?/, '') || 'work';
   const [route, param] = hash.split('/');
+  motion()?.leave();
 
   document.querySelectorAll('.nav-link').forEach((link) => {
     link.classList.toggle('is-on', link.dataset.route === (route === 'project' ? 'work' : route));
@@ -1943,7 +1970,18 @@ async function render() {
   } catch (err) {
     view.innerHTML = `<div class="wrap"><div class="empty"><b>Could not load.</b> ${escape(err.message)}</div></div>`;
   }
-  window.scrollTo(0, 0);
+  const m = motion();
+  if (m) {
+    m.toTop();
+    // Named for the route that actually rendered, mirroring the dispatch above
+    // — anything unrecognised fell through to the work grid, so it enters as one.
+    m.enter(route === 'project' && param ? 'project'
+      : route === 'undo-stack' ? (param ? 'post' : 'undo-stack')
+      : route === 'about' ? 'about'
+      : 'work');
+  } else {
+    window.scrollTo(0, 0);
+  }
 }
 
 window.addEventListener('hashchange', render);
@@ -1954,6 +1992,20 @@ site().then(({ socials }) => {
   document.getElementById('footer-socials').innerHTML = socialLinks(socials, 'footer-social');
 });
 </script>
+
+<!--
+  Motion (motion.js), on self-hosted GSAP and Lenis — no third-party request,
+  and the page works identically without any of it. Deferred, so none of this
+  holds up the first render. Absolute paths so the copy served at the root and
+  the one under /behance-preview/ load the same files.
+-->
+<script src="/behance-preview/vendor/gsap.min.js" defer></script>
+<script src="/behance-preview/vendor/ScrollTrigger.min.js" defer></script>
+<script src="/behance-preview/vendor/SplitText.min.js" defer></script>
+<script src="/behance-preview/vendor/ScrambleTextPlugin.min.js" defer></script>
+<script src="/behance-preview/vendor/Flip.min.js" defer></script>
+<script src="/behance-preview/vendor/lenis.min.js" defer></script>
+<script src="/behance-preview/motion.js" defer></script>
 
 <!-- stts Analytics -->
 <script src="/stts/tracker/stts.min.js" data-site="portfolio" async defer></script>
